@@ -208,14 +208,16 @@ window.toggleSidebar = function() {
 
   .contenido.expandido { margin-left: 260px; }
 
-  /* HERO */
+  /* ============================================
+     HERO: la foto va sola arriba, el texto va debajo
+     ============================================ */
   .hero { position: relative; }
 
   .hero-foto {
     position: relative;
     height: 68vh;
     min-height: 380px;
-    background: url('https://tapcpjeyfddsetgfpssl.supabase.co/storage/v1/object/public/imagenes-advertencias/turismo/plazacentralde-warnes.jpg') center 30% / cover no-repeat;
+    background: url('https://scdkbbqkeegmixkfhptl.supabase.co/storage/v1/object/public/imagenes-warnes/turismo/plazacentralde-warnes.jpg') center 30% / cover no-repeat;
   }
 
   .hero-foto::after {
@@ -255,6 +257,7 @@ window.toggleSidebar = function() {
     letter-spacing: 8px;
     line-height: 1;
     margin-bottom: 20px;
+    /* verde - blanco - verde */
     background: linear-gradient(180deg,
       #0a9d3f 0%, #0a9d3f 40%,
       #ffffff 40%, #ffffff 64%,
@@ -369,7 +372,7 @@ window.toggleSidebar = function() {
     box-shadow: 0 0 25px rgba(0, 229, 255, 0.4);
   }
 
-  /* SUBSECCIONES */
+  /* SUBSECCIONES (vista "Todos": cada categoría separada) */
   .subseccion { margin-bottom: 70px; }
 
   .subseccion-header {
@@ -628,8 +631,10 @@ window.toggleSidebar = function() {
 <main class="contenido" id="contenido">
 
   <section class="hero" id="inicio">
+    <!-- La foto va sola, sin texto encima -->
     <div class="hero-foto" role="img" aria-label="Plaza central de Warnes"></div>
 
+    <!-- El texto va debajo de la foto -->
     <div class="hero-texto">
       <span class="hero-ubicacion">◉ Santa Cruz · Bolivia</span>
       <h1>WARNES</h1>
@@ -670,6 +675,7 @@ window.toggleSidebar = function() {
 <script>
 // ============================================
 // CONFIGURACIÓN SUPABASE
+// (se usa "db" porque "supabase" ya lo declara la librería)
 // ============================================
 const SUPABASE_URL = 'https://tapcpjeyfddsetgfpssl.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_EWijJ0mPmT2bf6-90yvIlA_XmhspUz8';
@@ -677,7 +683,7 @@ const SUPABASE_KEY = 'sb_publishable_EWijJ0mPmT2bf6-90yvIlA_XmhspUz8';
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ============================================
-// IMÁGENES DE RESPALDO
+// IMÁGENES DE RESPALDO (si la fila no tiene imagen_url o el enlace falla)
 // ============================================
 const IMAGENES_TURISMO = {
   'hotel': 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80',
@@ -710,19 +716,10 @@ const IMAGENES_INDUSTRIA = [
   'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&q=80'
 ];
 
-function imagenTurismo(item) {
-  return item.imagen_url || IMAGENES_TURISMO[item.categoria] || IMAGENES_TURISMO['default'];
-}
-function imagenCultura(item, i) {
-  return item.imagen_url || IMAGENES_CULTURA[i % IMAGENES_CULTURA.length];
-}
-function imagenSimbolo(item) {
-  return item.imagen_url || IMAGENES_SIMBOLOS[item.tipo] || IMAGENES_SIMBOLOS['aniversario'];
-}
-function imagenIndustria(item, i) {
-  return item.imagen_url || IMAGENES_INDUSTRIA[i % IMAGENES_INDUSTRIA.length];
-}
-
+// ============================================
+// UTILIDADES
+// ============================================
+// Evita que textos con < > " rompan el HTML de las tarjetas
 function esc(valor) {
   return String(valor == null ? '' : valor).replace(/[&<>"']/g, function(c) {
     return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
@@ -742,16 +739,22 @@ const infoCategorias = {
   'comercio': { titulo: 'Industria &', acento: 'Comercio', desc: 'El corazón agroindustrial de Bolivia: empresas que mueven la economía del oriente.' }
 };
 
-const PREVIEW_TODOS = 6;
+const PREVIEW_TODOS = 6; // tarjetas por categoría en la vista "Todos"
 
 // ============================================
 // TARJETAS
 // ============================================
+function imgTag(src, fallback, alt) {
+  return '<img class="tarjeta-imagen" src="' + esc(src || fallback) + '" data-fb="' + esc(fallback) + '" ' +
+         'onerror="this.onerror=null;this.src=this.dataset.fb" alt="' + esc(alt) + '" loading="lazy">';
+}
+
 function tarjetaTurismo(item) {
+  var cat = (item.categoria || '').toLowerCase();
+  var fb = IMAGENES_TURISMO[cat] || IMAGENES_TURISMO['default'];
   return '<div class="tarjeta">' +
     '<div class="tarjeta-imagen-wrapper">' +
-      '<span class="tarjeta-badge">Turismo</span>' +
-      '<img class="tarjeta-imagen" src="' + esc(imagenTurismo(item)) + '" alt="' + esc(item.nombre) + '" loading="lazy">' +
+      '<span class="tarjeta-badge">Turismo</span>' + imgTag(item.imagen_url, fb, item.nombre) +
     '</div>' +
     '<div class="tarjeta-contenido">' +
       '<h3>' + esc(item.nombre) + '</h3>' +
@@ -766,10 +769,10 @@ function tarjetaTurismo(item) {
 }
 
 function tarjetaSimbolo(item) {
+  var fb = IMAGENES_SIMBOLOS[(item.tipo || '').toLowerCase()] || IMAGENES_SIMBOLOS['aniversario'];
   return '<div class="tarjeta">' +
     '<div class="tarjeta-imagen-wrapper">' +
-      '<span class="tarjeta-badge">Símbolo</span>' +
-      '<img class="tarjeta-imagen" src="' + esc(imagenSimbolo(item)) + '" alt="' + esc(item.nombre) + '" loading="lazy">' +
+      '<span class="tarjeta-badge">Símbolo</span>' + imgTag(item.imagen_url, fb, item.nombre) +
     '</div>' +
     '<div class="tarjeta-contenido">' +
       '<h3>' + esc(item.nombre) + '</h3>' +
@@ -781,10 +784,10 @@ function tarjetaSimbolo(item) {
 }
 
 function tarjetaCultura(item, i) {
+  var fb = IMAGENES_CULTURA[i % IMAGENES_CULTURA.length];
   return '<div class="tarjeta">' +
     '<div class="tarjeta-imagen-wrapper">' +
-      '<span class="tarjeta-badge">' + esc(item.fecha || 'Evento') + '</span>' +
-      '<img class="tarjeta-imagen" src="' + esc(imagenCultura(item, i)) + '" alt="' + esc(item.actividad) + '" loading="lazy">' +
+      '<span class="tarjeta-badge">' + esc(item.fecha || 'Evento') + '</span>' + imgTag(item.imagen_url, fb, item.actividad) +
     '</div>' +
     '<div class="tarjeta-contenido">' +
       '<h3>' + esc(item.actividad) + '</h3>' +
@@ -795,19 +798,25 @@ function tarjetaCultura(item, i) {
 }
 
 function tarjetaIndustria(item, i) {
+  var fb = IMAGENES_INDUSTRIA[i % IMAGENES_INDUSTRIA.length];
   return '<div class="tarjeta">' +
     '<div class="tarjeta-imagen-wrapper">' +
-      '<span class="tarjeta-badge">Industria</span>' +
-      '<img class="tarjeta-imagen" src="' + esc(imagenIndustria(item, i)) + '" alt="' + esc(item.nombre) + '" loading="lazy">' +
+      '<span class="tarjeta-badge">Industria</span>' + imgTag(item.imagen_url, fb, item.nombre) +
     '</div>' +
     '<div class="tarjeta-contenido">' +
       '<h3>' + esc(item.nombre) + '</h3>' +
       '<p>' + esc(item.descripcion || 'Empresa industrial de la provincia Warnes.') + '</p>' +
-      (item.horario ? '<div class="tarjeta-info"><span><strong>◷</strong> ' + esc(item.horario) + '</span></div>' : '') +
+      ((item.ubicacion || item.horario || item.telefono) ?
+        '<div class="tarjeta-info">' +
+          (item.ubicacion ? '<span><strong>◉</strong> ' + esc(item.ubicacion) + '</span>' : '') +
+          (item.horario ? '<span><strong>◷</strong> ' + esc(item.horario) + '</span>' : '') +
+          (item.telefono ? '<span><strong>☎</strong> ' + esc(item.telefono) + '</span>' : '') +
+        '</div>' : '') +
     '</div>' +
   '</div>';
 }
 
+// Orden en que aparecen las categorías en la vista "Todos"
 const SECCIONES = [
   { clave: 'turismo',  nombre: 'Turismo',   fn: tarjetaTurismo },
   { clave: 'cultura',  nombre: 'Cultura',   fn: tarjetaCultura },
@@ -816,7 +825,7 @@ const SECCIONES = [
 ];
 
 // ============================================
-// CARGAR DATOS
+// CARGAR DATOS DESDE SUPABASE
 // ============================================
 async function cargarTodo() {
   try {
@@ -864,6 +873,7 @@ window.renderizar = function(categoria) {
   let html = '';
 
   if (categoria === 'todos') {
+    // Cada categoría en su propio bloque, con su título
     SECCIONES.forEach(function(sec) {
       const items = datosCache[sec.clave];
       if (!items.length) return;
@@ -877,6 +887,7 @@ window.renderizar = function(categoria) {
       '</div>';
     });
   } else {
+    // Solo la categoría elegida
     const sec = SECCIONES.find(function(s) { return s.clave === categoria; });
     if (sec && datosCache[sec.clave].length) {
       html = '<div class="grid">' + datosCache[sec.clave].map(sec.fn).join('') + '</div>';
