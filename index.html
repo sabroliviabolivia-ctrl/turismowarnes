@@ -38,6 +38,7 @@ window.toggleSidebar = function() {
     --neon-verde: #00ff9d;
     --neon-cyan: #00e5ff;
     --neon-magenta: #ff00e5;
+    --verde-warnes: #0a9d3f;
     --fondo-oscuro: #02020a;
     --fondo-tarjeta: #0a0a1a;
     --texto-claro: #eef0ff;
@@ -208,15 +209,15 @@ window.toggleSidebar = function() {
     min-height: 90vh;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
     text-align: center;
-    padding: 60px 30px;
+    padding: 60px 30px 110px;
     position: relative;
     overflow: hidden;
     background:
-      linear-gradient(rgba(2, 2, 10, 0.55), rgba(2, 2, 10, 0.85)),
-      url('https://scdkbbqkeegmixkfhptl.supabase.co/storage/v1/object/public/imagenes-warnes/turismo/plazacentralde-warnes.jpg') center/cover no-repeat;
+      linear-gradient(to bottom, rgba(2,2,10,0.05) 0%, rgba(2,2,10,0.25) 45%, rgba(2,2,10,0.9) 100%),
+      url('https://scdkbbqkeegmixkfhptl.supabase.co/storage/v1/object/public/imagenes-warnes/turismo/plazacentralde-warnes.jpg') center 30%/cover no-repeat;
     background-attachment: fixed;
   }
 
@@ -224,7 +225,7 @@ window.toggleSidebar = function() {
     content: '';
     position: absolute;
     bottom: 0; left: 0;
-    width: 100%; height: 200px;
+    width: 100%; height: 120px;
     background: linear-gradient(to top, var(--fondo-oscuro), transparent);
     pointer-events: none;
   }
@@ -232,16 +233,16 @@ window.toggleSidebar = function() {
   .hero-ubicacion {
     display: inline-block;
     padding: 8px 22px;
-    border: 1px solid var(--neon-cyan);
+    border: 1px solid var(--verde-warnes);
     border-radius: 30px;
-    color: var(--neon-cyan);
+    color: #ffffff;
     font-size: 0.85rem;
     margin-bottom: 25px;
     letter-spacing: 3px;
     text-transform: uppercase;
-    background: rgba(0, 229, 255, 0.08);
+    background: rgba(10, 157, 63, 0.35);
     backdrop-filter: blur(10px);
-    box-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
+    box-shadow: 0 0 20px rgba(10, 157, 63, 0.5);
     position: relative;
     z-index: 2;
   }
@@ -251,28 +252,26 @@ window.toggleSidebar = function() {
     font-weight: 900;
     letter-spacing: 8px;
     margin-bottom: 20px;
-    background: linear-gradient(90deg, var(--neon-verde), var(--neon-cyan), var(--neon-magenta), var(--neon-verde));
-    background-size: 300% auto;
+    background: linear-gradient(180deg,
+      #0a9d3f 0%, #0a9d3f 33%,
+      #ffffff 33%, #ffffff 66%,
+      #0a9d3f 66%, #0a9d3f 100%);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: brillo 5s linear infinite;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.8));
     position: relative;
     z-index: 2;
-  }
-
-  @keyframes brillo {
-    0% { background-position: 0% center; }
-    100% { background-position: 300% center; }
   }
 
   .hero-sub {
     font-size: clamp(1rem, 2vw, 1.3rem);
-    color: #c8c8dd;
+    color: #e2e2ee;
     max-width: 700px;
     margin-bottom: 45px;
     position: relative;
     z-index: 2;
-    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.8);
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.9);
   }
 
   .hero-cta {
@@ -561,7 +560,7 @@ window.toggleSidebar = function() {
     .contenido { margin-left: 0; padding-top: 60px; }
     .contenido.expandido { margin-left: 0; }
     .seccion { padding: 60px 20px; }
-    .hero { background-attachment: scroll; min-height: 80vh; }
+    .hero { background-attachment: scroll; min-height: 80vh; padding-bottom: 90px; }
     .hero h1 { letter-spacing: 4px; }
     .grid { grid-template-columns: 1fr; }
   }
@@ -631,12 +630,13 @@ window.toggleSidebar = function() {
 
 <script>
 // ============================================
-// CONFIGURACIÓN SUPABASE (PROYECTO NUEVO)
+// CONFIGURACIÓN SUPABASE
+// (se usa "db" porque "supabase" ya lo declara la librería)
 // ============================================
 const SUPABASE_URL = 'https://tapcpjeyfddsetgfpssl.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_EWijJ0mPmT2bf6-90yvIlA_XmhspUz8';
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ============================================
 // IMÁGENES DE RESPALDO
@@ -711,10 +711,10 @@ function imagenIndustria(item, i) {
 async function cargarTodo() {
   try {
     const [tur, cul, sim, com] = await Promise.all([
-      supabase.from('turismo').select('*').order('destacado', { ascending: false }),
-      supabase.from('cultura').select('*').order('mes_orden', { ascending: true }),
-      supabase.from('cultura_simbolos').select('*').order('orden', { ascending: true }),
-      supabase.from('comercio').select('*').order('nombre', { ascending: true })
+      db.from('turismo').select('*').order('destacado', { ascending: false }),
+      db.from('cultura').select('*').order('mes_orden', { ascending: true }),
+      db.from('cultura_simbolos').select('*').order('orden', { ascending: true }),
+      db.from('comercio').select('*').order('nombre', { ascending: true })
     ]);
 
     if (tur.error) console.error('Error turismo:', tur.error);
