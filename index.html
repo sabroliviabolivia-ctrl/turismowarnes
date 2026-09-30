@@ -5,6 +5,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WARNES | Tierra de Naturaleza, Cultura e Industria</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ============================================
+// FUNCIONES GLOBALES (definidas antes de usarse)
+// ============================================
+window.cambiarCategoria = function(categoria, boton) {
+  document.querySelectorAll('.menu-item, .filtro-btn').forEach(b => b.classList.remove('activo'));
+  document.querySelectorAll('.menu-item[data-categoria="' + categoria + '"]').forEach(b => b.classList.add('activo'));
+  if (boton) boton.classList.add('activo');
+
+  if (typeof window.renderizar === 'function') {
+    window.renderizar(categoria);
+    if (categoria !== 'todos') {
+      var el = document.getElementById('catalogo');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+};
+
+window.toggleSidebar = function() {
+  var sb = document.getElementById('sidebar');
+  var ct = document.getElementById('contenido');
+  if (sb) sb.classList.toggle('abierta');
+  if (ct) ct.classList.toggle('expandido');
+};
+</script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -12,11 +37,8 @@
     --neon-verde: #00ff9d;
     --neon-cyan: #00e5ff;
     --neon-magenta: #ff00e5;
-    --neon-amarillo: #ffe600;
-    --neon-naranja: #ff6a00;
     --fondo-oscuro: #02020a;
     --fondo-tarjeta: #0a0a1a;
-    --fondo-sidebar: #060612;
     --texto-claro: #eef0ff;
     --texto-gris: #8888aa;
   }
@@ -65,11 +87,10 @@
     to { background-position: 600px 600px; }
   }
 
-  /* ==================== SIDEBAR ==================== */
+  /* SIDEBAR */
   .sidebar {
     position: fixed;
-    left: 0;
-    top: 0;
+    left: 0; top: 0;
     height: 100vh;
     width: 90px;
     background: rgba(6, 6, 18, 0.95);
@@ -97,7 +118,6 @@
     white-space: nowrap;
     padding-left: 10px;
     cursor: pointer;
-    transition: 0.3s;
   }
 
   .sidebar.abierta .sidebar-logo {
@@ -117,7 +137,7 @@
     display: flex;
     align-items: center;
     gap: 15px;
-    padding: 14px 14px;
+    padding: 14px;
     border-radius: 12px;
     cursor: pointer;
     color: var(--texto-gris);
@@ -142,7 +162,6 @@
     opacity: 0;
     transition: opacity 0.3s;
     font-weight: 600;
-    letter-spacing: 0.5px;
   }
 
   .sidebar.abierta .menu-item .texto { opacity: 1; }
@@ -155,15 +174,10 @@
     box-shadow: 0 0 20px rgba(0, 255, 157, 0.15);
   }
 
-  .menu-item.activo .icono {
-    filter: drop-shadow(0 0 12px var(--neon-verde));
-  }
-
   .sidebar-toggle {
     position: absolute;
     bottom: 20px;
-    width: 50px;
-    height: 50px;
+    width: 50px; height: 50px;
     border-radius: 50%;
     background: rgba(0, 255, 157, 0.1);
     border: 1px solid rgba(0, 255, 157, 0.4);
@@ -188,7 +202,7 @@
 
   .contenido.expandido { margin-left: 260px; }
 
-  /* ==================== HERO ==================== */
+  /* HERO */
   .hero {
     min-height: 90vh;
     display: flex;
@@ -226,7 +240,7 @@
     text-transform: uppercase;
     background: rgba(0, 229, 255, 0.08);
     backdrop-filter: blur(10px);
-    box-shadow: 0 0 20px rgba(0, 229, 255, 0.5), inset 0 0 20px rgba(0, 229, 255, 0.1);
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
     position: relative;
     z-index: 2;
   }
@@ -241,7 +255,6 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: brillo 5s linear infinite;
-    text-shadow: 0 0 60px rgba(0, 255, 157, 0.4);
     position: relative;
     z-index: 2;
   }
@@ -256,7 +269,6 @@
     color: #c8c8dd;
     max-width: 700px;
     margin-bottom: 45px;
-    letter-spacing: 1.5px;
     position: relative;
     z-index: 2;
     text-shadow: 0 2px 20px rgba(0, 0, 0, 0.8);
@@ -275,7 +287,7 @@
     text-transform: uppercase;
     font-size: 0.9rem;
     backdrop-filter: blur(10px);
-    box-shadow: 0 0 25px rgba(0, 255, 157, 0.4), inset 0 0 25px rgba(0, 255, 157, 0.08);
+    box-shadow: 0 0 25px rgba(0, 255, 157, 0.4);
     transition: 0.35s;
     position: relative;
     z-index: 2;
@@ -284,16 +296,15 @@
   .hero-cta:hover {
     background: var(--neon-verde);
     color: var(--fondo-oscuro);
-    box-shadow: 0 0 50px var(--neon-verde), 0 0 100px rgba(0, 255, 157, 0.5);
+    box-shadow: 0 0 50px var(--neon-verde);
     transform: translateY(-3px);
   }
 
-  /* ==================== SECCIONES ==================== */
+  /* SECCIONES */
   .seccion {
     padding: 80px 50px;
     max-width: 1500px;
     margin: 0 auto;
-    scroll-margin-top: 20px;
   }
 
   .seccion-header {
@@ -323,15 +334,14 @@
   .seccion-header::after {
     content: '';
     display: block;
-    width: 120px;
-    height: 3px;
+    width: 120px; height: 3px;
     margin: 25px auto 0;
     background: linear-gradient(90deg, var(--neon-verde), var(--neon-cyan));
     box-shadow: 0 0 25px var(--neon-verde);
     border-radius: 3px;
   }
 
-  /* ==================== FILTROS ==================== */
+  /* FILTROS */
   .filtros {
     display: flex;
     flex-wrap: wrap;
@@ -363,54 +373,29 @@
     box-shadow: 0 0 25px rgba(0, 229, 255, 0.4);
   }
 
-  /* ==================== GRID ==================== */
+  /* GRID */
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 30px;
   }
 
-  /* ==================== TARJETA 3D ==================== */
+  /* TARJETA */
   .tarjeta {
     background: linear-gradient(160deg, rgba(15, 15, 35, 0.95), rgba(8, 8, 22, 0.95));
     border-radius: 18px;
     overflow: hidden;
     border: 1px solid rgba(0, 255, 157, 0.15);
-    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1),
-                box-shadow 0.5s,
-                border-color 0.5s;
+    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.5s, border-color 0.5s;
     position: relative;
     display: flex;
     flex-direction: column;
-    transform-style: preserve-3d;
-    perspective: 1000px;
-  }
-
-  .tarjeta::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 18px;
-    padding: 1px;
-    background: linear-gradient(135deg, var(--neon-verde), transparent 40%, var(--neon-magenta));
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: 0;
-    transition: opacity 0.5s;
-    pointer-events: none;
   }
 
   .tarjeta:hover {
     transform: translateY(-12px) rotateX(2deg) rotateY(-2deg);
-    border-color: transparent;
-    box-shadow:
-      0 30px 60px rgba(0, 255, 157, 0.25),
-      0 0 80px rgba(0, 229, 255, 0.15),
-      inset 0 0 60px rgba(0, 255, 157, 0.05);
+    box-shadow: 0 30px 60px rgba(0, 255, 157, 0.25), 0 0 80px rgba(0, 229, 255, 0.15);
   }
-
-  .tarjeta:hover::before { opacity: 1; }
 
   .tarjeta-imagen-wrapper {
     position: relative;
@@ -419,8 +404,7 @@
   }
 
   .tarjeta-imagen {
-    width: 100%;
-    height: 100%;
+    width: 100%; height: 100%;
     object-fit: cover;
     display: block;
     transition: transform 0.6s ease, filter 0.6s;
@@ -443,8 +427,7 @@
 
   .tarjeta-badge {
     position: absolute;
-    top: 15px;
-    left: 15px;
+    top: 15px; left: 15px;
     padding: 6px 16px;
     background: rgba(0, 255, 157, 0.15);
     border: 1px solid var(--neon-verde);
@@ -470,7 +453,6 @@
     font-size: 1.25rem;
     margin-bottom: 12px;
     font-weight: 700;
-    letter-spacing: 0.5px;
     color: var(--texto-claro);
   }
 
@@ -502,7 +484,7 @@
     font-weight: 600;
   }
 
-  /* ==================== FOOTER ==================== */
+  /* FOOTER */
   footer {
     background: #010107;
     border-top: 1px solid rgba(0, 255, 157, 0.2);
@@ -529,14 +511,13 @@
   }
 
   .linea-neon {
-    width: 200px;
-    height: 2px;
+    width: 200px; height: 2px;
     background: linear-gradient(90deg, transparent, var(--neon-verde), transparent);
     margin: 25px auto;
     box-shadow: 0 0 15px var(--neon-verde);
   }
 
-  /* ==================== LOADER ==================== */
+  /* LOADER */
   .loader {
     text-align: center;
     padding: 60px;
@@ -546,23 +527,11 @@
     grid-column: 1 / -1;
   }
 
-  .loader::after {
-    content: '...';
-    animation: puntos 1.5s infinite;
-  }
-
-  @keyframes puntos {
-    0%, 20% { content: '.'; }
-    40% { content: '..'; }
-    60%, 100% { content: '...'; }
-  }
-
-  /* ==================== RESPONSIVE ==================== */
+  /* RESPONSIVE */
   @media (max-width: 900px) {
     .sidebar {
-      width: 70px;
+      width: 100%;
       height: 60px;
-      top: 0; left: 0;
       flex-direction: row;
       padding: 0 15px;
       overflow-x: auto;
@@ -570,7 +539,7 @@
       border-right: none;
       border-bottom: 1px solid rgba(0, 255, 157, 0.25);
     }
-    .sidebar.abierta { width: 70px; height: 60px; }
+    .sidebar.abierta { width: 100%; height: 60px; }
     .sidebar-logo {
       font-size: 1.2rem;
       margin-bottom: 0;
@@ -584,10 +553,7 @@
       padding: 0;
       width: auto;
     }
-    .menu-item {
-      padding: 8px 10px;
-      border-radius: 10px;
-    }
+    .menu-item { padding: 8px 10px; }
     .menu-item .texto { display: none; }
     .menu-item .icono { font-size: 1.2rem; }
     .sidebar-toggle { display: none; }
@@ -598,45 +564,32 @@
     .hero h1 { letter-spacing: 4px; }
     .grid { grid-template-columns: 1fr; }
   }
-
-  @media (max-width: 480px) {
-    .hero h1 { letter-spacing: 2px; }
-    .hero-cta { padding: 13px 30px; font-size: 0.8rem; letter-spacing: 2px; }
-    .filtro-btn { padding: 8px 16px; font-size: 0.75rem; }
-  }
 </style>
 </head>
 <body>
 
-<!-- ==================== SIDEBAR ==================== -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-logo" onclick="toggleSidebar()">◆ W</div>
   <nav class="sidebar-menu">
     <button class="menu-item activo" data-categoria="todos" onclick="cambiarCategoria('todos', this)">
-      <span class="icono">🌐</span>
-      <span class="texto">Todo</span>
+      <span class="icono">🌐</span><span class="texto">Todo</span>
     </button>
     <button class="menu-item" data-categoria="turismo" onclick="cambiarCategoria('turismo', this)">
-      <span class="icono">🏞️</span>
-      <span class="texto">Turismo</span>
+      <span class="icono">🏞️</span><span class="texto">Turismo</span>
     </button>
     <button class="menu-item" data-categoria="cultura" onclick="cambiarCategoria('cultura', this)">
-      <span class="icono">🎭</span>
-      <span class="texto">Cultura</span>
+      <span class="icono">🎭</span><span class="texto">Cultura</span>
     </button>
     <button class="menu-item" data-categoria="simbolos" onclick="cambiarCategoria('simbolos', this)">
-      <span class="icono">🛡️</span>
-      <span class="texto">Símbolos</span>
+      <span class="icono">🛡️</span><span class="texto">Símbolos</span>
     </button>
     <button class="menu-item" data-categoria="comercio" onclick="cambiarCategoria('comercio', this)">
-      <span class="icono">🏭</span>
-      <span class="texto">Industria</span>
+      <span class="icono">🏭</span><span class="texto">Industria</span>
     </button>
   </nav>
   <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
 </aside>
 
-<!-- ==================== CONTENIDO ==================== -->
 <main class="contenido" id="contenido">
 
   <section class="hero" id="inicio">
@@ -661,7 +614,7 @@
     </div>
 
     <div class="grid" id="grid-principal">
-      <div class="loader">Cargando información</div>
+      <div class="loader">Cargando información...</div>
     </div>
   </section>
 
@@ -677,7 +630,7 @@
 
 <script>
 // ============================================
-// CONFIGURACIÓN - YA REEMPLAZADA CON TUS DATOS
+// CONFIGURACIÓN SUPABASE (PROYECTO NUEVO)
 // ============================================
 const SUPABASE_URL = 'https://tapcpjeyfddsetgfpssl.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_EWijJ0mPmT2bf6-90yvIlA_XmhspUz8';
@@ -719,30 +672,17 @@ const IMAGENES_INDUSTRIA = [
 ];
 
 // ============================================
-// ESTADO GLOBAL
+// ESTADO Y CONFIGURACIÓN DE CATEGORÍAS
 // ============================================
-const datosCache = {
-  turismo: [],
-  cultura: [],
-  simbolos: [],
-  comercio: []
-};
+const datosCache = { turismo: [], cultura: [], simbolos: [], comercio: [] };
 
 const infoCategorias = {
   'todos': { titulo: 'Todo', acento: '', desc: 'Explora toda la información de la provincia Warnes organizada por categoría.' },
   'turismo': { titulo: 'Turismo &', acento: 'Naturaleza', desc: 'Ríos, lagunas, parques y espacios de recreación en el corazón del trópico cruceño.' },
-  'cultura': { titulo: 'Cultura &', acento: 'Identidad', desc: 'Símbolos, tradiciones y celebraciones que dan vida a la provincia Warnes.' },
+  'cultura': { titulo: 'Cultura &', acento: 'Identidad', desc: 'Eventos, fiestas y celebraciones que dan vida a la provincia Warnes.' },
   'simbolos': { titulo: 'Símbolos', acento: 'Provinciales', desc: 'Bandera, escudo, himno, patrona y aniversario de la provincia.' },
   'comercio': { titulo: 'Industria &', acento: 'Comercio', desc: 'El corazón agroindustrial de Bolivia: empresas que mueven la economía del oriente.' }
 };
-
-// ============================================
-// HELPERS
-// ============================================
-function formatearCategoria(cat) {
-  if (!cat) return 'General';
-  return cat.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-}
 
 function imagenTurismo(item) {
   if (item.imagen_url) return item.imagen_url;
@@ -765,7 +705,7 @@ function imagenIndustria(item, i) {
 }
 
 // ============================================
-// CARGAR DATOS DE SUPABASE
+// CARGAR DATOS
 // ============================================
 async function cargarTodo() {
   try {
@@ -776,127 +716,116 @@ async function cargarTodo() {
       supabase.from('comercio').select('*').order('nombre', { ascending: true })
     ]);
 
+    if (tur.error) console.error('Error turismo:', tur.error);
+    if (cul.error) console.error('Error cultura:', cul.error);
+    if (sim.error) console.error('Error símbolos:', sim.error);
+    if (com.error) console.error('Error comercio:', com.error);
+
     datosCache.turismo = tur.data || [];
     datosCache.cultura = cul.data || [];
     datosCache.simbolos = sim.data || [];
     datosCache.comercio = com.data || [];
 
+    console.log('Datos cargados:', {
+      turismo: datosCache.turismo.length,
+      cultura: datosCache.cultura.length,
+      simbolos: datosCache.simbolos.length,
+      comercio: datosCache.comercio.length
+    });
+
     renderizar('todos');
   } catch (err) {
-    console.error('Error:', err);
+    console.error('Error general:', err);
     document.getElementById('grid-principal').innerHTML =
-      '<div class="loader">Error al cargar datos. Revisa la consola.</div>';
+      '<div class="loader">Error al cargar datos. Revisa la consola (F12).</div>';
   }
 }
 
 // ============================================
-// RENDERIZAR SEGÚN CATEGORÍA
+// RENDERIZAR
 // ============================================
-function renderizar(categoria) {
+window.renderizar = function(categoria) {
   const grid = document.getElementById('grid-principal');
   const info = infoCategorias[categoria];
-  document.getElementById('titulo-seccion').innerHTML = `${info.titulo} <span class="acento">${info.acento}</span>`;
+  document.getElementById('titulo-seccion').innerHTML = info.titulo + ' <span class="acento">' + info.acento + '</span>';
   document.getElementById('descripcion-seccion').textContent = info.desc;
 
   let html = '';
 
   if (categoria === 'todos' || categoria === 'turismo') {
-    html += datosCache.turismo.map(item => `
-      <div class="tarjeta">
-        <div class="tarjeta-imagen-wrapper">
-          <span class="tarjeta-badge">Turismo</span>
-          <img class="tarjeta-imagen" src="${imagenTurismo(item)}" alt="${item.nombre}" loading="lazy">
-        </div>
-        <div class="tarjeta-contenido">
-          <h3>${item.nombre}</h3>
-          <p>${item.descripcion || 'Sin descripción.'}</p>
-          <div class="tarjeta-info">
-            ${item.ubicacion ? `<span><strong>◉</strong> ${item.ubicacion}</span>` : ''}
-            ${item.horario ? `<span><strong>◷</strong> ${item.horario}</span>` : ''}
-          </div>
-        </div>
-      </div>
-    `).join('');
+    html += datosCache.turismo.map(function(item) {
+      return '<div class="tarjeta">' +
+        '<div class="tarjeta-imagen-wrapper">' +
+          '<span class="tarjeta-badge">Turismo</span>' +
+          '<img class="tarjeta-imagen" src="' + imagenTurismo(item) + '" alt="' + item.nombre + '" loading="lazy">' +
+        '</div>' +
+        '<div class="tarjeta-contenido">' +
+          '<h3>' + item.nombre + '</h3>' +
+          '<p>' + (item.descripcion || 'Sin descripción.') + '</p>' +
+          '<div class="tarjeta-info">' +
+            (item.ubicacion ? '<span><strong>◉</strong> ' + item.ubicacion + '</span>' : '') +
+            (item.horario ? '<span><strong>◷</strong> ' + item.horario + '</span>' : '') +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
   }
 
   if (categoria === 'todos' || categoria === 'simbolos') {
-    html += datosCache.simbolos.map(item => `
-      <div class="tarjeta">
-        <div class="tarjeta-imagen-wrapper">
-          <span class="tarjeta-badge">Símbolo</span>
-          <img class="tarjeta-imagen" src="${imagenSimbolo(item)}" alt="${item.nombre}" loading="lazy">
-        </div>
-        <div class="tarjeta-contenido">
-          <h3>${item.nombre}</h3>
-          <p>${item.descripcion || 'Símbolo oficial de la Provincia Warnes.'}</p>
-          ${item.dato_normativo && item.dato_normativo !== '—' ? 
-            `<div class="tarjeta-info"><span><strong>◈</strong> ${item.dato_normativo}</span></div>` : ''}
-        </div>
-      </div>
-    `).join('');
+    html += datosCache.simbolos.map(function(item) {
+      return '<div class="tarjeta">' +
+        '<div class="tarjeta-imagen-wrapper">' +
+          '<span class="tarjeta-badge">Símbolo</span>' +
+          '<img class="tarjeta-imagen" src="' + imagenSimbolo(item) + '" alt="' + item.nombre + '" loading="lazy">' +
+        '</div>' +
+        '<div class="tarjeta-contenido">' +
+          '<h3>' + item.nombre + '</h3>' +
+          '<p>' + (item.descripcion || 'Símbolo oficial de la Provincia Warnes.') + '</p>' +
+          (item.dato_normativo && item.dato_normativo !== '—' ?
+            '<div class="tarjeta-info"><span><strong>◈</strong> ' + item.dato_normativo + '</span></div>' : '') +
+        '</div>' +
+      '</div>';
+    }).join('');
   }
 
   if (categoria === 'todos' || categoria === 'cultura') {
-    html += datosCache.cultura.map((item, i) => `
-      <div class="tarjeta">
-        <div class="tarjeta-imagen-wrapper">
-          <span class="tarjeta-badge">${item.fecha}</span>
-          <img class="tarjeta-imagen" src="${imagenCultura(item, i)}" alt="${item.actividad}" loading="lazy">
-        </div>
-        <div class="tarjeta-contenido">
-          <h3>${item.actividad}</h3>
-          <p>${item.descripcion || 'Evento cultural de la provincia Warnes.'}</p>
-          ${item.lugar ? `<div class="tarjeta-info"><span><strong>◉</strong> ${item.lugar}</span></div>` : ''}
-        </div>
-      </div>
-    `).join('');
+    html += datosCache.cultura.map(function(item, i) {
+      return '<div class="tarjeta">' +
+        '<div class="tarjeta-imagen-wrapper">' +
+          '<span class="tarjeta-badge">' + item.fecha + '</span>' +
+          '<img class="tarjeta-imagen" src="' + imagenCultura(item, i) + '" alt="' + item.actividad + '" loading="lazy">' +
+        '</div>' +
+        '<div class="tarjeta-contenido">' +
+          '<h3>' + item.actividad + '</h3>' +
+          '<p>' + (item.descripcion || 'Evento cultural de la provincia Warnes.') + '</p>' +
+          (item.lugar ? '<div class="tarjeta-info"><span><strong>◉</strong> ' + item.lugar + '</span></div>' : '') +
+        '</div>' +
+      '</div>';
+    }).join('');
   }
 
   if (categoria === 'todos' || categoria === 'comercio') {
-    html += datosCache.comercio.map((item, i) => `
-      <div class="tarjeta">
-        <div class="tarjeta-imagen-wrapper">
-          <span class="tarjeta-badge">Industria</span>
-          <img class="tarjeta-imagen" src="${imagenIndustria(item, i)}" alt="${item.nombre}" loading="lazy">
-        </div>
-        <div class="tarjeta-contenido">
-          <h3>${item.nombre}</h3>
-          <p>${item.descripcion || 'Empresa industrial de la provincia Warnes.'}</p>
-          ${item.horario ? `<div class="tarjeta-info"><span><strong>◷</strong> ${item.horario}</span></div>` : ''}
-        </div>
-      </div>
-    `).join('');
+    html += datosCache.comercio.map(function(item, i) {
+      return '<div class="tarjeta">' +
+        '<div class="tarjeta-imagen-wrapper">' +
+          '<span class="tarjeta-badge">Industria</span>' +
+          '<img class="tarjeta-imagen" src="' + imagenIndustria(item, i) + '" alt="' + item.nombre + '" loading="lazy">' +
+        '</div>' +
+        '<div class="tarjeta-contenido">' +
+          '<h3>' + item.nombre + '</h3>' +
+          '<p>' + (item.descripcion || 'Empresa industrial de la provincia Warnes.') + '</p>' +
+          (item.horario ? '<div class="tarjeta-info"><span><strong>◷</strong> ' + item.horario + '</span></div>' : '') +
+        '</div>' +
+      '</div>';
+    }).join('');
   }
 
   if (!html) html = '<div class="loader">No hay datos disponibles en esta categoría</div>';
   grid.innerHTML = html;
-}
+};
 
 // ============================================
-// CAMBIAR CATEGORÍA
-// ============================================
-function cambiarCategoria(categoria, boton) {
-  document.querySelectorAll('.menu-item, .filtro-btn').forEach(b => b.classList.remove('activo'));
-  document.querySelectorAll(`.menu-item[data-categoria="${categoria}"]`).forEach(b => b.classList.add('activo'));
-  if (boton) boton.classList.add('activo');
-
-  renderizar(categoria);
-
-  if (categoria !== 'todos') {
-    document.getElementById('catalogo').scrollIntoView({ behavior: 'smooth' });
-  }
-}
-
-// ============================================
-// TOGGLE SIDEBAR
-// ============================================
-function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('abierta');
-  document.getElementById('contenido').classList.toggle('expandido');
-}
-
-// ============================================
-// INICIALIZAR
+// INICIAR
 // ============================================
 cargarTodo();
 </script>
