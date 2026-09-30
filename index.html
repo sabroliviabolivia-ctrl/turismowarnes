@@ -8,19 +8,17 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 // ============================================
-// FUNCIONES GLOBALES (definidas antes de usarse)
+// FUNCIONES GLOBALES
 // ============================================
-window.cambiarCategoria = function(categoria, boton) {
-  document.querySelectorAll('.menu-item, .filtro-btn').forEach(b => b.classList.remove('activo'));
-  document.querySelectorAll('.menu-item[data-categoria="' + categoria + '"]').forEach(b => b.classList.add('activo'));
-  if (boton) boton.classList.add('activo');
+window.cambiarCategoria = function(categoria) {
+  document.querySelectorAll('.menu-item, .filtro-btn').forEach(function(b) {
+    b.classList.toggle('activo', b.getAttribute('data-categoria') === categoria);
+  });
 
   if (typeof window.renderizar === 'function') {
     window.renderizar(categoria);
-    if (categoria !== 'todos') {
-      var el = document.getElementById('catalogo');
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-    }
+    var el = document.getElementById('catalogo');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 };
 
@@ -89,6 +87,11 @@ window.toggleSidebar = function() {
     to { background-position: 600px 600px; }
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    body::after { animation: none; }
+    html { scroll-behavior: auto; }
+  }
+
   /* SIDEBAR */
   .sidebar {
     position: fixed;
@@ -115,6 +118,7 @@ window.toggleSidebar = function() {
     letter-spacing: 3px;
     background: linear-gradient(90deg, var(--neon-verde), var(--neon-cyan));
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 40px;
     white-space: nowrap;
@@ -204,30 +208,33 @@ window.toggleSidebar = function() {
 
   .contenido.expandido { margin-left: 260px; }
 
-  /* HERO */
-  .hero {
-    min-height: 90vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
-    text-align: center;
-    padding: 60px 30px 110px;
+  /* ============================================
+     HERO: la foto va sola arriba, el texto va debajo
+     ============================================ */
+  .hero { position: relative; }
+
+  .hero-foto {
     position: relative;
-    overflow: hidden;
-    background:
-      linear-gradient(to bottom, rgba(2,2,10,0.05) 0%, rgba(2,2,10,0.25) 45%, rgba(2,2,10,0.9) 100%),
-      url('https://scdkbbqkeegmixkfhptl.supabase.co/storage/v1/object/public/imagenes-warnes/turismo/plazacentralde-warnes.jpg') center 30%/cover no-repeat;
-    background-attachment: fixed;
+    height: 68vh;
+    min-height: 380px;
+    background: url('https://scdkbbqkeegmixkfhptl.supabase.co/storage/v1/object/public/imagenes-warnes/turismo/plazacentralde-warnes.jpg') center 30% / cover no-repeat;
   }
 
-  .hero::after {
+  .hero-foto::after {
     content: '';
     position: absolute;
     bottom: 0; left: 0;
-    width: 100%; height: 120px;
+    width: 100%; height: 90px;
     background: linear-gradient(to top, var(--fondo-oscuro), transparent);
     pointer-events: none;
+  }
+
+  .hero-texto {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 10px 30px 70px;
   }
 
   .hero-ubicacion {
@@ -237,41 +244,35 @@ window.toggleSidebar = function() {
     border-radius: 30px;
     color: #ffffff;
     font-size: 0.85rem;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     letter-spacing: 3px;
     text-transform: uppercase;
     background: rgba(10, 157, 63, 0.35);
-    backdrop-filter: blur(10px);
     box-shadow: 0 0 20px rgba(10, 157, 63, 0.5);
-    position: relative;
-    z-index: 2;
   }
 
   .hero h1 {
     font-size: clamp(3rem, 8vw, 6rem);
     font-weight: 900;
     letter-spacing: 8px;
+    line-height: 1;
     margin-bottom: 20px;
+    /* verde - blanco - verde */
     background: linear-gradient(180deg,
-      #0a9d3f 0%, #0a9d3f 33%,
-      #ffffff 33%, #ffffff 66%,
-      #0a9d3f 66%, #0a9d3f 100%);
+      #0a9d3f 0%, #0a9d3f 40%,
+      #ffffff 40%, #ffffff 64%,
+      #0a9d3f 64%, #0a9d3f 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
     filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.8));
-    position: relative;
-    z-index: 2;
   }
 
   .hero-sub {
     font-size: clamp(1rem, 2vw, 1.3rem);
-    color: #e2e2ee;
+    color: #c8c8dd;
     max-width: 700px;
-    margin-bottom: 45px;
-    position: relative;
-    z-index: 2;
-    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.9);
+    margin-bottom: 35px;
   }
 
   .hero-cta {
@@ -286,11 +287,8 @@ window.toggleSidebar = function() {
     border-radius: 50px;
     text-transform: uppercase;
     font-size: 0.9rem;
-    backdrop-filter: blur(10px);
     box-shadow: 0 0 25px rgba(0, 255, 157, 0.4);
     transition: 0.35s;
-    position: relative;
-    z-index: 2;
   }
 
   .hero-cta:hover {
@@ -302,14 +300,15 @@ window.toggleSidebar = function() {
 
   /* SECCIONES */
   .seccion {
-    padding: 80px 50px;
+    padding: 60px 50px 80px;
     max-width: 1500px;
     margin: 0 auto;
+    scroll-margin-top: 20px;
   }
 
   .seccion-header {
     text-align: center;
-    margin-bottom: 55px;
+    margin-bottom: 45px;
   }
 
   .seccion-header h2 {
@@ -373,6 +372,44 @@ window.toggleSidebar = function() {
     box-shadow: 0 0 25px rgba(0, 229, 255, 0.4);
   }
 
+  /* SUBSECCIONES (vista "Todos": cada categoría separada) */
+  .subseccion { margin-bottom: 70px; }
+
+  .subseccion-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 25px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(0, 255, 157, 0.2);
+  }
+
+  .subseccion-header h3 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: var(--neon-verde);
+  }
+
+  .ver-mas {
+    padding: 8px 20px;
+    background: rgba(0, 229, 255, 0.08);
+    border: 1px solid rgba(0, 229, 255, 0.4);
+    color: var(--neon-cyan);
+    border-radius: 30px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: 0.3s;
+  }
+
+  .ver-mas:hover {
+    background: rgba(0, 229, 255, 0.2);
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+  }
+
   /* GRID */
   .grid {
     display: grid;
@@ -393,7 +430,7 @@ window.toggleSidebar = function() {
   }
 
   .tarjeta:hover {
-    transform: translateY(-12px) rotateX(2deg) rotateY(-2deg);
+    transform: translateY(-12px);
     box-shadow: 0 30px 60px rgba(0, 255, 157, 0.25), 0 0 80px rgba(0, 229, 255, 0.15);
   }
 
@@ -490,7 +527,7 @@ window.toggleSidebar = function() {
     border-top: 1px solid rgba(0, 255, 157, 0.2);
     padding: 50px 30px 30px;
     text-align: center;
-    margin-top: 60px;
+    margin-top: 20px;
   }
 
   footer .footer-logo {
@@ -499,6 +536,7 @@ window.toggleSidebar = function() {
     letter-spacing: 4px;
     background: linear-gradient(90deg, var(--neon-verde), var(--neon-cyan));
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     display: inline-block;
     margin-bottom: 20px;
@@ -524,7 +562,6 @@ window.toggleSidebar = function() {
     color: var(--neon-verde);
     font-size: 1rem;
     letter-spacing: 3px;
-    grid-column: 1 / -1;
   }
 
   /* RESPONSIVE */
@@ -559,10 +596,11 @@ window.toggleSidebar = function() {
     .sidebar-toggle { display: none; }
     .contenido { margin-left: 0; padding-top: 60px; }
     .contenido.expandido { margin-left: 0; }
-    .seccion { padding: 60px 20px; }
-    .hero { background-attachment: scroll; min-height: 80vh; padding-bottom: 90px; }
+    .seccion { padding: 50px 20px 60px; scroll-margin-top: 70px; }
+    .hero-foto { height: 55vh; min-height: 300px; }
     .hero h1 { letter-spacing: 4px; }
     .grid { grid-template-columns: 1fr; }
+    .subseccion-header h3 { font-size: 1.2rem; }
   }
 </style>
 </head>
@@ -571,19 +609,19 @@ window.toggleSidebar = function() {
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-logo" onclick="toggleSidebar()">◆ W</div>
   <nav class="sidebar-menu">
-    <button class="menu-item activo" data-categoria="todos" onclick="cambiarCategoria('todos', this)">
+    <button class="menu-item activo" data-categoria="todos" onclick="cambiarCategoria('todos')">
       <span class="icono">🌐</span><span class="texto">Todo</span>
     </button>
-    <button class="menu-item" data-categoria="turismo" onclick="cambiarCategoria('turismo', this)">
+    <button class="menu-item" data-categoria="turismo" onclick="cambiarCategoria('turismo')">
       <span class="icono">🏞️</span><span class="texto">Turismo</span>
     </button>
-    <button class="menu-item" data-categoria="cultura" onclick="cambiarCategoria('cultura', this)">
+    <button class="menu-item" data-categoria="cultura" onclick="cambiarCategoria('cultura')">
       <span class="icono">🎭</span><span class="texto">Cultura</span>
     </button>
-    <button class="menu-item" data-categoria="simbolos" onclick="cambiarCategoria('simbolos', this)">
+    <button class="menu-item" data-categoria="simbolos" onclick="cambiarCategoria('simbolos')">
       <span class="icono">🛡️</span><span class="texto">Símbolos</span>
     </button>
-    <button class="menu-item" data-categoria="comercio" onclick="cambiarCategoria('comercio', this)">
+    <button class="menu-item" data-categoria="comercio" onclick="cambiarCategoria('comercio')">
       <span class="icono">🏭</span><span class="texto">Industria</span>
     </button>
   </nav>
@@ -593,27 +631,33 @@ window.toggleSidebar = function() {
 <main class="contenido" id="contenido">
 
   <section class="hero" id="inicio">
-    <span class="hero-ubicacion">◉ Santa Cruz · Bolivia</span>
-    <h1>WARNES</h1>
-    <p class="hero-sub">Tierra de naturaleza, cultura e industria. El corazón agroindustrial del oriente boliviano.</p>
-    <a href="#catalogo" class="hero-cta" onclick="cambiarCategoria('todos')">Explorar Catálogo</a>
+    <!-- La foto va sola, sin texto encima -->
+    <div class="hero-foto" role="img" aria-label="Plaza central de Warnes"></div>
+
+    <!-- El texto va debajo de la foto -->
+    <div class="hero-texto">
+      <span class="hero-ubicacion">◉ Santa Cruz · Bolivia</span>
+      <h1>WARNES</h1>
+      <p class="hero-sub">Tierra de naturaleza, cultura e industria. El corazón agroindustrial del oriente boliviano.</p>
+      <a href="#catalogo" class="hero-cta" onclick="cambiarCategoria('todos'); return false;">Explorar Catálogo</a>
+    </div>
   </section>
 
   <section class="seccion" id="catalogo">
     <div class="seccion-header">
-      <h2 id="titulo-seccion">Todo <span class="acento" id="titulo-acento"></span></h2>
+      <h2 id="titulo-seccion">Explora <span class="acento">Warnes</span></h2>
       <p id="descripcion-seccion">Explora toda la información de la provincia Warnes organizada por categoría.</p>
     </div>
 
     <div class="filtros">
-      <button class="filtro-btn activo" onclick="cambiarCategoria('todos', this)">Todos</button>
-      <button class="filtro-btn" onclick="cambiarCategoria('turismo', this)">Turismo</button>
-      <button class="filtro-btn" onclick="cambiarCategoria('cultura', this)">Cultura</button>
-      <button class="filtro-btn" onclick="cambiarCategoria('simbolos', this)">Símbolos</button>
-      <button class="filtro-btn" onclick="cambiarCategoria('comercio', this)">Industria</button>
+      <button class="filtro-btn activo" data-categoria="todos" onclick="cambiarCategoria('todos')">Todos</button>
+      <button class="filtro-btn" data-categoria="turismo" onclick="cambiarCategoria('turismo')">Turismo</button>
+      <button class="filtro-btn" data-categoria="cultura" onclick="cambiarCategoria('cultura')">Cultura</button>
+      <button class="filtro-btn" data-categoria="simbolos" onclick="cambiarCategoria('simbolos')">Símbolos</button>
+      <button class="filtro-btn" data-categoria="comercio" onclick="cambiarCategoria('comercio')">Industria</button>
     </div>
 
-    <div class="grid" id="grid-principal">
+    <div id="grid-principal">
       <div class="loader">Cargando información...</div>
     </div>
   </section>
@@ -639,7 +683,7 @@ const SUPABASE_KEY = 'sb_publishable_EWijJ0mPmT2bf6-90yvIlA_XmhspUz8';
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ============================================
-// IMÁGENES DE RESPALDO
+// IMÁGENES DE RESPALDO (si la fila no tiene imagen_url)
 // ============================================
 const IMAGENES_TURISMO = {
   'hotel': 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80',
@@ -672,38 +716,112 @@ const IMAGENES_INDUSTRIA = [
   'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&q=80'
 ];
 
+function imagenTurismo(item) {
+  return item.imagen_url || IMAGENES_TURISMO[item.categoria] || IMAGENES_TURISMO['default'];
+}
+function imagenCultura(item, i) {
+  return item.imagen_url || IMAGENES_CULTURA[i % IMAGENES_CULTURA.length];
+}
+function imagenSimbolo(item) {
+  return item.imagen_url || IMAGENES_SIMBOLOS[item.tipo] || IMAGENES_SIMBOLOS['aniversario'];
+}
+function imagenIndustria(item, i) {
+  return item.imagen_url || IMAGENES_INDUSTRIA[i % IMAGENES_INDUSTRIA.length];
+}
+
+// Evita que textos con < > " rompan el HTML de las tarjetas
+function esc(valor) {
+  return String(valor == null ? '' : valor).replace(/[&<>"']/g, function(c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+
 // ============================================
 // ESTADO Y CONFIGURACIÓN DE CATEGORÍAS
 // ============================================
 const datosCache = { turismo: [], cultura: [], simbolos: [], comercio: [] };
 
 const infoCategorias = {
-  'todos': { titulo: 'Todo', acento: '', desc: 'Explora toda la información de la provincia Warnes organizada por categoría.' },
-  'turismo': { titulo: 'Turismo &', acento: 'Naturaleza', desc: 'Ríos, lagunas, parques y espacios de recreación en el corazón del trópico cruceño.' },
-  'cultura': { titulo: 'Cultura &', acento: 'Identidad', desc: 'Eventos, fiestas y celebraciones que dan vida a la provincia Warnes.' },
+  'todos':    { titulo: 'Explora', acento: 'Warnes', desc: 'Un adelanto de cada categoría. Elige una para ver toda su información.' },
+  'turismo':  { titulo: 'Turismo &', acento: 'Naturaleza', desc: 'Ríos, lagunas, parques y espacios de recreación en el corazón del trópico cruceño.' },
+  'cultura':  { titulo: 'Cultura &', acento: 'Identidad', desc: 'Eventos, fiestas y celebraciones que dan vida a la provincia Warnes.' },
   'simbolos': { titulo: 'Símbolos', acento: 'Provinciales', desc: 'Bandera, escudo, himno, patrona y aniversario de la provincia.' },
   'comercio': { titulo: 'Industria &', acento: 'Comercio', desc: 'El corazón agroindustrial de Bolivia: empresas que mueven la economía del oriente.' }
 };
 
-function imagenTurismo(item) {
-  if (item.imagen_url) return item.imagen_url;
-  return IMAGENES_TURISMO[item.categoria] || IMAGENES_TURISMO['default'];
+const PREVIEW_TODOS = 6; // tarjetas por categoría en la vista "Todos"
+
+// ============================================
+// TARJETAS
+// ============================================
+function tarjetaTurismo(item) {
+  return '<div class="tarjeta">' +
+    '<div class="tarjeta-imagen-wrapper">' +
+      '<span class="tarjeta-badge">Turismo</span>' +
+      '<img class="tarjeta-imagen" src="' + esc(imagenTurismo(item)) + '" alt="' + esc(item.nombre) + '" loading="lazy">' +
+    '</div>' +
+    '<div class="tarjeta-contenido">' +
+      '<h3>' + esc(item.nombre) + '</h3>' +
+      '<p>' + esc(item.descripcion || 'Sin descripción.') + '</p>' +
+      ((item.ubicacion || item.horario) ?
+        '<div class="tarjeta-info">' +
+          (item.ubicacion ? '<span><strong>◉</strong> ' + esc(item.ubicacion) + '</span>' : '') +
+          (item.horario ? '<span><strong>◷</strong> ' + esc(item.horario) + '</span>' : '') +
+        '</div>' : '') +
+    '</div>' +
+  '</div>';
 }
 
-function imagenCultura(item, i) {
-  if (item.imagen_url) return item.imagen_url;
-  return IMAGENES_CULTURA[i % IMAGENES_CULTURA.length];
+function tarjetaSimbolo(item) {
+  return '<div class="tarjeta">' +
+    '<div class="tarjeta-imagen-wrapper">' +
+      '<span class="tarjeta-badge">Símbolo</span>' +
+      '<img class="tarjeta-imagen" src="' + esc(imagenSimbolo(item)) + '" alt="' + esc(item.nombre) + '" loading="lazy">' +
+    '</div>' +
+    '<div class="tarjeta-contenido">' +
+      '<h3>' + esc(item.nombre) + '</h3>' +
+      '<p>' + esc(item.descripcion || 'Símbolo oficial de la Provincia Warnes.') + '</p>' +
+      (item.dato_normativo && item.dato_normativo !== '—' ?
+        '<div class="tarjeta-info"><span><strong>◈</strong> ' + esc(item.dato_normativo) + '</span></div>' : '') +
+    '</div>' +
+  '</div>';
 }
 
-function imagenSimbolo(item) {
-  if (item.imagen_url) return item.imagen_url;
-  return IMAGENES_SIMBOLOS[item.tipo] || IMAGENES_SIMBOLOS['aniversario'];
+function tarjetaCultura(item, i) {
+  return '<div class="tarjeta">' +
+    '<div class="tarjeta-imagen-wrapper">' +
+      '<span class="tarjeta-badge">' + esc(item.fecha || 'Evento') + '</span>' +
+      '<img class="tarjeta-imagen" src="' + esc(imagenCultura(item, i)) + '" alt="' + esc(item.actividad) + '" loading="lazy">' +
+    '</div>' +
+    '<div class="tarjeta-contenido">' +
+      '<h3>' + esc(item.actividad) + '</h3>' +
+      '<p>' + esc(item.descripcion || 'Evento cultural de la provincia Warnes.') + '</p>' +
+      (item.lugar ? '<div class="tarjeta-info"><span><strong>◉</strong> ' + esc(item.lugar) + '</span></div>' : '') +
+    '</div>' +
+  '</div>';
 }
 
-function imagenIndustria(item, i) {
-  if (item.imagen_url) return item.imagen_url;
-  return IMAGENES_INDUSTRIA[i % IMAGENES_INDUSTRIA.length];
+function tarjetaIndustria(item, i) {
+  return '<div class="tarjeta">' +
+    '<div class="tarjeta-imagen-wrapper">' +
+      '<span class="tarjeta-badge">Industria</span>' +
+      '<img class="tarjeta-imagen" src="' + esc(imagenIndustria(item, i)) + '" alt="' + esc(item.nombre) + '" loading="lazy">' +
+    '</div>' +
+    '<div class="tarjeta-contenido">' +
+      '<h3>' + esc(item.nombre) + '</h3>' +
+      '<p>' + esc(item.descripcion || 'Empresa industrial de la provincia Warnes.') + '</p>' +
+      (item.horario ? '<div class="tarjeta-info"><span><strong>◷</strong> ' + esc(item.horario) + '</span></div>' : '') +
+    '</div>' +
+  '</div>';
 }
+
+// Orden en que aparecen las categorías en la vista "Todos"
+const SECCIONES = [
+  { clave: 'turismo',  nombre: 'Turismo',   fn: tarjetaTurismo },
+  { clave: 'cultura',  nombre: 'Cultura',   fn: tarjetaCultura },
+  { clave: 'simbolos', nombre: 'Símbolos',  fn: tarjetaSimbolo },
+  { clave: 'comercio', nombre: 'Industria', fn: tarjetaIndustria }
+];
 
 // ============================================
 // CARGAR DATOS
@@ -746,83 +864,37 @@ async function cargarTodo() {
 // RENDERIZAR
 // ============================================
 window.renderizar = function(categoria) {
-  const grid = document.getElementById('grid-principal');
-  const info = infoCategorias[categoria];
+  const cont = document.getElementById('grid-principal');
+  const info = infoCategorias[categoria] || infoCategorias['todos'];
   document.getElementById('titulo-seccion').innerHTML = info.titulo + ' <span class="acento">' + info.acento + '</span>';
   document.getElementById('descripcion-seccion').textContent = info.desc;
 
   let html = '';
 
-  if (categoria === 'todos' || categoria === 'turismo') {
-    html += datosCache.turismo.map(function(item) {
-      return '<div class="tarjeta">' +
-        '<div class="tarjeta-imagen-wrapper">' +
-          '<span class="tarjeta-badge">Turismo</span>' +
-          '<img class="tarjeta-imagen" src="' + imagenTurismo(item) + '" alt="' + item.nombre + '" loading="lazy">' +
+  if (categoria === 'todos') {
+    // Cada categoría en su propio bloque, con su título
+    SECCIONES.forEach(function(sec) {
+      const items = datosCache[sec.clave];
+      if (!items.length) return;
+      html += '<div class="subseccion">' +
+        '<div class="subseccion-header">' +
+          '<h3>' + sec.nombre + '</h3>' +
+          (items.length > PREVIEW_TODOS ?
+            '<button class="ver-mas" onclick="cambiarCategoria(\'' + sec.clave + '\')">Ver todos (' + items.length + ')</button>' : '') +
         '</div>' +
-        '<div class="tarjeta-contenido">' +
-          '<h3>' + item.nombre + '</h3>' +
-          '<p>' + (item.descripcion || 'Sin descripción.') + '</p>' +
-          '<div class="tarjeta-info">' +
-            (item.ubicacion ? '<span><strong>◉</strong> ' + item.ubicacion + '</span>' : '') +
-            (item.horario ? '<span><strong>◷</strong> ' + item.horario + '</span>' : '') +
-          '</div>' +
-        '</div>' +
+        '<div class="grid">' + items.slice(0, PREVIEW_TODOS).map(sec.fn).join('') + '</div>' +
       '</div>';
-    }).join('');
-  }
-
-  if (categoria === 'todos' || categoria === 'simbolos') {
-    html += datosCache.simbolos.map(function(item) {
-      return '<div class="tarjeta">' +
-        '<div class="tarjeta-imagen-wrapper">' +
-          '<span class="tarjeta-badge">Símbolo</span>' +
-          '<img class="tarjeta-imagen" src="' + imagenSimbolo(item) + '" alt="' + item.nombre + '" loading="lazy">' +
-        '</div>' +
-        '<div class="tarjeta-contenido">' +
-          '<h3>' + item.nombre + '</h3>' +
-          '<p>' + (item.descripcion || 'Símbolo oficial de la Provincia Warnes.') + '</p>' +
-          (item.dato_normativo && item.dato_normativo !== '—' ?
-            '<div class="tarjeta-info"><span><strong>◈</strong> ' + item.dato_normativo + '</span></div>' : '') +
-        '</div>' +
-      '</div>';
-    }).join('');
-  }
-
-  if (categoria === 'todos' || categoria === 'cultura') {
-    html += datosCache.cultura.map(function(item, i) {
-      return '<div class="tarjeta">' +
-        '<div class="tarjeta-imagen-wrapper">' +
-          '<span class="tarjeta-badge">' + item.fecha + '</span>' +
-          '<img class="tarjeta-imagen" src="' + imagenCultura(item, i) + '" alt="' + item.actividad + '" loading="lazy">' +
-        '</div>' +
-        '<div class="tarjeta-contenido">' +
-          '<h3>' + item.actividad + '</h3>' +
-          '<p>' + (item.descripcion || 'Evento cultural de la provincia Warnes.') + '</p>' +
-          (item.lugar ? '<div class="tarjeta-info"><span><strong>◉</strong> ' + item.lugar + '</span></div>' : '') +
-        '</div>' +
-      '</div>';
-    }).join('');
-  }
-
-  if (categoria === 'todos' || categoria === 'comercio') {
-    html += datosCache.comercio.map(function(item, i) {
-      return '<div class="tarjeta">' +
-        '<div class="tarjeta-imagen-wrapper">' +
-          '<span class="tarjeta-badge">Industria</span>' +
-          '<img class="tarjeta-imagen" src="' + imagenIndustria(item, i) + '" alt="' + item.nombre + '" loading="lazy">' +
-        '</div>' +
-        '<div class="tarjeta-contenido">' +
-          '<h3>' + item.nombre + '</h3>' +
-          '<p>' + (item.descripcion || 'Empresa industrial de la provincia Warnes.') + '</p>' +
-          (item.horario ? '<div class="tarjeta-info"><span><strong>◷</strong> ' + item.horario + '</span></div>' : '') +
-        '</div>' +
-      '</div>';
-    }).join('');
+    });
+  } else {
+    // Solo la categoría elegida
+    const sec = SECCIONES.find(function(s) { return s.clave === categoria; });
+    if (sec && datosCache[sec.clave].length) {
+      html = '<div class="grid">' + datosCache[sec.clave].map(sec.fn).join('') + '</div>';
+    }
   }
 
   if (!html) html = '<div class="loader">No hay datos disponibles en esta categoría</div>';
-  grid.innerHTML = html;
+  cont.innerHTML = html;
 };
 
 // ============================================
