@@ -2,1389 +2,363 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WARNES | Tierra de Naturaleza, Cultura e Industria</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WARNES | Vive el oriente boliviano</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◆</text></svg>">
-<script>
-// ============================================
-// URLS DE GOOGLE SHEETS (CSV publicado)
-// ============================================
-const URL_TURISMO  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTJfCxTTkuO2WZYGzJzWcr1jlRULYM345JEisf1Bpv3SOlBsbffZnTa2-vmP0IrFa0ctDgOBQZuS0ln/pub?gid=0&single=true&output=csv';
-const URL_SIMBOLOS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTJfCxTTkuO2WZYGzJzWcr1jlRULYM345JEisf1Bpv3SOlBsbffZnTa2-vmP0IrFa0ctDgOBQZuS0ln/pub?gid=23752783&single=true&output=csv';
-const URL_COMERCIO = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTJfCxTTkuO2WZYGzJzWcr1jlRULYM345JEisf1Bpv3SOlBsbffZnTa2-vmP0IrFa0ctDgOBQZuS0ln/pub?gid=2046609834&single=true&output=csv';
-const URL_CULTURA  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTJfCxTTkuO2WZYGzJzWcr1jlRULYM345JEisf1Bpv3SOlBsbffZnTa2-vmP0IrFa0ctDgOBQZuS0ln/pub?gid=530297980&single=true&output=csv';
-
-// ============================================
-// IMÁGENES EN GITHUB PAGES
-// Estructura del repositorio: /turismo  /cultura  /simbolo  /comercio
-// ============================================
-const BASE_IMG = 'https://sabroliviabolivia-ctrl.github.io/turismowarnes/';
-
-// Lista de archivos que hay en cada carpeta (la página los empareja sola con
-// el nombre de cada fila). Si subes una foto nueva, agrégala aquí O escribe su
-// nombre en la columna imagen_url de la hoja.
-const IMAGENES_REPO = {
-  "turismo": [
-    "casa-delas-pailas.png",
-    "comunidad-tradicionales.jpeg",
-    "el-copetin-.jpg",
-    "hotelrio-selva.jpg",
-    "monte-grandiosa.jpg",
-    "parque-ecologico.jpg",
-    "playland-park.jpg",
-    "plazacentralde-warnes.jpg",
-    "riosylagunas.jpg",
-    "terramia.jpg"
-  ],
-  "cultura": [
-    "actividad_cultural.jpg",
-    "decoracion.jpg",
-    "dia_mundialdel_turismo.jpg",
-    "diadel_folklore.jpg",
-    "festival_cultural.jpg",
-    "festival_dela_tamborita.jpg",
-    "festival_gastronomico.jpg",
-    "jocheo_de_toros.jpg",
-    "ofrenda_floral.jpg",
-    "serenata_virgen_del_rosario.jpg"
-  ],
-  "simbolo": [
-    "aniversariodecreacion.jpg",
-    "banderaprovincial.jpg",
-    "escudoprovincial.jpg",
-    "nuestra_rosario.jpg"
-  ],
-  "comercio": [
-    "a_a_a_internacional.png",
-    "ajebolivia.png",
-    "cameo.jpg",
-    "carlos_caballero.jpg",
-    "casa_ideal.jpg",
-    "ceramica_estructural.jpg",
-    "ceramica_norte.jpg",
-    "cerveceria_sabores_bolivianos.png",
-    "cimbol.jpg",
-    "coboce_cemento.jpg",
-    "copelme.png",
-    "dxn.jpg",
-    "eduardo.jpg",
-    "fabrica_de_baterias.jpg",
-    "fabrica_medicamentos_abd.jpg",
-    "fino.jpg",
-    "gravetal.jpg",
-    "industrias_venado.png",
-    "ipilcruz.jpg",
-    "la_suprema.png",
-    "luoyang.jpg",
-    "ovoprot.png",
-    "papelera_vinto.jpg",
-    "parque_eolico.jpg",
-    "planta_termoelectrica.jpg",
-    "soboce.jpg",
-    "sobolma.png",
-    "syntex.jpg",
-    "tres60.png"
-  ]
-};
-
-// ============================================
-// FUNCIONES GLOBALES
-// ============================================
-window.cambiarCategoria = function(categoria) {
-  document.querySelectorAll('.menu-item, .filtro-btn').forEach(function(b) {
-    b.classList.toggle('activo', b.getAttribute('data-categoria') === categoria);
-  });
-
-  if (typeof window.renderizar === 'function') {
-    window.renderizar(categoria);
-    var el = document.getElementById('catalogo');
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-};
-
-window.toggleSidebar = function() {
-  var sb = document.getElementById('sidebar');
-  var ct = document.getElementById('contenido');
-  if (sb) sb.classList.toggle('abierta');
-  if (ct) ct.classList.toggle('expandido');
-};
-
-// Si una imagen falla, prueba la siguiente de su lista (hoja -> repo -> respaldo)
-window.imgFalla = function(el) {
-  try {
-    var lista = JSON.parse(el.getAttribute('data-srcs'));
-    var i = (parseInt(el.getAttribute('data-i'), 10) || 0) + 1;
-    if (i < lista.length) { el.setAttribute('data-i', i); el.src = lista[i]; return; }
-  } catch (e) {}
-  el.onerror = null;
-};
-</script>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  /* Paleta neón en honor a la bandera warneña: verde · blanco · verde */
-  :root {
-    --neon-verde: #19ff7a;
-    --neon-blanco: #f4fff8;
-    --verde-warnes: #0a9d3f;
-    --fondo-oscuro: #020a06;
-    --fondo-tarjeta: #07140d;
-    --texto-claro: #eefff4;
-    --texto-gris: #8aa396;
-  }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    font-family: 'Segoe UI', 'Inter', sans-serif;
-    background: var(--fondo-oscuro);
-    color: var(--texto-claro);
-    overflow-x: hidden;
-    line-height: 1.6;
-  }
-
-  body.sin-scroll { overflow: hidden; }
-
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(circle at 15% 10%, rgba(25, 255, 122, 0.12) 0%, transparent 40%),
-      radial-gradient(circle at 85% 40%, rgba(244, 255, 248, 0.07) 0%, transparent 40%),
-      radial-gradient(circle at 50% 90%, rgba(25, 255, 122, 0.10) 0%, transparent 40%);
-    z-index: -2;
-    pointer-events: none;
-  }
-
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      radial-gradient(1px 1px at 20% 30%, #fff, transparent),
-      radial-gradient(1px 1px at 60% 70%, #c9ffe0, transparent),
-      radial-gradient(1px 1px at 80% 15%, #fff, transparent),
-      radial-gradient(1px 1px at 35% 85%, #9dffc6, transparent),
-      radial-gradient(1px 1px at 90% 55%, #fff, transparent);
-    background-size: 600px 600px;
-    opacity: 0.4;
-    z-index: -1;
-    pointer-events: none;
-    animation: estrellas 120s linear infinite;
-  }
-
-  @keyframes estrellas {
-    from { background-position: 0 0; }
-    to { background-position: 600px 600px; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    body::after { animation: none; }
-    html { scroll-behavior: auto; }
-  }
-
-  /* SIDEBAR */
-  .sidebar {
-    position: fixed;
-    left: 0; top: 0;
-    height: 100vh;
-    width: 90px;
-    background: rgba(3, 12, 7, 0.95);
-    backdrop-filter: blur(14px);
-    border-right: 1px solid rgba(25, 255, 122, 0.25);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px 0;
-    z-index: 1000;
-    transition: width 0.35s ease;
-    overflow: hidden;
-  }
-
-  .sidebar.abierta { width: 260px; }
-
-  .sidebar-logo {
-    font-size: 1.6rem;
-    font-weight: 900;
-    letter-spacing: 3px;
-    background: linear-gradient(90deg, var(--neon-verde), var(--neon-blanco));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: 40px;
-    white-space: nowrap;
-    padding-left: 10px;
-    cursor: pointer;
-  }
-
-  .sidebar.abierta .sidebar-logo {
-    font-size: 1.8rem;
-    padding-left: 25px;
-  }
-
-  .sidebar-menu {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 0 12px;
-  }
-
-  .menu-item {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 14px;
-    border-radius: 12px;
-    cursor: pointer;
-    color: var(--texto-gris);
-    transition: 0.3s;
-    white-space: nowrap;
-    border: 1px solid transparent;
-    background: transparent;
-    text-align: left;
-    font-family: inherit;
-    font-size: 0.95rem;
-    width: 100%;
-  }
-
-  .menu-item .icono {
-    font-size: 1.4rem;
-    min-width: 32px;
-    text-align: center;
-    filter: drop-shadow(0 0 6px rgba(25, 255, 122, 0.4));
-  }
-
-  .menu-item .texto {
-    opacity: 0;
-    transition: opacity 0.3s;
-    font-weight: 600;
-  }
-
-  .sidebar.abierta .menu-item .texto { opacity: 1; }
-
-  .menu-item:hover,
-  .menu-item.activo {
-    background: rgba(25, 255, 122, 0.08);
-    color: var(--neon-verde);
-    border-color: rgba(25, 255, 122, 0.4);
-    box-shadow: 0 0 20px rgba(25, 255, 122, 0.15);
-  }
-
-  .sidebar-toggle {
-    position: absolute;
-    bottom: 20px;
-    width: 50px; height: 50px;
-    border-radius: 50%;
-    background: rgba(25, 255, 122, 0.1);
-    border: 1px solid rgba(25, 255, 122, 0.4);
-    color: var(--neon-verde);
-    font-size: 1.3rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: 0.3s;
-  }
-
-  .sidebar-toggle:hover {
-    background: rgba(25, 255, 122, 0.2);
-    box-shadow: 0 0 25px var(--neon-verde);
-  }
-
-  .contenido {
-    margin-left: 90px;
-    transition: margin-left 0.35s ease;
-  }
-
-  .contenido.expandido { margin-left: 260px; }
-
-  /* ============================================
-     HERO: foto nítida y enmarcada + texto pequeño debajo
-     ============================================ */
-  .hero { position: relative; overflow: hidden; }
-
-  .hero-foto {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    padding: 34px 24px 26px;
-  }
-
-  /* Fondo decorativo: la misma foto muy desenfocada, solo para llenar el ancho */
-  .hero-fondo {
-    position: absolute;
-    inset: 0;
-    background: url('https://sabroliviabolivia-ctrl.github.io/turismowarnes/turismo/plazacentralde-warnes.jpg') center / cover no-repeat;
-    filter: blur(30px) brightness(0.42) saturate(1.3);
-    transform: scale(1.2);
-  }
-
-  .hero-foto::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0;
-    width: 100%; height: 120px;
-    background: linear-gradient(to top, var(--fondo-oscuro), transparent);
-    pointer-events: none;
-  }
-
-  /* La foto real se muestra cerca de su tamaño original para que no se vea borrosa */
-  .hero-marco {
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    max-width: 820px;
-    aspect-ratio: 16 / 9;
-    border-radius: 18px;
-    overflow: hidden;
-    border: 2px solid rgba(25, 255, 122, 0.65);
-    box-shadow: 0 0 40px rgba(25, 255, 122, 0.35), 0 20px 60px rgba(0, 0, 0, 0.6);
-  }
-
-  .hero-marco img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    display: block;
-    filter: contrast(1.06) saturate(1.08);
-  }
-
-  .hero-texto {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 0 30px 60px;
-  }
-
-  .hero-ubicacion {
-    display: inline-block;
-    padding: 6px 18px;
-    border: 1px solid var(--neon-verde);
-    border-radius: 30px;
-    color: var(--neon-blanco);
-    font-size: 0.72rem;
-    margin-bottom: 14px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    background: rgba(10, 157, 63, 0.35);
-    box-shadow: 0 0 18px rgba(25, 255, 122, 0.45);
-  }
-
-  /* Título pequeño en franjas verde - blanco - verde (bandera) */
-  .hero h1 {
-    font-size: clamp(2rem, 4.5vw, 3.2rem);
-    font-weight: 900;
-    letter-spacing: 6px;
-    line-height: 1;
-    margin-bottom: 12px;
-    background: linear-gradient(180deg,
-      #19ff7a 0%, #19ff7a 40%,
-      #ffffff 40%, #ffffff 64%,
-      #19ff7a 64%, #19ff7a 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 0 12px rgba(25, 255, 122, 0.4)) drop-shadow(0 3px 8px rgba(0, 0, 0, 0.7));
-  }
-
-  .hero-sub {
-    font-size: clamp(0.9rem, 1.5vw, 1.05rem);
-    color: #bcd6c8;
-    max-width: 620px;
-    margin-bottom: 24px;
-  }
-
-  .hero-cta {
-    display: inline-block;
-    padding: 11px 34px;
-    border: 2px solid var(--neon-verde);
-    background: rgba(25, 255, 122, 0.08);
-    color: var(--neon-verde);
-    text-decoration: none;
-    font-weight: 700;
-    letter-spacing: 3px;
-    border-radius: 50px;
-    text-transform: uppercase;
-    font-size: 0.78rem;
-    box-shadow: 0 0 25px rgba(25, 255, 122, 0.4);
-    transition: 0.35s;
-  }
-
-  .hero-cta:hover {
-    background: var(--neon-verde);
-    color: var(--fondo-oscuro);
-    box-shadow: 0 0 50px var(--neon-verde);
-    transform: translateY(-3px);
-  }
-
-  /* SECCIONES */
-  .seccion {
-    padding: 60px 50px 80px;
-    max-width: 1500px;
-    margin: 0 auto;
-    scroll-margin-top: 20px;
-  }
-
-  .seccion-header {
-    text-align: center;
-    margin-bottom: 45px;
-  }
-
-  .seccion-header h2 {
-    font-size: clamp(2rem, 5vw, 3rem);
-    font-weight: 800;
-    letter-spacing: 4px;
-    margin-bottom: 15px;
-  }
-
-  .seccion-header h2 .acento {
-    color: var(--neon-verde);
-    text-shadow: 0 0 25px var(--neon-verde);
-  }
-
-  .seccion-header p {
-    color: var(--texto-gris);
-    max-width: 650px;
-    margin: 0 auto;
-    font-size: 1.05rem;
-  }
-
-  .seccion-header::after {
-    content: '';
-    display: block;
-    width: 120px; height: 3px;
-    margin: 25px auto 0;
-    background: linear-gradient(90deg, var(--neon-verde), var(--neon-blanco), var(--neon-verde));
-    box-shadow: 0 0 25px var(--neon-verde);
-    border-radius: 3px;
-  }
-
-  /* FILTROS */
-  .filtros {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    justify-content: center;
-    margin-bottom: 50px;
-  }
-
-  .filtro-btn {
-    padding: 10px 24px;
-    background: rgba(7, 20, 13, 0.7);
-    border: 1px solid rgba(244, 255, 248, 0.3);
-    color: var(--texto-gris);
-    border-radius: 30px;
-    cursor: pointer;
-    transition: 0.3s;
-    font-size: 0.85rem;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    font-family: inherit;
-    font-weight: 600;
-  }
-
-  .filtro-btn:hover,
-  .filtro-btn.activo {
-    background: rgba(244, 255, 248, 0.12);
-    border-color: var(--neon-blanco);
-    color: var(--neon-blanco);
-    box-shadow: 0 0 25px rgba(244, 255, 248, 0.35);
-  }
-
-  /* SUBSECCIONES */
-  .subseccion { margin-bottom: 70px; }
-
-  .subseccion-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 15px;
-    margin-bottom: 25px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid rgba(25, 255, 122, 0.2);
-  }
-
-  .subseccion-header h3 {
-    font-size: 1.5rem;
-    font-weight: 800;
-    letter-spacing: 2px;
-    color: var(--neon-verde);
-  }
-
-  .ver-mas {
-    padding: 8px 20px;
-    background: rgba(244, 255, 248, 0.08);
-    border: 1px solid rgba(244, 255, 248, 0.4);
-    color: var(--neon-blanco);
-    border-radius: 30px;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 0.85rem;
-    font-weight: 600;
-    transition: 0.3s;
-  }
-
-  .ver-mas:hover {
-    background: rgba(244, 255, 248, 0.2);
-    box-shadow: 0 0 20px rgba(244, 255, 248, 0.35);
-  }
-
-  /* GRID */
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 30px;
-  }
-
-  /* TARJETA */
-  .tarjeta {
-    background: linear-gradient(160deg, rgba(10, 26, 18, 0.95), rgba(4, 13, 9, 0.95));
-    border-radius: 18px;
-    overflow: hidden;
-    border: 1px solid rgba(25, 255, 122, 0.15);
-    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.5s, border-color 0.5s;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    cursor: pointer;
-  }
-
-  .tarjeta:hover,
-  .tarjeta:focus-visible {
-    transform: translateY(-12px);
-    border-color: rgba(25, 255, 122, 0.5);
-    box-shadow: 0 30px 60px rgba(25, 255, 122, 0.25), 0 0 80px rgba(244, 255, 248, 0.10);
-    outline: none;
-  }
-
-  .tarjeta-imagen-wrapper {
-    position: relative;
-    overflow: hidden;
-    height: 220px;
-  }
-
-  .tarjeta-imagen {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.6s ease, filter 0.6s;
-    filter: brightness(0.85) contrast(1.1) saturate(1.2);
-  }
-
-  .tarjeta:hover .tarjeta-imagen {
-    transform: scale(1.1);
-    filter: brightness(1.05) contrast(1.15) saturate(1.5);
-  }
-
-  .tarjeta-imagen-wrapper::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0;
-    width: 100%; height: 60%;
-    background: linear-gradient(to top, var(--fondo-tarjeta), transparent);
-    pointer-events: none;
-  }
-
-  /* Logos, banderas y escudos: se ven completos, sin recortar */
-  .tarjeta-imagen-wrapper.claro { background: #f3f8f5; }
-  .tarjeta-imagen-wrapper.claro::after { display: none; }
-  .tarjeta-imagen.contain {
-    object-fit: contain;
-    padding: 12px;
-    filter: none;
-  }
-  .tarjeta:hover .tarjeta-imagen.contain {
-    transform: scale(1.05);
-    filter: none;
-  }
-
-  .tarjeta-badge {
-    position: absolute;
-    top: 15px; left: 15px;
-    padding: 6px 16px;
-    background: rgba(3, 12, 7, 0.75);
-    border: 1px solid var(--neon-verde);
-    color: var(--neon-verde);
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    border-radius: 20px;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 0 15px rgba(25, 255, 122, 0.5);
-    z-index: 2;
-  }
-
-  .tarjeta-contenido {
-    padding: 25px;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .tarjeta-contenido h3 {
-    font-size: 1.25rem;
-    margin-bottom: 12px;
-    font-weight: 700;
-    color: var(--texto-claro);
-  }
-
-  .tarjeta-contenido p.desc {
-    color: #9bb5a7;
-    font-size: 0.92rem;
-    margin-bottom: 10px;
-    display: -webkit-box;
-    -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .tarjeta-mas {
-    color: var(--neon-verde);
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    margin-bottom: 14px;
-    flex-grow: 1;
-  }
-
-  .tarjeta-info {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding-top: 15px;
-    border-top: 1px solid rgba(25, 255, 122, 0.15);
-  }
-
-  .tarjeta-info span {
-    font-size: 0.82rem;
-    color: #7fa08f;
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-  }
-
-  .tarjeta-info span strong {
-    color: var(--neon-blanco);
-    font-weight: 600;
-  }
-
-  /* ============================================
-     VENTANA DE DETALLE (al hacer clic en una tarjeta)
-     ============================================ */
-  .modal {
-    position: fixed;
-    inset: 0;
-    z-index: 2000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background: rgba(1, 8, 4, 0.88);
-    backdrop-filter: blur(8px);
-  }
-
-  .modal.abierto { display: flex; }
-
-  .modal-panel {
-    position: relative;
-    width: 100%;
-    max-width: 980px;
-    max-height: 92vh;
-    overflow: auto;
-    display: grid;
-    grid-template-columns: 1.1fr 1fr;
-    background: linear-gradient(160deg, rgba(10, 26, 18, 0.98), rgba(3, 10, 7, 0.98));
-    border: 1px solid rgba(25, 255, 122, 0.45);
-    border-radius: 20px;
-    box-shadow: 0 0 80px rgba(25, 255, 122, 0.25);
-  }
-
-  .modal-img-wrap {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #030a06;
-    min-height: 320px;
-  }
-
-  .modal-img-wrap.claro { background: #f3f8f5; }
-
-  .modal-img-wrap img {
-    width: 100%;
-    height: 100%;
-    max-height: 92vh;
-    object-fit: contain;
-    display: block;
-  }
-
-  .modal-cuerpo {
-    padding: 38px 32px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-
-  .modal-badge {
-    position: static;
-    align-self: flex-start;
-  }
-
-  .modal-cuerpo h3 {
-    font-size: 1.6rem;
-    line-height: 1.25;
-    color: var(--texto-claro);
-  }
-
-  .modal-cuerpo p {
-    color: #b3cbbd;
-    font-size: 1rem;
-    white-space: pre-line;
-  }
-
-  .modal-cerrar {
-    position: absolute;
-    top: 12px; right: 12px;
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    border: 1px solid var(--neon-verde);
-    background: rgba(3, 12, 7, 0.85);
-    color: var(--neon-verde);
-    font-size: 1.1rem;
-    cursor: pointer;
-    z-index: 3;
-    transition: 0.3s;
-  }
-
-  .modal-cerrar:hover {
-    background: var(--neon-verde);
-    color: var(--fondo-oscuro);
-    box-shadow: 0 0 25px var(--neon-verde);
-  }
-
-  /* FOOTER */
-  footer {
-    background: #010805;
-    border-top: 1px solid rgba(25, 255, 122, 0.2);
-    padding: 50px 30px 30px;
-    text-align: center;
-    margin-top: 20px;
-  }
-
-  footer .footer-logo {
-    font-size: 1.6rem;
-    font-weight: 900;
-    letter-spacing: 4px;
-    background: linear-gradient(90deg, var(--neon-verde), var(--neon-blanco));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    display: inline-block;
-    margin-bottom: 20px;
-  }
-
-  footer p {
-    color: #4f8a69;
-    font-size: 0.85rem;
-    margin-bottom: 8px;
-  }
-
-  .linea-neon {
-    width: 200px; height: 2px;
-    background: linear-gradient(90deg, transparent, var(--neon-verde), var(--neon-blanco), var(--neon-verde), transparent);
-    margin: 25px auto;
-    box-shadow: 0 0 15px var(--neon-verde);
-  }
-
-  /* LOADER */
-  .loader {
-    text-align: center;
-    padding: 60px;
-    color: var(--neon-verde);
-    font-size: 1rem;
-    letter-spacing: 3px;
-  }
-
-  /* RESPONSIVE */
-  @media (max-width: 900px) {
-    .sidebar {
-      width: 100%;
-      height: 60px;
-      flex-direction: row;
-      padding: 0 15px;
-      overflow-x: auto;
-      overflow-y: hidden;
-      border-right: none;
-      border-bottom: 1px solid rgba(25, 255, 122, 0.25);
-    }
-    .sidebar.abierta { width: 100%; height: 60px; }
-    .sidebar-logo {
-      font-size: 1.2rem;
-      margin-bottom: 0;
-      margin-right: 15px;
-      padding-left: 0;
-    }
-    .sidebar.abierta .sidebar-logo { font-size: 1.2rem; padding-left: 0; }
-    .sidebar-menu {
-      flex-direction: row;
-      gap: 8px;
-      padding: 0;
-      width: auto;
-    }
-    .menu-item { padding: 8px 10px; }
-    .menu-item .texto { display: none; }
-    .menu-item .icono { font-size: 1.2rem; }
-    .sidebar-toggle { display: none; }
-    .contenido { margin-left: 0; padding-top: 60px; }
-    .contenido.expandido { margin-left: 0; }
-    .seccion { padding: 50px 20px 60px; scroll-margin-top: 70px; }
-    .hero-foto { padding: 22px 14px 20px; }
-    .hero h1 { letter-spacing: 4px; }
-    .grid { grid-template-columns: 1fr; }
-    .subseccion-header h3 { font-size: 1.2rem; }
-    .modal-panel { grid-template-columns: 1fr; }
-    .modal-img-wrap { min-height: 220px; max-height: 42vh; }
-    .modal-cuerpo { padding: 26px 22px 30px; }
-  }
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--v:#19ff7a;--b:#f4fff8;--bg:#020a06;--g:#8aa396;--c1:#0b1f4a;--glow:25,255,122}
+body[data-cielo=alba]{--c1:#8a3b66;--glow:255,150,120}
+body[data-cielo=dia]{--c1:#0a7ba0;--glow:120,230,255}
+body[data-cielo=ocaso]{--c1:#b04a1c;--glow:255,140,60}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',Inter,sans-serif;background:var(--bg);color:#eefff4;line-height:1.6;overflow-x:hidden}
+body.nos{overflow:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;transition:.8s;
+background:radial-gradient(circle at var(--mx,50%) var(--my,30%),rgba(var(--glow),.16),transparent 38%),radial-gradient(circle at 90% 90%,rgba(var(--glow),.10),transparent 40%)}
+#fx{position:fixed;inset:0;z-index:0;pointer-events:none}
+main,.dock{position:relative;z-index:1}
+button{font-family:inherit;cursor:pointer}
+/* DOCK */
+.dock{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:1500;display:flex;align-items:center;gap:6px;padding:7px 10px;border-radius:50px;background:rgba(3,14,9,.72);backdrop-filter:blur(16px);border:1px solid rgba(25,255,122,.35);box-shadow:0 0 30px rgba(25,255,122,.2);max-width:96vw}
+.dock b{font-weight:900;letter-spacing:3px;padding:0 12px;background:linear-gradient(90deg,var(--v),#fff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.dk{border:1px solid transparent;background:transparent;color:var(--b);font-size:1.05rem;padding:8px 13px;border-radius:30px;transition:.3s;white-space:nowrap}
+.dk:hover{background:rgba(25,255,122,.14);border-color:var(--v);box-shadow:0 0 18px rgba(25,255,122,.4)}
+.dk small{font-size:.75rem;font-weight:700;color:var(--v)}
+/* HERO */
+.hero{position:relative;overflow:hidden}
+.hero-foto{position:relative;height:100vh;height:100svh;min-height:420px;overflow:hidden}
+.hero-fondo{position:absolute;inset:0;background:url('https://sabroliviabolivia-ctrl.github.io/turismowarnes/turismo/plazacentralde-warnes.jpg') center/cover no-repeat;filter:blur(30px) brightness(.4) saturate(1.3);transform:scale(1.25)}
+.hero-marco{position:absolute;inset:0;z-index:1;line-height:0;overflow:hidden}
+.hero-marco img{display:block;width:100%;height:100%;object-fit:contain}
+.baja{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:3;padding:10px 26px;border-radius:50px;border:1px solid var(--v);background:rgba(3,14,9,.7);backdrop-filter:blur(10px);color:var(--v);font-weight:800;letter-spacing:2px;text-transform:uppercase;font-size:.75rem;text-decoration:none;box-shadow:0 0 22px rgba(25,255,122,.4);animation:rebota 1.8s ease-in-out infinite}
+@keyframes rebota{50%{transform:translateX(-50%) translateY(6px)}}
+.hero-in{position:relative;z-index:3;max-width:900px;margin:0 auto;padding:44px 24px 50px;text-align:center}
+.kick{display:inline-block;padding:7px 20px;border:1px solid var(--v);border-radius:30px;font-size:.78rem;letter-spacing:3px;text-transform:uppercase;background:rgba(10,157,63,.35);box-shadow:0 0 20px rgba(25,255,122,.5);margin-bottom:18px}
+.hero h1{font-size:clamp(3rem,11vw,6.5rem);font-weight:900;line-height:.95;letter-spacing:.04em;display:flex;justify-content:center;filter:drop-shadow(0 0 25px rgba(25,255,122,.5)) drop-shadow(0 6px 14px #000)}
+.hero h1 span{display:inline-block;animation:letra 1s cubic-bezier(.2,1.4,.4,1) backwards;animation-delay:calc(var(--i)*.1s);background:linear-gradient(180deg,#19ff7a 0 38%,#fff 38% 66%,#19ff7a 66%);-webkit-background-clip:text;background-clip:text;color:transparent}
+@keyframes letra{from{opacity:0;transform:translateY(-80px) rotate(-12deg) scale(.5)}}
+.hero p{font-size:clamp(1rem,2.2vw,1.3rem);color:#dff5e8;margin:14px auto 28px;max-width:640px;text-shadow:0 2px 10px #000}
+.btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.cta{padding:13px 32px;border-radius:50px;border:2px solid var(--v);background:rgba(25,255,122,.1);color:var(--v);font-weight:800;letter-spacing:2px;text-transform:uppercase;font-size:.8rem;text-decoration:none;box-shadow:0 0 28px rgba(25,255,122,.45);transition:.35s}
+.cta:hover{background:var(--v);color:var(--bg);transform:translateY(-4px) scale(1.04)}
+.cta.alt{border-color:#fff;color:#fff;box-shadow:0 0 28px rgba(255,255,255,.25);background:rgba(255,255,255,.07)}
+.cta.alt:hover{background:#fff;color:var(--bg)}
+/* STATS */
+.stats{display:flex;justify-content:center;gap:clamp(18px,5vw,70px);flex-wrap:wrap;padding:10px 20px 30px}
+.stat{text-align:center}.stat strong{display:block;font-size:clamp(2rem,5vw,3.4rem);font-weight:900;color:var(--v);text-shadow:0 0 25px var(--v)}.stat span{color:var(--g);letter-spacing:2px;font-size:.78rem;text-transform:uppercase}
+/* SECCIÓN */
+.seccion{padding:50px 40px 80px;max-width:1500px;margin:0 auto;scroll-margin-top:10px}
+.sh{text-align:center;margin-bottom:34px}
+.sh h2{font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:3px}
+.sh h2 em{font-style:normal;color:var(--v);text-shadow:0 0 25px var(--v)}
+.sh p{color:var(--g);max-width:650px;margin:10px auto 0}
+.filtros{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:44px}
+.filtro-btn{padding:10px 24px;background:rgba(7,20,13,.7);border:1px solid rgba(244,255,248,.3);color:var(--g);border-radius:30px;font-size:.82rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;transition:.3s}
+.filtro-btn:hover,.filtro-btn.activo{background:rgba(244,255,248,.12);border-color:#fff;color:#fff;box-shadow:0 0 25px rgba(244,255,248,.3)}
+.sub{margin-bottom:64px}
+.sub-h{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px;padding-bottom:10px;border-bottom:1px solid rgba(25,255,122,.2)}
+.sub-h h3{font-size:1.5rem;letter-spacing:2px;color:var(--v)}
+.vm{padding:8px 20px;background:rgba(244,255,248,.08);border:1px solid rgba(244,255,248,.4);color:#fff;border-radius:30px;font-size:.85rem;font-weight:600;transition:.3s}
+.vm:hover{background:rgba(244,255,248,.2)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:28px;perspective:1200px}
+/* TARJETA 3D */
+.tj{position:relative;display:flex;flex-direction:column;border-radius:20px;overflow:hidden;cursor:pointer;background:linear-gradient(160deg,rgba(10,26,18,.96),rgba(4,13,9,.96));border:1px solid rgba(25,255,122,.18);transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .25s ease-out,box-shadow .4s,border-color .4s;animation:sube .6s backwards;animation-delay:calc(var(--d)*70ms)}
+@keyframes sube{from{opacity:0;transform:translateY(40px)}}
+.tj:hover,.tj:focus-visible{border-color:rgba(25,255,122,.7);box-shadow:0 25px 60px rgba(25,255,122,.25);outline:none}
+.tj::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:.3s;background:radial-gradient(circle at var(--sx,50%) var(--sy,50%),rgba(255,255,255,.22),transparent 45%)}
+.tj:hover::after{opacity:1}
+.im{position:relative;height:220px;overflow:hidden}
+.im::after{content:'';position:absolute;inset:auto 0 0;height:60%;background:linear-gradient(to top,#07140d,transparent);pointer-events:none}
+.im img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .7s,filter .7s;filter:brightness(.88) saturate(1.25)}
+.tj:hover .im img{transform:scale(1.12);filter:brightness(1.05) saturate(1.5)}
+.im.claro{background:#f3f8f5}.im.claro::after{display:none}
+.im.claro img{object-fit:contain;padding:12px;filter:none}
+.bd{position:absolute;top:14px;left:14px;z-index:2;padding:5px 15px;background:rgba(3,12,7,.78);border:1px solid var(--v);color:var(--v);font-size:.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;border-radius:20px;backdrop-filter:blur(10px)}
+.fav{position:absolute;top:10px;right:10px;z-index:3;width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.5);background:rgba(3,12,7,.7);color:#fff;font-size:1.05rem;transition:.3s}
+.fav:hover{transform:scale(1.2)}.fav.on{background:var(--v);color:var(--bg);border-color:var(--v);box-shadow:0 0 20px var(--v)}
+.cu{padding:22px;flex-grow:1;display:flex;flex-direction:column}
+.cu h3{font-size:1.2rem;margin-bottom:10px}
+.cu .d{color:#9bb5a7;font-size:.9rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:10px}
+.mas{color:var(--v);font-size:.8rem;font-weight:700;letter-spacing:1px;margin-bottom:12px;flex-grow:1}
+.inf{display:flex;flex-direction:column;gap:7px;padding-top:13px;border-top:1px solid rgba(25,255,122,.15)}
+.inf span{font-size:.82rem;color:#7fa08f;display:flex;gap:8px}.inf strong{color:#fff}
+.loader{text-align:center;padding:60px;color:var(--v);letter-spacing:3px}
+/* MODAL */
+.modal{position:fixed;inset:0;z-index:2000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(1,8,4,.88);backdrop-filter:blur(10px)}
+.modal.on{display:flex}
+.mp{position:relative;width:100%;max-width:980px;max-height:92vh;overflow:auto;display:grid;grid-template-columns:1.1fr 1fr;background:linear-gradient(160deg,#0a1a12,#030a07);border:1px solid rgba(25,255,122,.5);border-radius:22px;box-shadow:0 0 90px rgba(25,255,122,.28);animation:pop .4s cubic-bezier(.2,1.3,.4,1)}
+@keyframes pop{from{opacity:0;transform:scale(.85)}}
+.mi{display:flex;align-items:center;justify-content:center;background:#030a06;min-height:320px}.mi.claro{background:#f3f8f5}
+.mi img{width:100%;height:100%;max-height:92vh;object-fit:contain}
+.mc{padding:38px 30px;display:flex;flex-direction:column;gap:14px}
+.mc .bd{position:static;align-self:flex-start}
+.mc h3{font-size:1.6rem;line-height:1.25}.mc p{color:#b3cbbd;white-space:pre-line}
+.acc{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+.acc .cta{padding:10px 20px;font-size:.72rem;cursor:pointer}
+.x{position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;border:1px solid var(--v);background:rgba(3,12,7,.85);color:var(--v);z-index:3}
+.x:hover{background:var(--v);color:var(--bg)}
+/* RUTA */
+.drw{position:fixed;top:0;right:0;height:100%;width:min(400px,100%);z-index:1800;transform:translateX(105%);transition:transform .45s cubic-bezier(.2,.9,.3,1);background:rgba(3,14,9,.96);backdrop-filter:blur(18px);border-left:1px solid rgba(25,255,122,.45);padding:76px 22px 22px;display:flex;flex-direction:column;gap:14px;overflow:auto}
+.drw.on{transform:none}
+.drw h3{font-size:1.4rem;color:var(--v)}
+.nivel{padding:12px 16px;border-radius:14px;border:1px dashed var(--v);background:rgba(25,255,122,.07);font-size:.9rem}
+.nivel b{display:block;color:#fff;font-size:1.05rem}
+.barra{height:6px;border-radius:6px;background:rgba(255,255,255,.12);margin-top:8px;overflow:hidden}.barra i{display:block;height:100%;background:linear-gradient(90deg,var(--v),#fff);box-shadow:0 0 12px var(--v);transition:width .6s}
+.pa{display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px;border:1px solid rgba(25,255,122,.2);cursor:pointer}
+.pa:hover{border-color:var(--v)}.pa em{font-style:normal;font-weight:800;color:var(--v);min-width:24px}
+.pa span{flex:1;font-size:.92rem}.pa button{background:none;border:0;color:var(--g);font-size:1rem}
+.vacio{color:var(--g);font-size:.9rem}
+footer{text-align:center;padding:50px 24px 30px;border-top:1px solid rgba(25,255,122,.2);background:#010805;color:#4f8a69;font-size:.85rem}
+footer b{display:block;font-size:1.5rem;letter-spacing:4px;color:var(--v);margin-bottom:10px}
+@media(max-width:900px){.hero-foto{height:auto;min-height:0;padding-top:62px}.hero-marco{position:relative;inset:auto;width:100%}.hero-marco img{height:auto;object-fit:initial}.baja{display:none}.seccion{padding:40px 16px 60px}.grid{grid-template-columns:1fr}.mp{grid-template-columns:1fr}.mi{min-height:220px;max-height:42vh}.dock b{display:none}.dk{padding:8px 10px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
-<body>
+<body data-cielo="noche">
+<canvas id="fx"></canvas>
 
-<aside class="sidebar" id="sidebar">
-  <div class="sidebar-logo" onclick="toggleSidebar()">◆ W</div>
-  <nav class="sidebar-menu">
-    <button class="menu-item activo" data-categoria="todos" onclick="cambiarCategoria('todos')">
-      <span class="icono">🌐</span><span class="texto">Todo</span>
-    </button>
-    <button class="menu-item" data-categoria="turismo" onclick="cambiarCategoria('turismo')">
-      <span class="icono">🏞️</span><span class="texto">Turismo</span>
-    </button>
-    <button class="menu-item" data-categoria="cultura" onclick="cambiarCategoria('cultura')">
-      <span class="icono">🎭</span><span class="texto">Cultura</span>
-    </button>
-    <button class="menu-item" data-categoria="simbolos" onclick="cambiarCategoria('simbolos')">
-      <span class="icono">🛡️</span><span class="texto">Símbolos</span>
-    </button>
-    <button class="menu-item" data-categoria="comercio" onclick="cambiarCategoria('comercio')">
-      <span class="icono">🏭</span><span class="texto">Industria</span>
-    </button>
-  </nav>
-  <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
-</aside>
+<nav class="dock">
+  <b>◆ WARNES</b>
+  <button class="dk" onclick="sorprender()" title="Sorpréndeme">🎲</button>
+  <button class="dk" onclick="ciclarCielo()" id="btn-cielo" title="Cambiar hora del día">🌙</button>
+  <button class="dk" onclick="abrirRuta()" title="Mi ruta y pasaporte">🧭 <small id="n-ruta">0</small></button>
+</nav>
 
-<main class="contenido" id="contenido">
-
-  <section class="hero" id="inicio">
-    <!-- Foto enmarcada y nítida -->
-    <div class="hero-foto">
-      <div class="hero-fondo"></div>
-      <div class="hero-marco">
-        <!-- Si subes una versión más grande llamada plazacentralde-warnes-hd.jpg en /turismo, se usa automáticamente -->
-        <img src="https://sabroliviabolivia-ctrl.github.io/turismowarnes/turismo/plazacentralde-warnes-hd.jpg"
-             data-srcs='["https://sabroliviabolivia-ctrl.github.io/turismowarnes/turismo/plazacentralde-warnes-hd.jpg","https://sabroliviabolivia-ctrl.github.io/turismowarnes/turismo/plazacentralde-warnes.jpg"]'
-             data-i="0" onerror="imgFalla(this)" alt="Plaza central de Warnes" fetchpriority="high">
-      </div>
+<main>
+<header class="hero" id="inicio">
+  <div class="hero-foto"><div class="hero-fondo"></div><div class="hero-marco"><img alt="Plaza central de Warnes" fetchpriority="high"
+    src="https://sabroliviabolivia-ctrl.github.io/turismowarnes/turismo/plazacentralde-warnes-hd.jpg"
+    data-srcs='["https://sabroliviabolivia-ctrl.github.io/turismowarnes/turismo/plazacentralde-warnes-hd.jpg","https://sabroliviabolivia-ctrl.github.io/turismowarnes/turismo/plazacentralde-warnes.jpg"]' data-i="0" onerror="imgFalla(this)"></div><a class="baja" href="#bienvenida">Explorar ↓</a></div>
+  <div class="hero-in" id="bienvenida">
+    <span class="kick" id="saludo">◉ Santa Cruz · Bolivia</span>
+    <h1 aria-label="Warnes"><span style="--i:1">W</span><span style="--i:2">A</span><span style="--i:3">R</span><span style="--i:4">N</span><span style="--i:5">E</span><span style="--i:6">S</span></h1>
+    <p>Naturaleza, cultura e industria a 30 km de Santa Cruz. Arma tu ruta, guarda tus lugares favoritos y gana tu pasaporte warneño.</p>
+    <div class="btns">
+      <a href="#catalogo" class="cta" onclick="cambiarCategoria('todos');return false">Explorar</a>
+      <a href="#" class="cta alt" onclick="sorprender();return false">🎲 Sorpréndeme</a>
     </div>
+  </div>
+</header>
 
-    <!-- Texto pequeño debajo de la foto -->
-    <div class="hero-texto">
-      <span class="hero-ubicacion">◉ Santa Cruz · Bolivia</span>
-      <h1>WARNES</h1>
-      <p class="hero-sub">Tierra de naturaleza, cultura e industria. El corazón agroindustrial del oriente boliviano.</p>
-      <a href="#catalogo" class="hero-cta" onclick="cambiarCategoria('todos'); return false;">Explorar Catálogo</a>
-    </div>
-  </section>
+<div class="stats">
+  <div class="stat"><strong data-n="turismo">0</strong><span>Lugares</span></div>
+  <div class="stat"><strong data-n="cultura">0</strong><span>Eventos</span></div>
+  <div class="stat"><strong data-n="simbolos">0</strong><span>Símbolos</span></div>
+  <div class="stat"><strong data-n="comercio">0</strong><span>Empresas</span></div>
+</div>
 
-  <section class="seccion" id="catalogo">
-    <div class="seccion-header">
-      <h2 id="titulo-seccion">Explora <span class="acento">Warnes</span></h2>
-      <p id="descripcion-seccion">Explora toda la información de la provincia Warnes organizada por categoría.</p>
-    </div>
+<section class="seccion" id="catalogo">
+  <div class="sh"><h2 id="tit">Explora <em>Warnes</em></h2><p id="des"></p></div>
+  <div class="filtros">
+    <button class="filtro-btn activo" data-categoria="todos" onclick="cambiarCategoria('todos')">🌐 Todos</button>
+    <button class="filtro-btn" data-categoria="turismo" onclick="cambiarCategoria('turismo')">🏞️ Turismo</button>
+    <button class="filtro-btn" data-categoria="cultura" onclick="cambiarCategoria('cultura')">🎭 Cultura</button>
+    <button class="filtro-btn" data-categoria="simbolos" onclick="cambiarCategoria('simbolos')">🛡️ Símbolos</button>
+    <button class="filtro-btn" data-categoria="comercio" onclick="cambiarCategoria('comercio')">🏭 Industria</button>
+  </div>
+  <div id="grid-principal"><div class="loader">Cargando información...</div></div>
+</section>
 
-    <div class="filtros">
-      <button class="filtro-btn activo" data-categoria="todos" onclick="cambiarCategoria('todos')">Todos</button>
-      <button class="filtro-btn" data-categoria="turismo" onclick="cambiarCategoria('turismo')">Turismo</button>
-      <button class="filtro-btn" data-categoria="cultura" onclick="cambiarCategoria('cultura')">Cultura</button>
-      <button class="filtro-btn" data-categoria="simbolos" onclick="cambiarCategoria('simbolos')">Símbolos</button>
-      <button class="filtro-btn" data-categoria="comercio" onclick="cambiarCategoria('comercio')">Industria</button>
-    </div>
-
-    <div id="grid-principal">
-      <div class="loader">Cargando información...</div>
-    </div>
-  </section>
-
-  <footer>
-    <div class="footer-logo">◆ WARNES</div>
-    <div class="linea-neon"></div>
-    <p>Provincia Warnes · Santa Cruz · Bolivia</p>
-    <p>Ciudad industrial y turística · A 30 km de Santa Cruz de la Sierra</p>
-    <p style="margin-top: 20px; color: #2c5a41; font-size: 0.75rem;">© 2025 · Tierra de naturaleza, cultura y progreso</p>
-  </footer>
-
+<footer><b>◆ WARNES</b>Provincia Warnes · Santa Cruz · Bolivia<br>Tierra de naturaleza, cultura y progreso · © 2025</footer>
 </main>
 
-<!-- Ventana de detalle: muestra solo la información de la tarjeta elegida -->
+<aside class="drw" id="drw" aria-label="Mi ruta">
+  <button class="x" onclick="cerrarRuta()" aria-label="Cerrar">✕</button>
+  <h3>🧭 Mi ruta por Warnes</h3>
+  <div class="nivel"><b id="niv">Visitante</b><span id="niv2"></span><div class="barra"><i id="bar"></i></div></div>
+  <div id="lista"></div>
+  <button class="cta" id="wsp" onclick="compartir()">Enviar mi ruta por WhatsApp</button>
+</aside>
+
 <div class="modal" id="modal" aria-hidden="true">
-  <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
-    <button class="modal-cerrar" id="modal-cerrar" aria-label="Cerrar">✕</button>
-    <div class="modal-img-wrap" id="modal-img-wrap"></div>
-    <div class="modal-cuerpo">
-      <span class="tarjeta-badge modal-badge" id="modal-badge"></span>
-      <h3 id="modal-titulo"></h3>
-      <p id="modal-desc"></p>
-      <div class="tarjeta-info" id="modal-info"></div>
+  <div class="mp" role="dialog" aria-modal="true" aria-labelledby="m-t">
+    <button class="x" id="m-x" aria-label="Cerrar">✕</button>
+    <div class="mi" id="m-i"></div>
+    <div class="mc">
+      <span class="bd" id="m-b"></span><h3 id="m-t"></h3><p id="m-d"></p>
+      <div class="inf" id="m-f"></div>
+      <div class="acc" id="m-a"></div>
     </div>
   </div>
 </div>
 
 <script>
-// ============================================
-// LECTOR DE CSV (soporta comillas, comas y saltos de línea dentro de una celda)
-// ============================================
-function parseCSV(texto) {
-  var filas = [], fila = [], campo = '', comillas = false;
-  for (var i = 0; i < texto.length; i++) {
-    var c = texto[i];
-    if (comillas) {
-      if (c === '"') {
-        if (texto[i + 1] === '"') { campo += '"'; i++; } else { comillas = false; }
-      } else { campo += c; }
-    } else {
-      if (c === '"') comillas = true;
-      else if (c === ',') { fila.push(campo); campo = ''; }
-      else if (c === '\n') { fila.push(campo); filas.push(fila); fila = []; campo = ''; }
-      else if (c !== '\r') campo += c;
-    }
-  }
-  if (campo !== '' || fila.length) { fila.push(campo); filas.push(fila); }
-  return filas;
-}
+// ===== TUS DATOS (igual que antes) =====
+const BASE='https://docs.google.com/spreadsheets/d/e/2PACX-1vTJfCxTTkuO2WZYGzJzWcr1jlRULYM345JEisf1Bpv3SOlBsbffZnTa2-vmP0IrFa0ctDgOBQZuS0ln/pub?single=true&output=csv&gid=';
+const URL_TURISMO=BASE+'0',URL_SIMBOLOS=BASE+'23752783',URL_COMERCIO=BASE+'2046609834',URL_CULTURA=BASE+'530297980';
+const BASE_IMG='https://sabroliviabolivia-ctrl.github.io/turismowarnes/';
+const IMAGENES_REPO={
+turismo:["casa-delas-pailas.png","comunidad-tradicionales.jpeg","el-copetin-.jpg","hotelrio-selva.jpg","monte-grandiosa.jpg","parque-ecologico.jpg","playland-park.jpg","plazacentralde-warnes.jpg","riosylagunas.jpg","terramia.jpg"],
+cultura:["actividad_cultural.jpg","decoracion.jpg","dia_mundialdel_turismo.jpg","diadel_folklore.jpg","festival_cultural.jpg","festival_dela_tamborita.jpg","festival_gastronomico.jpg","jocheo_de_toros.jpg","ofrenda_floral.jpg","serenata_virgen_del_rosario.jpg"],
+simbolo:["aniversariodecreacion.jpg","banderaprovincial.jpg","escudoprovincial.jpg","nuestra_rosario.jpg"],
+comercio:["a_a_a_internacional.png","ajebolivia.png","cameo.jpg","carlos_caballero.jpg","casa_ideal.jpg","ceramica_estructural.jpg","ceramica_norte.jpg","cerveceria_sabores_bolivianos.png","cimbol.jpg","coboce_cemento.jpg","copelme.png","dxn.jpg","eduardo.jpg","fabrica_de_baterias.jpg","fabrica_medicamentos_abd.jpg","fino.jpg","gravetal.jpg","industrias_venado.png","ipilcruz.jpg","la_suprema.png","luoyang.jpg","ovoprot.png","papelera_vinto.jpg","parque_eolico.jpg","planta_termoelectrica.jpg","soboce.jpg","sobolma.png","syntex.jpg","tres60.png"]};
+const FB='https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=80';
 
-// "Descripción " -> "descripcion"
-function claveEncabezado(h) {
-  return String(h || '').trim().toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-    .replace(/\s+/g, '_');
-}
+window.imgFalla=function(el){try{var l=JSON.parse(el.getAttribute('data-srcs')),i=(parseInt(el.getAttribute('data-i'),10)||0)+1;if(i<l.length){el.setAttribute('data-i',i);el.src=l[i];return}}catch(e){}el.onerror=null};
 
-function filasAObjetos(filas) {
-  if (!filas.length) return [];
-  var enc = filas[0].map(claveEncabezado);
-  return filas.slice(1)
-    .filter(function(f) { return f.some(function(c) { return c.trim() !== ''; }); })
-    .map(function(f) {
-      var o = {};
-      enc.forEach(function(h, i) { if (h) o[h] = (f[i] || '').trim(); });
-      return o;
-    });
-}
+// ===== CSV =====
+function parseCSV(t){var f=[],r=[],c='',q=false;for(var i=0;i<t.length;i++){var h=t[i];if(q){if(h==='"'){if(t[i+1]==='"'){c+='"';i++}else q=false}else c+=h}else{if(h==='"')q=true;else if(h===',') {r.push(c);c=''}else if(h==='\n'){r.push(c);f.push(r);r=[];c=''}else if(h!=='\r')c+=h}}if(c!==''||r.length){r.push(c);f.push(r)}return f}
+function clave(h){return String(h||'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'_')}
+function aObj(f){if(!f.length)return[];var e=f[0].map(clave);return f.slice(1).filter(function(r){return r.some(function(c){return c.trim()})}).map(function(r){var o={};e.forEach(function(h,i){if(h)o[h]=(r[i]||'').trim()});return o})}
+function g(o){for(var i=1;i<arguments.length;i++)if(o[arguments[i]])return o[arguments[i]];return''}
+function pv(o){for(var k in o)if(k!=='id'&&o[k])return o[k];return''}
+function ln(t){return String(t||'').replace(/[:：]\s*$/,'').trim()}
+function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function num(v){var n=parseFloat(v);return isNaN(n)?9999:n}
 
-// Primer campo con valor entre varios nombres posibles de columna
-function g(o) {
-  for (var i = 1; i < arguments.length; i++) {
-    if (o[arguments[i]]) return o[arguments[i]];
-  }
-  return '';
-}
+// ===== EMPAREJAR FOTOS POR NOMBRE =====
+var STOP={de:1,del:1,la:1,las:1,el:1,los:1,y:1,en:1,al:1,con:1,dela:1,delas:1,delos:1};
+function nz(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
+function tk(s){return nz(s).split(/[^a-z0-9]+/).filter(function(t){return t&&!STOP[t]})}
+function cp(s){return nz(s).replace(/[^a-z0-9]+/g,'')}
+function tc(f,t){if(f===t)return true;if(f.length<4||t.length<4)return false;return t.indexOf(f)===0||f.indexOf(t)===0}
+function autoImg(car,nom){var tn=tk(nom),cn=cp(nom),m=null,mp=0;(IMAGENES_REPO[car]||[]).forEach(function(a){var b=a.replace(/\.[^.]+$/,''),tf=tk(b);if(!tf.length)return;var cf=cp(b),p=0;if(cf.length>=5&&cn.indexOf(cf)!==-1)p=100+cf.length;else if(tf.every(function(f){return tn.some(function(t){return tc(f,t)})}))p=tf.join('').length;if(p>mp){mp=p;m=a}});return m?BASE_IMG+car+'/'+encodeURI(m):''}
+function urlHoja(v,car){v=(v||'').trim();if(!v)return'';if(/^https?:\/\//i.test(v)){var gh=v.match(/github\.com\/([^\/]+)\/([^\/]+)\/blob\/([^\/]+)\/(.+)$/);if(gh)return'https://raw.githubusercontent.com/'+gh[1]+'/'+gh[2]+'/'+gh[3]+'/'+gh[4];if(/drive\.google\.com|docs\.google\.com/.test(v)){var d=v.match(/\/d\/([\w-]{15,})/)||v.match(/[?&]id=([\w-]{15,})/);if(d)return'https://drive.google.com/thumbnail?id='+d[1]+'&sz=w1000'}return v}return BASE_IMG+(v.indexOf('/')===-1?car+'/':'')+encodeURI(v)}
+function cand(car,vh,nom){var l=[],a=urlHoja(vh,car),b=autoImg(car,nom);if(a)l.push(a);if(b&&l.indexOf(b)<0)l.push(b);l.push(FB);return l}
 
-function primerValor(o) {
-  for (var k in o) { if (k !== 'id' && o[k]) return o[k]; }
-  return '';
-}
+// ===== ESTADO =====
+const D={turismo:[],cultura:[],simbolos:[],comercio:[]};
+const INFO={
+todos:['Explora','Warnes','Un adelanto de cada categoría. Elige una para verla completa.'],
+turismo:['Turismo &','Naturaleza','Ríos, lagunas, parques y espacios de recreación en el corazón del trópico cruceño.'],
+cultura:['Cultura &','Identidad','Eventos, fiestas y celebraciones que dan vida a la provincia Warnes.'],
+simbolos:['Símbolos','Provinciales','Bandera, escudo, himno, patrona y aniversario de la provincia.'],
+comercio:['Industria &','Comercio','El corazón agroindustrial de Bolivia: empresas que mueven la economía del oriente.']};
+const SEC=[
+{k:'turismo',n:'🏞️ Turismo',v:function(o){var f=[];o.ubicacion&&f.push(['◉',o.ubicacion]);o.horario&&f.push(['◷',o.horario]);return{t:o.nombre,b:'Turismo',d:o.descripcion||'Sin descripción.',f:f,im:cand('turismo',o.imagen_url,o.nombre),c:0,m:1}}},
+{k:'cultura',n:'🎭 Cultura',v:function(o){var f=[];o.fecha&&f.push(['◷',o.fecha]);o.lugar&&f.push(['◉',o.lugar]);return{t:o.actividad,b:o.fecha||'Evento',d:o.descripcion||'Evento cultural de la provincia Warnes.',f:f,im:cand('cultura',o.imagen_url,o.actividad),c:0,m:1}}},
+{k:'simbolos',n:'🛡️ Símbolos',v:function(o){var f=[];o.dato_normativo&&o.dato_normativo!=='—'&&f.push(['◈',o.dato_normativo]);return{t:o.nombre,b:'Símbolo',d:o.descripcion||'Símbolo oficial de la Provincia Warnes.',f:f,im:cand('simbolo',o.imagen_url,o.nombre+' '+(o.tipo||'')),c:1,m:0}}},
+{k:'comercio',n:'🏭 Industria',v:function(o){var f=[];o.ubicacion&&f.push(['◉',o.ubicacion]);o.horario&&f.push(['◷',o.horario]);o.telefono&&f.push(['☎',o.telefono]);return{t:o.nombre,b:'Industria',d:o.descripcion||'Empresa industrial de la provincia Warnes.',f:f,im:cand('comercio',o.imagen_url,o.nombre),c:1,m:1}}}];
 
-function limpiarNombre(t) { return String(t || '').replace(/[:：]\s*$/, '').trim(); }
-function esVerdadero(v) { return /^(true|verdadero|si|sí|1|x)$/i.test(String(v || '').trim()); }
-function aNumero(v) { var n = parseFloat(v); return isNaN(n) ? 9999 : n; }
+// ===== TARJETAS =====
+function fi(v,cl){return'<img class="'+cl+'" src="'+esc(v.im[0])+'" data-srcs="'+esc(JSON.stringify(v.im))+'" data-i="0" onerror="imgFalla(this)" alt="'+esc(v.t)+'" loading="lazy">'}
+function llave(s,v){return s.k+'|'+v.t}
+function tarjeta(s,it,i){var v=s.v(it),kk=llave(s,v),on=ruta.indexOf(kk)>-1;
+return'<div class="tj" tabindex="0" role="button" style="--d:'+Math.min(i,8)+'" data-s="'+s.k+'" data-i="'+i+'" aria-label="Ver '+esc(v.t)+'">'+
+'<div class="im'+(v.c?' claro':'')+'"><span class="bd">'+esc(v.b)+'</span><button class="fav'+(on?' on':'')+'" data-k="'+esc(kk)+'" aria-label="Guardar en mi ruta">'+(on?'✓':'♥')+'</button>'+fi(v,'')+'</div>'+
+'<div class="cu"><h3>'+esc(v.t)+'</h3><p class="d">'+esc(v.d)+'</p><span class="mas">Ver detalles ›</span>'+
+(v.f.length?'<div class="inf">'+v.f.slice(0,2).map(function(p){return'<span><strong>'+p[0]+'</strong> '+esc(p[1])+'</span>'}).join('')+'</div>':'')+'</div></div>'}
 
-// ============================================
-// IMÁGENES DE RESPALDO (solo si no hay foto propia)
-// ============================================
-const IMAGENES_TURISMO = {
-  'hotel': 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80',
-  'parque': 'https://images.unsplash.com/photo-1519331379826-f10be5486c6f?w=800&q=80',
-  'natural': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80',
-  'plaza': 'https://images.unsplash.com/photo-1519677100203-a0e668c92439?w=800&q=80',
-  'cafeteria': 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800&q=80',
-  'default': 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=80'
+window.renderizar=function(cat){
+  var i=INFO[cat]||INFO.todos;
+  document.getElementById('tit').innerHTML=i[0]+' <em>'+i[1]+'</em>';
+  document.getElementById('des').textContent=i[2];
+  var h='';
+  if(cat==='todos'){SEC.forEach(function(s){var it=D[s.k];if(!it.length)return;
+    h+='<div class="sub"><div class="sub-h"><h3>'+s.n+'</h3>'+(it.length>6?'<button class="vm" onclick="cambiarCategoria(\''+s.k+'\')">Ver todos ('+it.length+')</button>':'')+'</div><div class="grid">'+it.slice(0,6).map(function(x,j){return tarjeta(s,x,j)}).join('')+'</div></div>'})}
+  else{var s=SEC.find(function(x){return x.k===cat});if(s&&D[s.k].length)h='<div class="grid">'+D[s.k].map(function(x,j){return tarjeta(s,x,j)}).join('')+'</div>'}
+  document.getElementById('grid-principal').innerHTML=h||'<div class="loader">No hay datos disponibles en esta categoría</div>';
+  catActual=cat;
+};
+var catActual='todos';
+window.cambiarCategoria=function(c){
+  document.querySelectorAll('.filtro-btn').forEach(function(b){b.classList.toggle('activo',b.getAttribute('data-categoria')===c)});
+  renderizar(c);var e=document.getElementById('catalogo');if(e)e.scrollIntoView({behavior:'smooth',block:'start'});
 };
 
-const IMAGENES_CULTURA = [
-  'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800&q=80',
-  'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&q=80',
-  'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80',
-  'https://images.unsplash.com/photo-1470229722913-7ea0d1e6d8f4?w=800&q=80'
-];
-
-const IMAGENES_SIMBOLOS = {
-  'bandera': 'https://images.unsplash.com/photo-1521295121783-8a321d551ad2?w=800&q=80',
-  'escudo': 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&q=80',
-  'himno': 'https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=800&q=80',
-  'patrona': 'https://images.unsplash.com/photo-1548625149-fc4a29cf7092?w=800&q=80',
-  'aniversario': 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800&q=80'
-};
-
-const IMAGENES_INDUSTRIA = [
-  'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&q=80',
-  'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=80',
-  'https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=800&q=80',
-  'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&q=80'
-];
-
-// ============================================
-// UTILIDADES
-// ============================================
-function esc(valor) {
-  return String(valor == null ? '' : valor).replace(/[&<>"']/g, function(c) {
-    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-  });
+// ===== MODAL =====
+var foco=null;
+function abrirDetalle(k,idx){
+  var s=SEC.find(function(x){return x.k===k}),it=s&&D[k][idx];if(!it)return;var v=s.v(it),kk=llave(s,v),on=ruta.indexOf(kk)>-1;
+  var w=document.getElementById('m-i');w.className='mi'+(v.c?' claro':'');
+  w.innerHTML='<img src="'+esc(v.im[0])+'" data-srcs="'+esc(JSON.stringify(v.im))+'" data-i="0" onerror="imgFalla(this)" alt="'+esc(v.t)+'">';
+  document.getElementById('m-b').textContent=v.b;
+  document.getElementById('m-t').textContent=v.t;
+  document.getElementById('m-d').textContent=v.d;
+  var f=document.getElementById('m-f');f.innerHTML=v.f.map(function(p){return'<span><strong>'+p[0]+'</strong> '+esc(p[1])+'</span>'}).join('');f.style.display=v.f.length?'flex':'none';
+  document.getElementById('m-a').innerHTML='<button class="cta" id="m-g">'+(on?'✓ En mi ruta':'♥ Guardar en mi ruta')+'</button>'+
+    (v.m?'<a class="cta alt" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(v.t+' Warnes Bolivia')+'">📍 Cómo llegar</a>':'');
+  document.getElementById('m-g').onclick=function(){alternar(kk);this.textContent=ruta.indexOf(kk)>-1?'✓ En mi ruta':'♥ Guardar en mi ruta'};
+  foco=document.activeElement;var m=document.getElementById('modal');m.classList.add('on');m.setAttribute('aria-hidden','false');document.body.classList.add('nos');document.getElementById('m-x').focus();
 }
+function cerrarDetalle(){var m=document.getElementById('modal');m.classList.remove('on');m.setAttribute('aria-hidden','true');document.body.classList.remove('nos');if(foco&&foco.focus)foco.focus()}
+document.getElementById('m-x').onclick=cerrarDetalle;
+document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)cerrarDetalle()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){cerrarDetalle();cerrarRuta()}});
 
-// ---- Emparejar cada fila con su foto del repositorio por el nombre ----
-var STOP = { de:1, del:1, la:1, las:1, el:1, los:1, y:1, en:1, al:1, con:1, dela:1, delas:1, delos:1 };
-
-function normalizar(s) {
-  return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+// ===== MI RUTA + PASAPORTE =====
+var ruta=[];try{ruta=JSON.parse(localStorage.getItem('ruta_warnes')||'[]')}catch(e){}
+function alternar(k){var i=ruta.indexOf(k);if(i>-1)ruta.splice(i,1);else ruta.push(k);try{localStorage.setItem('ruta_warnes',JSON.stringify(ruta))}catch(e){}pintarRuta();
+  document.querySelectorAll('.fav').forEach(function(b){var on=ruta.indexOf(b.getAttribute('data-k'))>-1;b.classList.toggle('on',on);b.textContent=on?'✓':'♥'})}
+function buscar(k){var p=k.split('|'),s=SEC.find(function(x){return x.k===p[0]});if(!s)return null;var idx=D[s.k].findIndex(function(it){return s.v(it).t===p.slice(1).join('|')});return idx<0?null:{s:s.k,i:idx,t:p.slice(1).join('|')}}
+function pintarRuta(){
+  document.getElementById('n-ruta').textContent=ruta.length;
+  var n=ruta.length,N=[[0,'Visitante'],[1,'Explorador 🥾'],[4,'Aventurero 🌴'],[9,'Warneño de corazón 💚']],lv=0;
+  N.forEach(function(x,i){if(n>=x[0])lv=i});
+  document.getElementById('niv').textContent='Pasaporte: '+N[lv][1];
+  var sig=N[lv+1];document.getElementById('niv2').textContent=sig?'Guarda '+(sig[0]-n)+' lugar(es) más para ser '+sig[1]:'¡Nivel máximo desbloqueado!';
+  document.getElementById('bar').style.width=(sig?((n-N[lv][0])/(sig[0]-N[lv][0])*100):100)+'%';
+  var L=document.getElementById('lista'),h='';
+  ruta.forEach(function(k,j){var r=buscar(k);if(r)h+='<div class="pa" data-s="'+r.s+'" data-i="'+r.i+'"><em>'+(j+1)+'</em><span>'+esc(r.t)+'</span><button data-q="'+esc(k)+'" aria-label="Quitar">✕</button></div>'});
+  L.innerHTML=h||'<p class="vacio">Toca el ♥ en cualquier lugar o evento para armar tu ruta turística.</p>';
+  document.getElementById('wsp').style.display=h?'inline-block':'none';
 }
-function tokens(s) {
-  return normalizar(s).split(/[^a-z0-9]+/).filter(function(t) { return t && !STOP[t]; });
+document.getElementById('lista').addEventListener('click',function(e){
+  var q=e.target.closest('button[data-q]');if(q){alternar(q.getAttribute('data-q'));return}
+  var p=e.target.closest('.pa');if(p){cerrarRuta();abrirDetalle(p.getAttribute('data-s'),parseInt(p.getAttribute('data-i'),10))}});
+function abrirRuta(){pintarRuta();document.getElementById('drw').classList.add('on')}
+function cerrarRuta(){document.getElementById('drw').classList.remove('on')}
+function compartir(){var t='🌴 Mi ruta por Warnes, Bolivia:\n\n'+ruta.map(function(k,i){var r=buscar(k);return(i+1)+'. '+(r?r.t:k.split('|')[1])}).join('\n')+'\n\n¡Ven a conocerla! '+location.href.split('#')[0];
+  window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank')}
+function sorprender(){var p=[];['turismo','cultura'].forEach(function(k){D[k].forEach(function(_,i){p.push([k,i])})});if(!p.length)return;var x=p[Math.floor(Math.random()*p.length)];abrirDetalle(x[0],x[1])}
+
+// ===== INTERACCIÓN DE TARJETAS (clic, favorito, inclinación 3D) =====
+var cont=document.getElementById('grid-principal');
+cont.addEventListener('click',function(e){
+  var f=e.target.closest('.fav');if(f){e.stopPropagation();alternar(f.getAttribute('data-k'));return}
+  var t=e.target.closest('.tj');if(t)abrirDetalle(t.getAttribute('data-s'),parseInt(t.getAttribute('data-i'),10))});
+cont.addEventListener('keydown',function(e){if(e.key!=='Enter'&&e.key!==' ')return;var t=e.target.classList&&e.target.classList.contains('tj')?e.target:null;if(t){e.preventDefault();abrirDetalle(t.getAttribute('data-s'),parseInt(t.getAttribute('data-i'),10))}});
+cont.addEventListener('mousemove',function(e){var t=e.target.closest('.tj');if(!t)return;var r=t.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;
+  t.style.setProperty('--ry',((x-.5)*12)+'deg');t.style.setProperty('--rx',((.5-y)*12)+'deg');t.style.setProperty('--sx',x*100+'%');t.style.setProperty('--sy',y*100+'%')});
+cont.addEventListener('mouseout',function(e){var t=e.target.closest('.tj');if(t){t.style.setProperty('--rx','0deg');t.style.setProperty('--ry','0deg')}});
+
+// ===== CIELO VIVO: la página cambia con la hora real =====
+var FASES=['alba','dia','ocaso','noche'],ICO={alba:'🌅',dia:'☀️',ocaso:'🌇',noche:'🌙'},SAL={alba:'Buen día',dia:'Buenas tardes',ocaso:'Buen atardecer',noche:'Buenas noches'};
+function ponerCielo(f){document.body.dataset.cielo=f;document.getElementById('btn-cielo').textContent=ICO[f];document.getElementById('saludo').textContent='◉ '+SAL[f]+' desde Warnes · Bolivia'}
+function ciclarCielo(){ponerCielo(FASES[(FASES.indexOf(document.body.dataset.cielo)+1)%4])}
+(function(){var h=new Date().getHours();ponerCielo(h>=5&&h<8?'alba':h>=8&&h<17?'dia':h>=17&&h<19?'ocaso':'noche')})();
+
+// ===== PARTÍCULAS: luciérnagas de noche, polvo dorado de día + parallax + linterna =====
+var cv=document.getElementById('fx'),cx=cv.getContext('2d'),P=[],W,H;
+function ajustar(){W=cv.width=innerWidth;H=cv.height=innerHeight}
+addEventListener('resize',ajustar);ajustar();
+for(var i=0;i<70;i++)P.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2+.6,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,f:Math.random()*6});
+var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+(function loop(t){
+  cx.clearRect(0,0,W,H);var noche=document.body.dataset.cielo==='noche'||document.body.dataset.cielo==='ocaso';
+  P.forEach(function(p){p.x+=p.vx+Math.sin(t/1500+p.f)*.25;p.y+=p.vy+Math.cos(t/1700+p.f)*.25;
+    if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+    var a=.35+.65*Math.abs(Math.sin(t/900+p.f)),col=noche?'160,255,120':'255,230,150';
+    var gr=cx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*7);gr.addColorStop(0,'rgba('+col+','+a+')');gr.addColorStop(1,'rgba('+col+',0)');
+    cx.fillStyle=gr;cx.beginPath();cx.arc(p.x,p.y,p.r*7,0,6.3);cx.fill()});
+  if(!reduce)requestAnimationFrame(loop)})(0);
+addEventListener('mousemove',function(e){document.body.style.setProperty('--mx',(e.clientX/innerWidth*100)+'%');document.body.style.setProperty('--my',(e.clientY/innerHeight*100)+'%')});
+
+// ===== CARGA DE HOJAS =====
+var SID='1Cal6UmdBajiTrhAzz_-mnr7Mc68zEBA7Har5Plkvj7Q';
+function gv(n){return'https://docs.google.com/spreadsheets/d/'+SID+'/gviz/tq?tqx=out:csv&sheet='+n}
+async function csv(us){for(var i=0;i<us.length;i++){try{var r=await fetch(us[i]);if(!r.ok)throw new Error('HTTP '+r.status);var t=await r.text();if(t.trim().charAt(0)==='<')throw new Error('Hoja no accesible');var o=aObj(parseCSV(t));if(o.length)return o}catch(e){console.warn('Hoja:',us[i],e.message)}}return[]}
+function contar(){document.querySelectorAll('[data-n]').forEach(function(el){var m=D[el.dataset.n].length,c=0,s=Math.max(1,Math.ceil(m/30));var iv=setInterval(function(){c=Math.min(m,c+s);el.textContent=c;if(c>=m)clearInterval(iv)},40)})}
+async function cargarImagenes(){
+  await Promise.all(['turismo','cultura','simbolo','comercio'].map(async function(c){
+    var ck='img_warnes_'+c,hit=null;try{hit=JSON.parse(localStorage.getItem(ck)||'null')}catch(e){}
+    if(hit&&Date.now()-hit.t<300000){IMAGENES_REPO[c]=hit.l;return}
+    try{var r=await fetch('https://api.github.com/repos/sabroliviabolivia-ctrl/turismowarnes/contents/'+c);if(!r.ok)throw 0;var j=await r.json();
+      var l=j.filter(function(x){return x.type==='file'&&/\.(jpe?g|png|webp|gif|avif)$/i.test(x.name)}).map(function(x){return x.name});
+      if(l.length){IMAGENES_REPO[c]=l;try{localStorage.setItem(ck,JSON.stringify({t:Date.now(),l:l}))}catch(e){}}}catch(e){}
+  }));
 }
-function compacto(s) { return normalizar(s).replace(/[^a-z0-9]+/g, ''); }
-function tokCoincide(f, t) {
-  if (f === t) return true;
-  if (f.length < 4 || t.length < 4) return false;
-  return t.indexOf(f) === 0 || f.indexOf(t) === 0;
+async function cargarTodo(){
+  await cargarImagenes();
+  var c=await Promise.all([[gv('turismo'),URL_TURISMO],[gv('cultura'),URL_CULTURA],[gv('simbolo'),URL_SIMBOLOS],[gv('comercio'),URL_COMERCIO]].map(csv));
+  D.turismo=c[0].map(function(o,i){return{nombre:ln(g(o,'nombre','titulo')||pv(o)),descripcion:g(o,'descripcion','detalle'),ubicacion:g(o,'ubicacion','direccion','lugar'),horario:g(o,'horario'),imagen_url:g(o,'imagen_url','imagen','foto'),dest:/^(true|verdadero|si|sí|1|x)$/i.test(o.destacado||''),_o:i}}).filter(function(x){return x.nombre}).sort(function(a,b){return(b.dest-a.dest)||(a._o-b._o)});
+  D.cultura=c[1].map(function(o,i){return{actividad:ln(g(o,'actividad','evento','nombre','titulo')||pv(o)),fecha:g(o,'fecha','mes'),lugar:g(o,'lugar','ubicacion'),descripcion:g(o,'descripcion','detalle'),imagen_url:g(o,'imagen_url','imagen','foto'),_o:o.mes_orden?num(o.mes_orden):i}}).filter(function(x){return x.actividad}).sort(function(a,b){return a._o-b._o});
+  D.simbolos=c[2].map(function(o,i){return{nombre:ln(g(o,'nombre','simbolo','titulo','actividad')||pv(o)),tipo:g(o,'tipo','categoria'),descripcion:g(o,'descripcion','detalle'),dato_normativo:g(o,'dato_normativo','norma','normativa'),imagen_url:g(o,'imagen_url','imagen','foto'),_o:o.orden?num(o.orden):i}}).filter(function(x){return x.nombre}).sort(function(a,b){return a._o-b._o});
+  D.comercio=c[3].map(function(o){return{nombre:ln(g(o,'nombre','empresa','razon_social','titulo')||pv(o)),descripcion:g(o,'descripcion','rubro','actividad','detalle'),ubicacion:g(o,'ubicacion','direccion','lugar'),horario:g(o,'horario'),telefono:g(o,'telefono','celular','contacto'),imagen_url:g(o,'imagen_url','imagen','foto','logo')}}).filter(function(x){return x.nombre}).sort(function(a,b){return a.nombre.localeCompare(b.nombre,'es')});
+  renderizar('todos');pintarRuta();contar();
 }
-
-function autoImagen(carpeta, nombre) {
-  var lista = IMAGENES_REPO[carpeta] || [];
-  var tn = tokens(nombre), cn = compacto(nombre);
-  var mejor = null, mejorPuntaje = 0;
-  lista.forEach(function(archivo) {
-    var base = archivo.replace(/\.[^.]+$/, '');
-    var tf = tokens(base);
-    if (!tf.length) return;
-    var cf = compacto(base), puntaje = 0;
-    if (cf.length >= 5 && cn.indexOf(cf) !== -1) {
-      puntaje = 100 + cf.length;
-    } else if (tf.every(function(f) { return tn.some(function(t) { return tokCoincide(f, t); }); })) {
-      puntaje = tf.join('').length;
-    }
-    if (puntaje > mejorPuntaje) { mejorPuntaje = puntaje; mejor = archivo; }
-  });
-  return mejor ? BASE_IMG + carpeta + '/' + encodeURI(mejor) : '';
-}
-
-// Lo que escribas en la columna imagen_url: nombre de archivo, ruta o enlace completo
-function urlDesdeHoja(v, carpeta) {
-  v = (v || '').trim();
-  if (!v) return '';
-  if (/^https?:\/\//i.test(v)) {
-    var gh = v.match(/github\.com\/([^\/]+)\/([^\/]+)\/blob\/([^\/]+)\/(.+)$/);
-    if (gh) return 'https://raw.githubusercontent.com/' + gh[1] + '/' + gh[2] + '/' + gh[3] + '/' + gh[4];
-    if (/drive\.google\.com|docs\.google\.com/.test(v)) {
-      var d = v.match(/\/d\/([\w-]{15,})/) || v.match(/[?&]id=([\w-]{15,})/);
-      if (d) return 'https://drive.google.com/thumbnail?id=' + d[1] + '&sz=w1000';
-    }
-    return v;
-  }
-  return BASE_IMG + (v.indexOf('/') === -1 ? carpeta + '/' : '') + encodeURI(v);
-}
-
-// Lista de imágenes a probar en orden: hoja -> repositorio -> respaldo
-function candidatos(carpeta, valorHoja, nombre, respaldo) {
-  var l = [];
-  var a = urlDesdeHoja(valorHoja, carpeta);
-  if (a) l.push(a);
-  var b = autoImagen(carpeta, nombre);
-  if (b && l.indexOf(b) === -1) l.push(b);
-  l.push(respaldo);
-  return l;
-}
-
-// ============================================
-// ESTADO Y CONFIGURACIÓN
-// ============================================
-const datosCache = { turismo: [], cultura: [], simbolos: [], comercio: [] };
-
-const infoCategorias = {
-  'todos':    { titulo: 'Explora', acento: 'Warnes', desc: 'Un adelanto de cada categoría. Elige una para ver toda su información.' },
-  'turismo':  { titulo: 'Turismo &', acento: 'Naturaleza', desc: 'Ríos, lagunas, parques y espacios de recreación en el corazón del trópico cruceño.' },
-  'cultura':  { titulo: 'Cultura &', acento: 'Identidad', desc: 'Eventos, fiestas y celebraciones que dan vida a la provincia Warnes.' },
-  'simbolos': { titulo: 'Símbolos', acento: 'Provinciales', desc: 'Bandera, escudo, himno, patrona y aniversario de la provincia.' },
-  'comercio': { titulo: 'Industria &', acento: 'Comercio', desc: 'El corazón agroindustrial de Bolivia: empresas que mueven la economía del oriente.' }
-};
-
-const PREVIEW_TODOS = 6;
-
-// ============================================
-// VISTAS: cómo se muestra cada tipo de dato (tarjeta y ventana de detalle)
-// ============================================
-function vistaTurismo(item) {
-  var fb = IMAGENES_TURISMO[(item.categoria || '').toLowerCase()] || IMAGENES_TURISMO['default'];
-  var info = [];
-  if (item.ubicacion) info.push(['◉', item.ubicacion]);
-  if (item.horario) info.push(['◷', item.horario]);
-  return { titulo: item.nombre, badge: 'Turismo', desc: item.descripcion || 'Sin descripción.',
-           info: info, imgs: candidatos('turismo', item.imagen_url, item.nombre, fb), contain: false };
-}
-
-function vistaCultura(item, i) {
-  var fb = IMAGENES_CULTURA[i % IMAGENES_CULTURA.length];
-  var info = [];
-  if (item.fecha) info.push(['◷', item.fecha]);
-  if (item.lugar) info.push(['◉', item.lugar]);
-  return { titulo: item.actividad, badge: item.fecha || 'Evento',
-           desc: item.descripcion || 'Evento cultural de la provincia Warnes.',
-           info: info, imgs: candidatos('cultura', item.imagen_url, item.actividad, fb), contain: false };
-}
-
-function vistaSimbolo(item) {
-  var fb = IMAGENES_SIMBOLOS[(item.tipo || '').toLowerCase()] || IMAGENES_SIMBOLOS['aniversario'];
-  var info = [];
-  if (item.dato_normativo && item.dato_normativo !== '—') info.push(['◈', item.dato_normativo]);
-  return { titulo: item.nombre, badge: 'Símbolo', desc: item.descripcion || 'Símbolo oficial de la Provincia Warnes.',
-           info: info, imgs: candidatos('simbolo', item.imagen_url, item.nombre + ' ' + (item.tipo || ''), fb), contain: true };
-}
-
-function vistaIndustria(item, i) {
-  var fb = IMAGENES_INDUSTRIA[i % IMAGENES_INDUSTRIA.length];
-  var info = [];
-  if (item.ubicacion) info.push(['◉', item.ubicacion]);
-  if (item.horario) info.push(['◷', item.horario]);
-  if (item.telefono) info.push(['☎', item.telefono]);
-  return { titulo: item.nombre, badge: 'Industria', desc: item.descripcion || 'Empresa industrial de la provincia Warnes.',
-           info: info, imgs: candidatos('comercio', item.imagen_url, item.nombre, fb), contain: true };
-}
-
-const SECCIONES = [
-  { clave: 'turismo',  nombre: 'Turismo',   vista: vistaTurismo },
-  { clave: 'cultura',  nombre: 'Cultura',   vista: vistaCultura },
-  { clave: 'simbolos', nombre: 'Símbolos',  vista: vistaSimbolo },
-  { clave: 'comercio', nombre: 'Industria', vista: vistaIndustria }
-];
-
-// ============================================
-// TARJETA
-// ============================================
-function imgTag(v, clase) {
-  return '<img class="' + clase + (v.contain ? ' contain' : '') + '" src="' + esc(v.imgs[0]) + '" ' +
-         'data-srcs="' + esc(JSON.stringify(v.imgs)) + '" data-i="0" onerror="imgFalla(this)" ' +
-         'alt="' + esc(v.titulo) + '" loading="lazy">';
-}
-
-function tarjeta(sec, item, i) {
-  var v = sec.vista(item, i);
-  var info = v.info.slice(0, 2).map(function(par) {
-    return '<span><strong>' + par[0] + '</strong> ' + esc(par[1]) + '</span>';
-  }).join('');
-  return '<div class="tarjeta" tabindex="0" role="button" data-sec="' + sec.clave + '" data-idx="' + i + '" ' +
-         'aria-label="Ver detalles de ' + esc(v.titulo) + '">' +
-    '<div class="tarjeta-imagen-wrapper' + (v.contain ? ' claro' : '') + '">' +
-      '<span class="tarjeta-badge">' + esc(v.badge) + '</span>' + imgTag(v, 'tarjeta-imagen') +
-    '</div>' +
-    '<div class="tarjeta-contenido">' +
-      '<h3>' + esc(v.titulo) + '</h3>' +
-      '<p class="desc">' + esc(v.desc) + '</p>' +
-      '<span class="tarjeta-mas">Ver detalles ›</span>' +
-      (info ? '<div class="tarjeta-info">' + info + '</div>' : '') +
-    '</div>' +
-  '</div>';
-}
-
-// ============================================
-// VENTANA DE DETALLE
-// ============================================
-var ultimoFoco = null;
-
-function abrirDetalle(clave, idx) {
-  var sec = SECCIONES.find(function(s) { return s.clave === clave; });
-  var item = sec && datosCache[clave][idx];
-  if (!item) return;
-  var v = sec.vista(item, idx);
-
-  var wrap = document.getElementById('modal-img-wrap');
-  wrap.className = 'modal-img-wrap' + (v.contain ? ' claro' : '');
-  wrap.innerHTML = '<img src="' + esc(v.imgs[0]) + '" data-srcs="' + esc(JSON.stringify(v.imgs)) +
-                   '" data-i="0" onerror="imgFalla(this)" alt="' + esc(v.titulo) + '">';
-
-  document.getElementById('modal-badge').textContent = v.badge;
-  document.getElementById('modal-titulo').textContent = v.titulo;
-  document.getElementById('modal-desc').textContent = v.desc;
-  document.getElementById('modal-info').innerHTML = v.info.map(function(par) {
-    return '<span><strong>' + par[0] + '</strong> ' + esc(par[1]) + '</span>';
-  }).join('');
-  document.getElementById('modal-info').style.display = v.info.length ? 'flex' : 'none';
-
-  ultimoFoco = document.activeElement;
-  var modal = document.getElementById('modal');
-  modal.classList.add('abierto');
-  modal.setAttribute('aria-hidden', 'false');
-  document.body.classList.add('sin-scroll');
-  document.getElementById('modal-cerrar').focus();
-}
-
-function cerrarDetalle() {
-  var modal = document.getElementById('modal');
-  modal.classList.remove('abierto');
-  modal.setAttribute('aria-hidden', 'true');
-  document.body.classList.remove('sin-scroll');
-  if (ultimoFoco && ultimoFoco.focus) ultimoFoco.focus();
-}
-
-document.getElementById('modal-cerrar').addEventListener('click', cerrarDetalle);
-document.getElementById('modal').addEventListener('click', function(e) {
-  if (e.target === this) cerrarDetalle();
-});
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') cerrarDetalle();
-});
-
-// Clic (o Enter) en cualquier tarjeta abre su detalle
-var contenedor = document.getElementById('grid-principal');
-contenedor.addEventListener('click', function(e) {
-  var t = e.target.closest('.tarjeta');
-  if (t) abrirDetalle(t.getAttribute('data-sec'), parseInt(t.getAttribute('data-idx'), 10));
-});
-contenedor.addEventListener('keydown', function(e) {
-  if (e.key !== 'Enter' && e.key !== ' ') return;
-  var t = e.target.closest ? e.target.closest('.tarjeta') : null;
-  if (t) { e.preventDefault(); abrirDetalle(t.getAttribute('data-sec'), parseInt(t.getAttribute('data-idx'), 10)); }
-});
-
-// ============================================
-// CARGAR DESDE GOOGLE SHEETS
-// ============================================
-async function cargarCSV(url) {
-  var res = await fetch(url);
-  if (!res.ok) throw new Error('Error HTTP ' + res.status);
-  var texto = await res.text();
-  if (texto.trim().charAt(0) === '<') throw new Error('La hoja no está publicada como CSV');
-  return filasAObjetos(parseCSV(texto));
-}
-
-async function cargarTodo() {
-  var crudo = await Promise.all([
-    cargarCSV(URL_TURISMO).catch(function(e)  { console.error('Turismo:', e);  return []; }),
-    cargarCSV(URL_CULTURA).catch(function(e)  { console.error('Cultura:', e);  return []; }),
-    cargarCSV(URL_SIMBOLOS).catch(function(e) { console.error('Símbolos:', e); return []; }),
-    cargarCSV(URL_COMERCIO).catch(function(e) { console.error('Comercio:', e); return []; })
-  ]);
-
-  // TURISMO (los destacados primero)
-  datosCache.turismo = crudo[0].map(function(o, i) {
-    return {
-      nombre: limpiarNombre(g(o, 'nombre', 'titulo') || primerValor(o)),
-      categoria: g(o, 'categoria', 'tipo'),
-      descripcion: g(o, 'descripcion', 'detalle'),
-      ubicacion: g(o, 'ubicacion', 'direccion', 'lugar'),
-      horario: g(o, 'horario'),
-      imagen_url: g(o, 'imagen_url', 'imagen', 'foto'),
-      destacado: esVerdadero(o.destacado),
-      _orden: i
-    };
-  }).filter(function(x) { return x.nombre; })
-    .sort(function(a, b) { return (b.destacado - a.destacado) || (a._orden - b._orden); });
-
-  // CULTURA (eventos del año)
-  datosCache.cultura = crudo[1].map(function(o, i) {
-    return {
-      actividad: limpiarNombre(g(o, 'actividad', 'evento', 'nombre', 'titulo') || primerValor(o)),
-      fecha: g(o, 'fecha', 'mes'),
-      lugar: g(o, 'lugar', 'ubicacion'),
-      descripcion: g(o, 'descripcion', 'detalle'),
-      imagen_url: g(o, 'imagen_url', 'imagen', 'foto'),
-      _orden: o.mes_orden ? aNumero(o.mes_orden) : i
-    };
-  }).filter(function(x) { return x.actividad; })
-    .sort(function(a, b) { return a._orden - b._orden; });
-
-  // SÍMBOLOS
-  datosCache.simbolos = crudo[2].map(function(o, i) {
-    return {
-      nombre: limpiarNombre(g(o, 'nombre', 'simbolo', 'titulo', 'actividad') || primerValor(o)),
-      tipo: g(o, 'tipo', 'categoria'),
-      descripcion: g(o, 'descripcion', 'detalle'),
-      dato_normativo: g(o, 'dato_normativo', 'norma', 'normativa'),
-      imagen_url: g(o, 'imagen_url', 'imagen', 'foto'),
-      _orden: o.orden ? aNumero(o.orden) : i
-    };
-  }).filter(function(x) { return x.nombre; })
-    .sort(function(a, b) { return a._orden - b._orden; });
-
-  // INDUSTRIA / COMERCIO
-  datosCache.comercio = crudo[3].map(function(o) {
-    return {
-      nombre: limpiarNombre(g(o, 'nombre', 'empresa', 'razon_social', 'titulo') || primerValor(o)),
-      descripcion: g(o, 'descripcion', 'rubro', 'actividad', 'detalle'),
-      ubicacion: g(o, 'ubicacion', 'direccion', 'lugar'),
-      horario: g(o, 'horario'),
-      telefono: g(o, 'telefono', 'celular', 'contacto'),
-      imagen_url: g(o, 'imagen_url', 'imagen', 'foto', 'logo')
-    };
-  }).filter(function(x) { return x.nombre; })
-    .sort(function(a, b) { return a.nombre.localeCompare(b.nombre, 'es'); });
-
-  console.log('Datos cargados:', {
-    turismo: datosCache.turismo.length,
-    cultura: datosCache.cultura.length,
-    simbolos: datosCache.simbolos.length,
-    comercio: datosCache.comercio.length
-  });
-
-  renderizar('todos');
-}
-
-// ============================================
-// RENDERIZAR
-// ============================================
-window.renderizar = function(categoria) {
-  const cont = document.getElementById('grid-principal');
-  const info = infoCategorias[categoria] || infoCategorias['todos'];
-  document.getElementById('titulo-seccion').innerHTML = info.titulo + ' <span class="acento">' + info.acento + '</span>';
-  document.getElementById('descripcion-seccion').textContent = info.desc;
-
-  let html = '';
-
-  if (categoria === 'todos') {
-    // Cada categoría en su propio bloque
-    SECCIONES.forEach(function(sec) {
-      const items = datosCache[sec.clave];
-      if (!items.length) return;
-      html += '<div class="subseccion">' +
-        '<div class="subseccion-header">' +
-          '<h3>' + sec.nombre + '</h3>' +
-          (items.length > PREVIEW_TODOS ?
-            '<button class="ver-mas" onclick="cambiarCategoria(\'' + sec.clave + '\')">Ver todos (' + items.length + ')</button>' : '') +
-        '</div>' +
-        '<div class="grid">' +
-          items.slice(0, PREVIEW_TODOS).map(function(it, i) { return tarjeta(sec, it, i); }).join('') +
-        '</div>' +
-      '</div>';
-    });
-  } else {
-    // Solo la categoría elegida
-    const sec = SECCIONES.find(function(s) { return s.clave === categoria; });
-    if (sec && datosCache[sec.clave].length) {
-      html = '<div class="grid">' +
-        datosCache[sec.clave].map(function(it, i) { return tarjeta(sec, it, i); }).join('') +
-      '</div>';
-    }
-  }
-
-  if (!html) html = '<div class="loader">No hay datos disponibles en esta categoría</div>';
-  cont.innerHTML = html;
-};
-
-// ============================================
-// INICIAR
-// ============================================
 cargarTodo();
 </script>
-
 </body>
 </html>
