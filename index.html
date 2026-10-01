@@ -5,8 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WARNES | Tierra de Naturaleza, Cultura e Industria</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◆</text></svg>">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+// ============================================
+// URLS DE GOOGLE SHEETS (CSV)
+// ============================================
+const URL_TURISMO  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTJfCxTTkuO2WZYGzJzWcr1jlRULYM345JEisf1Bpv3SOlBsbffZnTa2-vmP0IrFa0ctDgOBQZuS0ln/pub?gid=0&single=true&output=csv';
+const URL_SIMBOLOS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTJfCxTTkuO2WZYGzJzWcr1jlRULYM345JEisf1Bpv3SOlBsbffZnTa2-vmP0IrFa0ctDgOBQZuS0ln/pub?gid=23752783&single=true&output=csv';
+const URL_COMERCIO = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTJfCxTTkuO2WZYGzJzWcr1jlRULYM345JEisf1Bpv3SOlBsbffZnTa2-vmP0IrFa0ctDgOBQZuS0ln/pub?gid=2046609834&single=true&output=csv';
+const URL_CULTURA  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTJfCxTTkuO2WZYGzJzWcr1jlRULYM345JEisf1Bpv3SOlBsbffZnTa2-vmP0IrFa0ctDgOBQZuS0ln/pub?gid=530297980&single=true&output=csv';
+
 // ============================================
 // FUNCIONES GLOBALES
 // ============================================
@@ -208,16 +215,14 @@ window.toggleSidebar = function() {
 
   .contenido.expandido { margin-left: 260px; }
 
-  /* ============================================
-     HERO: la foto va sola arriba, el texto va debajo
-     ============================================ */
+  /* HERO */
   .hero { position: relative; }
 
   .hero-foto {
     position: relative;
     height: 68vh;
     min-height: 380px;
-    background: url('https://scdkbbqkeegmixkfhptl.supabase.co/storage/v1/object/public/imagenes-warnes/turismo/plazacentralde-warnes.jpg') center 30% / cover no-repeat;
+    background: url('https://sabroliviabolivia-ctrl.github.io/turismowarnes/turismo/plazacentralde-warnes.jpg') center 30% / cover no-repeat, linear-gradient(135deg, #0a0a1a, #02020a);
   }
 
   .hero-foto::after {
@@ -257,7 +262,6 @@ window.toggleSidebar = function() {
     letter-spacing: 8px;
     line-height: 1;
     margin-bottom: 20px;
-    /* verde - blanco - verde */
     background: linear-gradient(180deg,
       #0a9d3f 0%, #0a9d3f 40%,
       #ffffff 40%, #ffffff 64%,
@@ -372,7 +376,7 @@ window.toggleSidebar = function() {
     box-shadow: 0 0 25px rgba(0, 229, 255, 0.4);
   }
 
-  /* SUBSECCIONES (vista "Todos": cada categoría separada) */
+  /* SUBSECCIONES */
   .subseccion { margin-bottom: 70px; }
 
   .subseccion-header {
@@ -562,6 +566,7 @@ window.toggleSidebar = function() {
     color: var(--neon-verde);
     font-size: 1rem;
     letter-spacing: 3px;
+    grid-column: 1 / -1;
   }
 
   /* RESPONSIVE */
@@ -631,10 +636,7 @@ window.toggleSidebar = function() {
 <main class="contenido" id="contenido">
 
   <section class="hero" id="inicio">
-    <!-- La foto va sola, sin texto encima -->
     <div class="hero-foto" role="img" aria-label="Plaza central de Warnes"></div>
-
-    <!-- El texto va debajo de la foto -->
     <div class="hero-texto">
       <span class="hero-ubicacion">◉ Santa Cruz · Bolivia</span>
       <h1>WARNES</h1>
@@ -674,16 +676,54 @@ window.toggleSidebar = function() {
 
 <script>
 // ============================================
-// CONFIGURACIÓN SUPABASE
-// (se usa "db" porque "supabase" ya lo declara la librería)
+// PARSER DE CSV
 // ============================================
-const SUPABASE_URL = 'https://tapcpjeyfddsetgfpssl.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_EWijJ0mPmT2bf6-90yvIlA_XmhspUz8';
+function parseCSV(texto) {
+  var lineas = texto.split(/\r?\n/).filter(function(l) { return l.trim() !== ''; });
+  if (lineas.length < 2) return [];
 
-const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  var encabezados = parsearLinea(lineas[0]);
+  var datos = [];
+
+  for (var i = 1; i < lineas.length; i++) {
+    var valores = parsearLinea(lineas[i]);
+    if (valores.length === 0) continue;
+    var obj = {};
+    encabezados.forEach(function(h, idx) {
+      obj[h.trim()] = (valores[idx] || '').trim();
+    });
+    datos.push(obj);
+  }
+  return datos;
+}
+
+function parsearLinea(linea) {
+  var resultado = [];
+  var actual = '';
+  var entreComillas = false;
+
+  for (var i = 0; i < linea.length; i++) {
+    var c = linea[i];
+    if (c === '"') {
+      if (entreComillas && linea[i + 1] === '"') {
+        actual += '"';
+        i++;
+      } else {
+        entreComillas = !entreComillas;
+      }
+    } else if (c === ',' && !entreComillas) {
+      resultado.push(actual);
+      actual = '';
+    } else {
+      actual += c;
+    }
+  }
+  resultado.push(actual);
+  return resultado;
+}
 
 // ============================================
-// IMÁGENES DE RESPALDO (si la fila no tiene imagen_url o el enlace falla)
+// IMÁGENES DE RESPALDO
 // ============================================
 const IMAGENES_TURISMO = {
   'hotel': 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80',
@@ -719,7 +759,6 @@ const IMAGENES_INDUSTRIA = [
 // ============================================
 // UTILIDADES
 // ============================================
-// Evita que textos con < > " rompan el HTML de las tarjetas
 function esc(valor) {
   return String(valor == null ? '' : valor).replace(/[&<>"']/g, function(c) {
     return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
@@ -727,7 +766,7 @@ function esc(valor) {
 }
 
 // ============================================
-// ESTADO Y CONFIGURACIÓN DE CATEGORÍAS
+// ESTADO Y CONFIGURACIÓN
 // ============================================
 const datosCache = { turismo: [], cultura: [], simbolos: [], comercio: [] };
 
@@ -739,7 +778,7 @@ const infoCategorias = {
   'comercio': { titulo: 'Industria &', acento: 'Comercio', desc: 'El corazón agroindustrial de Bolivia: empresas que mueven la economía del oriente.' }
 };
 
-const PREVIEW_TODOS = 6; // tarjetas por categoría en la vista "Todos"
+const PREVIEW_TODOS = 6;
 
 // ============================================
 // TARJETAS
@@ -816,7 +855,6 @@ function tarjetaIndustria(item, i) {
   '</div>';
 }
 
-// Orden en que aparecen las categorías en la vista "Todos"
 const SECCIONES = [
   { clave: 'turismo',  nombre: 'Turismo',   fn: tarjetaTurismo },
   { clave: 'cultura',  nombre: 'Cultura',   fn: tarjetaCultura },
@@ -825,26 +863,28 @@ const SECCIONES = [
 ];
 
 // ============================================
-// CARGAR DATOS DESDE SUPABASE
+// CARGAR DESDE GOOGLE SHEETS
 // ============================================
+async function cargarCSV(url) {
+  var res = await fetch(url);
+  if (!res.ok) throw new Error('Error HTTP ' + res.status);
+  var texto = await res.text();
+  return parseCSV(texto);
+}
+
 async function cargarTodo() {
   try {
-    const [tur, cul, sim, com] = await Promise.all([
-      db.from('turismo').select('*').order('destacado', { ascending: false }),
-      db.from('cultura').select('*').order('mes_orden', { ascending: true }),
-      db.from('cultura_simbolos').select('*').order('orden', { ascending: true }),
-      db.from('comercio').select('*').order('nombre', { ascending: true })
+    var resultados = await Promise.all([
+      cargarCSV(URL_TURISMO).catch(function(e) { console.error('Turismo:', e); return []; }),
+      cargarCSV(URL_CULTURA).catch(function(e) { console.error('Cultura:', e); return []; }),
+      cargarCSV(URL_SIMBOLOS).catch(function(e) { console.error('Símbolos:', e); return []; }),
+      cargarCSV(URL_COMERCIO).catch(function(e) { console.error('Comercio:', e); return []; })
     ]);
 
-    if (tur.error) console.error('Error turismo:', tur.error);
-    if (cul.error) console.error('Error cultura:', cul.error);
-    if (sim.error) console.error('Error símbolos:', sim.error);
-    if (com.error) console.error('Error comercio:', com.error);
-
-    datosCache.turismo = tur.data || [];
-    datosCache.cultura = cul.data || [];
-    datosCache.simbolos = sim.data || [];
-    datosCache.comercio = com.data || [];
+    datosCache.turismo = resultados[0];
+    datosCache.cultura = resultados[1];
+    datosCache.simbolos = resultados[2];
+    datosCache.comercio = resultados[3];
 
     console.log('Datos cargados:', {
       turismo: datosCache.turismo.length,
@@ -873,7 +913,6 @@ window.renderizar = function(categoria) {
   let html = '';
 
   if (categoria === 'todos') {
-    // Cada categoría en su propio bloque, con su título
     SECCIONES.forEach(function(sec) {
       const items = datosCache[sec.clave];
       if (!items.length) return;
@@ -887,7 +926,6 @@ window.renderizar = function(categoria) {
       '</div>';
     });
   } else {
-    // Solo la categoría elegida
     const sec = SECCIONES.find(function(s) { return s.clave === categoria; });
     if (sec && datosCache[sec.clave].length) {
       html = '<div class="grid">' + datosCache[sec.clave].map(sec.fn).join('') + '</div>';
