@@ -7,12 +7,85 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◆</text></svg>">
 <script>
 // ============================================
-// URLS DE GOOGLE SHEETS (CSV)
+// URLS DE GOOGLE SHEETS (CSV publicado)
 // ============================================
 const URL_TURISMO  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTJfCxTTkuO2WZYGzJzWcr1jlRULYM345JEisf1Bpv3SOlBsbffZnTa2-vmP0IrFa0ctDgOBQZuS0ln/pub?gid=0&single=true&output=csv';
 const URL_SIMBOLOS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTJfCxTTkuO2WZYGzJzWcr1jlRULYM345JEisf1Bpv3SOlBsbffZnTa2-vmP0IrFa0ctDgOBQZuS0ln/pub?gid=23752783&single=true&output=csv';
 const URL_COMERCIO = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTJfCxTTkuO2WZYGzJzWcr1jlRULYM345JEisf1Bpv3SOlBsbffZnTa2-vmP0IrFa0ctDgOBQZuS0ln/pub?gid=2046609834&single=true&output=csv';
 const URL_CULTURA  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTJfCxTTkuO2WZYGzJzWcr1jlRULYM345JEisf1Bpv3SOlBsbffZnTa2-vmP0IrFa0ctDgOBQZuS0ln/pub?gid=530297980&single=true&output=csv';
+
+// ============================================
+// IMÁGENES EN GITHUB PAGES
+// Estructura del repositorio: /turismo  /cultura  /simbolo  /comercio
+// ============================================
+const BASE_IMG = 'https://sabroliviabolivia-ctrl.github.io/turismowarnes/';
+
+// Lista de archivos que hay en cada carpeta (la página los empareja sola con
+// el nombre de cada fila). Si subes una foto nueva, agrégala aquí O escribe su
+// nombre en la columna imagen_url de la hoja.
+const IMAGENES_REPO = {
+  "turismo": [
+    "casa-delas-pailas.png",
+    "comunidad-tradicionales.jpeg",
+    "el-copetin-.jpg",
+    "hotelrio-selva.jpg",
+    "monte-grandiosa.jpg",
+    "parque-ecologico.jpg",
+    "playland-park.jpg",
+    "plazacentralde-warnes.jpg",
+    "riosylagunas.jpg",
+    "terramia.jpg"
+  ],
+  "cultura": [
+    "actividad_cultural.jpg",
+    "decoracion.jpg",
+    "dia_mundialdel_turismo.jpg",
+    "diadel_folklore.jpg",
+    "festival_cultural.jpg",
+    "festival_dela_tamborita.jpg",
+    "festival_gastronomico.jpg",
+    "jocheo_de_toros.jpg",
+    "ofrenda_floral.jpg",
+    "serenata_virgen_del_rosario.jpg"
+  ],
+  "simbolo": [
+    "aniversariodecreacion.jpg",
+    "banderaprovincial.jpg",
+    "escudoprovincial.jpg",
+    "nuestra_rosario.jpg"
+  ],
+  "comercio": [
+    "a_a_a_internacional.png",
+    "ajebolivia.png",
+    "cameo.jpg",
+    "carlos_caballero.jpg",
+    "casa_ideal.jpg",
+    "ceramica_estructural.jpg",
+    "ceramica_norte.jpg",
+    "cerveceria_sabores_bolivianos.png",
+    "cimbol.jpg",
+    "coboce_cemento.jpg",
+    "copelme.png",
+    "dxn.jpg",
+    "eduardo.jpg",
+    "fabrica_de_baterias.jpg",
+    "fabrica_medicamentos_abd.jpg",
+    "fino.jpg",
+    "gravetal.jpg",
+    "industrias_venado.png",
+    "ipilcruz.jpg",
+    "la_suprema.png",
+    "luoyang.jpg",
+    "ovoprot.png",
+    "papelera_vinto.jpg",
+    "parque_eolico.jpg",
+    "planta_termoelectrica.jpg",
+    "soboce.jpg",
+    "sobolma.png",
+    "syntex.jpg",
+    "tres60.png"
+  ]
+};
 
 // ============================================
 // FUNCIONES GLOBALES
@@ -35,19 +108,29 @@ window.toggleSidebar = function() {
   if (sb) sb.classList.toggle('abierta');
   if (ct) ct.classList.toggle('expandido');
 };
+
+// Si una imagen falla, prueba la siguiente de su lista (hoja -> repo -> respaldo)
+window.imgFalla = function(el) {
+  try {
+    var lista = JSON.parse(el.getAttribute('data-srcs'));
+    var i = (parseInt(el.getAttribute('data-i'), 10) || 0) + 1;
+    if (i < lista.length) { el.setAttribute('data-i', i); el.src = lista[i]; return; }
+  } catch (e) {}
+  el.onerror = null;
+};
 </script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
+  /* Paleta neón en honor a la bandera warneña: verde · blanco · verde */
   :root {
-    --neon-verde: #00ff9d;
-    --neon-cyan: #00e5ff;
-    --neon-magenta: #ff00e5;
+    --neon-verde: #19ff7a;
+    --neon-blanco: #f4fff8;
     --verde-warnes: #0a9d3f;
-    --fondo-oscuro: #02020a;
-    --fondo-tarjeta: #0a0a1a;
-    --texto-claro: #eef0ff;
-    --texto-gris: #8888aa;
+    --fondo-oscuro: #020a06;
+    --fondo-tarjeta: #07140d;
+    --texto-claro: #eefff4;
+    --texto-gris: #8aa396;
   }
 
   html { scroll-behavior: smooth; }
@@ -60,14 +143,16 @@ window.toggleSidebar = function() {
     line-height: 1.6;
   }
 
+  body.sin-scroll { overflow: hidden; }
+
   body::before {
     content: '';
     position: fixed;
     inset: 0;
     background:
-      radial-gradient(circle at 15% 10%, rgba(0, 255, 157, 0.10) 0%, transparent 40%),
-      radial-gradient(circle at 85% 40%, rgba(0, 229, 255, 0.10) 0%, transparent 40%),
-      radial-gradient(circle at 50% 90%, rgba(255, 0, 229, 0.10) 0%, transparent 40%);
+      radial-gradient(circle at 15% 10%, rgba(25, 255, 122, 0.12) 0%, transparent 40%),
+      radial-gradient(circle at 85% 40%, rgba(244, 255, 248, 0.07) 0%, transparent 40%),
+      radial-gradient(circle at 50% 90%, rgba(25, 255, 122, 0.10) 0%, transparent 40%);
     z-index: -2;
     pointer-events: none;
   }
@@ -78,9 +163,9 @@ window.toggleSidebar = function() {
     inset: 0;
     background-image:
       radial-gradient(1px 1px at 20% 30%, #fff, transparent),
-      radial-gradient(1px 1px at 60% 70%, #9df, transparent),
+      radial-gradient(1px 1px at 60% 70%, #c9ffe0, transparent),
       radial-gradient(1px 1px at 80% 15%, #fff, transparent),
-      radial-gradient(1px 1px at 35% 85%, #f9f, transparent),
+      radial-gradient(1px 1px at 35% 85%, #9dffc6, transparent),
       radial-gradient(1px 1px at 90% 55%, #fff, transparent);
     background-size: 600px 600px;
     opacity: 0.4;
@@ -105,9 +190,9 @@ window.toggleSidebar = function() {
     left: 0; top: 0;
     height: 100vh;
     width: 90px;
-    background: rgba(6, 6, 18, 0.95);
+    background: rgba(3, 12, 7, 0.95);
     backdrop-filter: blur(14px);
-    border-right: 1px solid rgba(0, 255, 157, 0.25);
+    border-right: 1px solid rgba(25, 255, 122, 0.25);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -123,7 +208,7 @@ window.toggleSidebar = function() {
     font-size: 1.6rem;
     font-weight: 900;
     letter-spacing: 3px;
-    background: linear-gradient(90deg, var(--neon-verde), var(--neon-cyan));
+    background: linear-gradient(90deg, var(--neon-verde), var(--neon-blanco));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -168,7 +253,7 @@ window.toggleSidebar = function() {
     font-size: 1.4rem;
     min-width: 32px;
     text-align: center;
-    filter: drop-shadow(0 0 6px rgba(0, 255, 157, 0.4));
+    filter: drop-shadow(0 0 6px rgba(25, 255, 122, 0.4));
   }
 
   .menu-item .texto {
@@ -181,10 +266,10 @@ window.toggleSidebar = function() {
 
   .menu-item:hover,
   .menu-item.activo {
-    background: rgba(0, 255, 157, 0.08);
+    background: rgba(25, 255, 122, 0.08);
     color: var(--neon-verde);
-    border-color: rgba(0, 255, 157, 0.4);
-    box-shadow: 0 0 20px rgba(0, 255, 157, 0.15);
+    border-color: rgba(25, 255, 122, 0.4);
+    box-shadow: 0 0 20px rgba(25, 255, 122, 0.15);
   }
 
   .sidebar-toggle {
@@ -192,8 +277,8 @@ window.toggleSidebar = function() {
     bottom: 20px;
     width: 50px; height: 50px;
     border-radius: 50%;
-    background: rgba(0, 255, 157, 0.1);
-    border: 1px solid rgba(0, 255, 157, 0.4);
+    background: rgba(25, 255, 122, 0.1);
+    border: 1px solid rgba(25, 255, 122, 0.4);
     color: var(--neon-verde);
     font-size: 1.3rem;
     cursor: pointer;
@@ -204,7 +289,7 @@ window.toggleSidebar = function() {
   }
 
   .sidebar-toggle:hover {
-    background: rgba(0, 255, 157, 0.2);
+    background: rgba(25, 255, 122, 0.2);
     box-shadow: 0 0 25px var(--neon-verde);
   }
 
@@ -215,83 +300,117 @@ window.toggleSidebar = function() {
 
   .contenido.expandido { margin-left: 260px; }
 
-  /* HERO */
-  .hero { position: relative; }
+  /* ============================================
+     HERO: foto nítida y enmarcada + texto pequeño debajo
+     ============================================ */
+  .hero { position: relative; overflow: hidden; }
 
   .hero-foto {
     position: relative;
-    height: 68vh;
-    min-height: 380px;
-    background: url('https://sabroliviabolivia-ctrl.github.io/turismowarnes/turismo/plazacentralde-warnes.jpg') center 30% / cover no-repeat, linear-gradient(135deg, #0a0a1a, #02020a);
+    display: flex;
+    justify-content: center;
+    padding: 34px 24px 26px;
+  }
+
+  /* Fondo decorativo: la misma foto muy desenfocada, solo para llenar el ancho */
+  .hero-fondo {
+    position: absolute;
+    inset: 0;
+    background: url('https://sabroliviabolivia-ctrl.github.io/turismowarnes/turismo/plazacentralde-warnes.jpg') center / cover no-repeat;
+    filter: blur(30px) brightness(0.42) saturate(1.3);
+    transform: scale(1.2);
   }
 
   .hero-foto::after {
     content: '';
     position: absolute;
     bottom: 0; left: 0;
-    width: 100%; height: 90px;
+    width: 100%; height: 120px;
     background: linear-gradient(to top, var(--fondo-oscuro), transparent);
     pointer-events: none;
   }
 
+  /* La foto real se muestra cerca de su tamaño original para que no se vea borrosa */
+  .hero-marco {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 820px;
+    aspect-ratio: 16 / 9;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 2px solid rgba(25, 255, 122, 0.65);
+    box-shadow: 0 0 40px rgba(25, 255, 122, 0.35), 0 20px 60px rgba(0, 0, 0, 0.6);
+  }
+
+  .hero-marco img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: contrast(1.06) saturate(1.08);
+  }
+
   .hero-texto {
+    position: relative;
+    z-index: 2;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: 10px 30px 70px;
+    padding: 0 30px 60px;
   }
 
   .hero-ubicacion {
     display: inline-block;
-    padding: 8px 22px;
-    border: 1px solid var(--verde-warnes);
+    padding: 6px 18px;
+    border: 1px solid var(--neon-verde);
     border-radius: 30px;
-    color: #ffffff;
-    font-size: 0.85rem;
-    margin-bottom: 20px;
+    color: var(--neon-blanco);
+    font-size: 0.72rem;
+    margin-bottom: 14px;
     letter-spacing: 3px;
     text-transform: uppercase;
     background: rgba(10, 157, 63, 0.35);
-    box-shadow: 0 0 20px rgba(10, 157, 63, 0.5);
+    box-shadow: 0 0 18px rgba(25, 255, 122, 0.45);
   }
 
+  /* Título pequeño en franjas verde - blanco - verde (bandera) */
   .hero h1 {
-    font-size: clamp(3rem, 8vw, 6rem);
+    font-size: clamp(2rem, 4.5vw, 3.2rem);
     font-weight: 900;
-    letter-spacing: 8px;
+    letter-spacing: 6px;
     line-height: 1;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
     background: linear-gradient(180deg,
-      #0a9d3f 0%, #0a9d3f 40%,
+      #19ff7a 0%, #19ff7a 40%,
       #ffffff 40%, #ffffff 64%,
-      #0a9d3f 64%, #0a9d3f 100%);
+      #19ff7a 64%, #19ff7a 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.8));
+    filter: drop-shadow(0 0 12px rgba(25, 255, 122, 0.4)) drop-shadow(0 3px 8px rgba(0, 0, 0, 0.7));
   }
 
   .hero-sub {
-    font-size: clamp(1rem, 2vw, 1.3rem);
-    color: #c8c8dd;
-    max-width: 700px;
-    margin-bottom: 35px;
+    font-size: clamp(0.9rem, 1.5vw, 1.05rem);
+    color: #bcd6c8;
+    max-width: 620px;
+    margin-bottom: 24px;
   }
 
   .hero-cta {
     display: inline-block;
-    padding: 16px 45px;
+    padding: 11px 34px;
     border: 2px solid var(--neon-verde);
-    background: rgba(0, 255, 157, 0.08);
+    background: rgba(25, 255, 122, 0.08);
     color: var(--neon-verde);
     text-decoration: none;
     font-weight: 700;
     letter-spacing: 3px;
     border-radius: 50px;
     text-transform: uppercase;
-    font-size: 0.9rem;
-    box-shadow: 0 0 25px rgba(0, 255, 157, 0.4);
+    font-size: 0.78rem;
+    box-shadow: 0 0 25px rgba(25, 255, 122, 0.4);
     transition: 0.35s;
   }
 
@@ -339,7 +458,7 @@ window.toggleSidebar = function() {
     display: block;
     width: 120px; height: 3px;
     margin: 25px auto 0;
-    background: linear-gradient(90deg, var(--neon-verde), var(--neon-cyan));
+    background: linear-gradient(90deg, var(--neon-verde), var(--neon-blanco), var(--neon-verde));
     box-shadow: 0 0 25px var(--neon-verde);
     border-radius: 3px;
   }
@@ -355,8 +474,8 @@ window.toggleSidebar = function() {
 
   .filtro-btn {
     padding: 10px 24px;
-    background: rgba(10, 10, 26, 0.7);
-    border: 1px solid rgba(0, 229, 255, 0.3);
+    background: rgba(7, 20, 13, 0.7);
+    border: 1px solid rgba(244, 255, 248, 0.3);
     color: var(--texto-gris);
     border-radius: 30px;
     cursor: pointer;
@@ -370,10 +489,10 @@ window.toggleSidebar = function() {
 
   .filtro-btn:hover,
   .filtro-btn.activo {
-    background: rgba(0, 229, 255, 0.12);
-    border-color: var(--neon-cyan);
-    color: var(--neon-cyan);
-    box-shadow: 0 0 25px rgba(0, 229, 255, 0.4);
+    background: rgba(244, 255, 248, 0.12);
+    border-color: var(--neon-blanco);
+    color: var(--neon-blanco);
+    box-shadow: 0 0 25px rgba(244, 255, 248, 0.35);
   }
 
   /* SUBSECCIONES */
@@ -386,7 +505,7 @@ window.toggleSidebar = function() {
     gap: 15px;
     margin-bottom: 25px;
     padding-bottom: 12px;
-    border-bottom: 1px solid rgba(0, 255, 157, 0.2);
+    border-bottom: 1px solid rgba(25, 255, 122, 0.2);
   }
 
   .subseccion-header h3 {
@@ -398,9 +517,9 @@ window.toggleSidebar = function() {
 
   .ver-mas {
     padding: 8px 20px;
-    background: rgba(0, 229, 255, 0.08);
-    border: 1px solid rgba(0, 229, 255, 0.4);
-    color: var(--neon-cyan);
+    background: rgba(244, 255, 248, 0.08);
+    border: 1px solid rgba(244, 255, 248, 0.4);
+    color: var(--neon-blanco);
     border-radius: 30px;
     cursor: pointer;
     font-family: inherit;
@@ -410,8 +529,8 @@ window.toggleSidebar = function() {
   }
 
   .ver-mas:hover {
-    background: rgba(0, 229, 255, 0.2);
-    box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+    background: rgba(244, 255, 248, 0.2);
+    box-shadow: 0 0 20px rgba(244, 255, 248, 0.35);
   }
 
   /* GRID */
@@ -423,19 +542,23 @@ window.toggleSidebar = function() {
 
   /* TARJETA */
   .tarjeta {
-    background: linear-gradient(160deg, rgba(15, 15, 35, 0.95), rgba(8, 8, 22, 0.95));
+    background: linear-gradient(160deg, rgba(10, 26, 18, 0.95), rgba(4, 13, 9, 0.95));
     border-radius: 18px;
     overflow: hidden;
-    border: 1px solid rgba(0, 255, 157, 0.15);
+    border: 1px solid rgba(25, 255, 122, 0.15);
     transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.5s, border-color 0.5s;
     position: relative;
     display: flex;
     flex-direction: column;
+    cursor: pointer;
   }
 
-  .tarjeta:hover {
+  .tarjeta:hover,
+  .tarjeta:focus-visible {
     transform: translateY(-12px);
-    box-shadow: 0 30px 60px rgba(0, 255, 157, 0.25), 0 0 80px rgba(0, 229, 255, 0.15);
+    border-color: rgba(25, 255, 122, 0.5);
+    box-shadow: 0 30px 60px rgba(25, 255, 122, 0.25), 0 0 80px rgba(244, 255, 248, 0.10);
+    outline: none;
   }
 
   .tarjeta-imagen-wrapper {
@@ -466,11 +589,24 @@ window.toggleSidebar = function() {
     pointer-events: none;
   }
 
+  /* Logos, banderas y escudos: se ven completos, sin recortar */
+  .tarjeta-imagen-wrapper.claro { background: #f3f8f5; }
+  .tarjeta-imagen-wrapper.claro::after { display: none; }
+  .tarjeta-imagen.contain {
+    object-fit: contain;
+    padding: 12px;
+    filter: none;
+  }
+  .tarjeta:hover .tarjeta-imagen.contain {
+    transform: scale(1.05);
+    filter: none;
+  }
+
   .tarjeta-badge {
     position: absolute;
     top: 15px; left: 15px;
     padding: 6px 16px;
-    background: rgba(0, 255, 157, 0.15);
+    background: rgba(3, 12, 7, 0.75);
     border: 1px solid var(--neon-verde);
     color: var(--neon-verde);
     font-size: 0.7rem;
@@ -479,7 +615,7 @@ window.toggleSidebar = function() {
     text-transform: uppercase;
     border-radius: 20px;
     backdrop-filter: blur(10px);
-    box-shadow: 0 0 15px rgba(0, 255, 157, 0.5);
+    box-shadow: 0 0 15px rgba(25, 255, 122, 0.5);
     z-index: 2;
   }
 
@@ -497,10 +633,22 @@ window.toggleSidebar = function() {
     color: var(--texto-claro);
   }
 
-  .tarjeta-contenido p {
-    color: #9a9abb;
+  .tarjeta-contenido p.desc {
+    color: #9bb5a7;
     font-size: 0.92rem;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .tarjeta-mas {
+    color: var(--neon-verde);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 14px;
     flex-grow: 1;
   }
 
@@ -509,26 +657,119 @@ window.toggleSidebar = function() {
     flex-direction: column;
     gap: 8px;
     padding-top: 15px;
-    border-top: 1px solid rgba(0, 255, 157, 0.15);
+    border-top: 1px solid rgba(25, 255, 122, 0.15);
   }
 
   .tarjeta-info span {
     font-size: 0.82rem;
-    color: #7a7a9a;
+    color: #7fa08f;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 8px;
   }
 
   .tarjeta-info span strong {
-    color: var(--neon-cyan);
+    color: var(--neon-blanco);
     font-weight: 600;
+  }
+
+  /* ============================================
+     VENTANA DE DETALLE (al hacer clic en una tarjeta)
+     ============================================ */
+  .modal {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(1, 8, 4, 0.88);
+    backdrop-filter: blur(8px);
+  }
+
+  .modal.abierto { display: flex; }
+
+  .modal-panel {
+    position: relative;
+    width: 100%;
+    max-width: 980px;
+    max-height: 92vh;
+    overflow: auto;
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    background: linear-gradient(160deg, rgba(10, 26, 18, 0.98), rgba(3, 10, 7, 0.98));
+    border: 1px solid rgba(25, 255, 122, 0.45);
+    border-radius: 20px;
+    box-shadow: 0 0 80px rgba(25, 255, 122, 0.25);
+  }
+
+  .modal-img-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #030a06;
+    min-height: 320px;
+  }
+
+  .modal-img-wrap.claro { background: #f3f8f5; }
+
+  .modal-img-wrap img {
+    width: 100%;
+    height: 100%;
+    max-height: 92vh;
+    object-fit: contain;
+    display: block;
+  }
+
+  .modal-cuerpo {
+    padding: 38px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .modal-badge {
+    position: static;
+    align-self: flex-start;
+  }
+
+  .modal-cuerpo h3 {
+    font-size: 1.6rem;
+    line-height: 1.25;
+    color: var(--texto-claro);
+  }
+
+  .modal-cuerpo p {
+    color: #b3cbbd;
+    font-size: 1rem;
+    white-space: pre-line;
+  }
+
+  .modal-cerrar {
+    position: absolute;
+    top: 12px; right: 12px;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--neon-verde);
+    background: rgba(3, 12, 7, 0.85);
+    color: var(--neon-verde);
+    font-size: 1.1rem;
+    cursor: pointer;
+    z-index: 3;
+    transition: 0.3s;
+  }
+
+  .modal-cerrar:hover {
+    background: var(--neon-verde);
+    color: var(--fondo-oscuro);
+    box-shadow: 0 0 25px var(--neon-verde);
   }
 
   /* FOOTER */
   footer {
-    background: #010107;
-    border-top: 1px solid rgba(0, 255, 157, 0.2);
+    background: #010805;
+    border-top: 1px solid rgba(25, 255, 122, 0.2);
     padding: 50px 30px 30px;
     text-align: center;
     margin-top: 20px;
@@ -538,7 +779,7 @@ window.toggleSidebar = function() {
     font-size: 1.6rem;
     font-weight: 900;
     letter-spacing: 4px;
-    background: linear-gradient(90deg, var(--neon-verde), var(--neon-cyan));
+    background: linear-gradient(90deg, var(--neon-verde), var(--neon-blanco));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -547,14 +788,14 @@ window.toggleSidebar = function() {
   }
 
   footer p {
-    color: #5555aa;
+    color: #4f8a69;
     font-size: 0.85rem;
     margin-bottom: 8px;
   }
 
   .linea-neon {
     width: 200px; height: 2px;
-    background: linear-gradient(90deg, transparent, var(--neon-verde), transparent);
+    background: linear-gradient(90deg, transparent, var(--neon-verde), var(--neon-blanco), var(--neon-verde), transparent);
     margin: 25px auto;
     box-shadow: 0 0 15px var(--neon-verde);
   }
@@ -566,7 +807,6 @@ window.toggleSidebar = function() {
     color: var(--neon-verde);
     font-size: 1rem;
     letter-spacing: 3px;
-    grid-column: 1 / -1;
   }
 
   /* RESPONSIVE */
@@ -579,7 +819,7 @@ window.toggleSidebar = function() {
       overflow-x: auto;
       overflow-y: hidden;
       border-right: none;
-      border-bottom: 1px solid rgba(0, 255, 157, 0.25);
+      border-bottom: 1px solid rgba(25, 255, 122, 0.25);
     }
     .sidebar.abierta { width: 100%; height: 60px; }
     .sidebar-logo {
@@ -602,10 +842,13 @@ window.toggleSidebar = function() {
     .contenido { margin-left: 0; padding-top: 60px; }
     .contenido.expandido { margin-left: 0; }
     .seccion { padding: 50px 20px 60px; scroll-margin-top: 70px; }
-    .hero-foto { height: 55vh; min-height: 300px; }
+    .hero-foto { padding: 22px 14px 20px; }
     .hero h1 { letter-spacing: 4px; }
     .grid { grid-template-columns: 1fr; }
     .subseccion-header h3 { font-size: 1.2rem; }
+    .modal-panel { grid-template-columns: 1fr; }
+    .modal-img-wrap { min-height: 220px; max-height: 42vh; }
+    .modal-cuerpo { padding: 26px 22px 30px; }
   }
 </style>
 </head>
@@ -636,7 +879,18 @@ window.toggleSidebar = function() {
 <main class="contenido" id="contenido">
 
   <section class="hero" id="inicio">
-    <div class="hero-foto" role="img" aria-label="Plaza central de Warnes"></div>
+    <!-- Foto enmarcada y nítida -->
+    <div class="hero-foto">
+      <div class="hero-fondo"></div>
+      <div class="hero-marco">
+        <!-- Si subes una versión más grande llamada plazacentralde-warnes-hd.jpg en /turismo, se usa automáticamente -->
+        <img src="https://sabroliviabolivia-ctrl.github.io/turismowarnes/turismo/plazacentralde-warnes-hd.jpg"
+             data-srcs='["https://sabroliviabolivia-ctrl.github.io/turismowarnes/turismo/plazacentralde-warnes-hd.jpg","https://sabroliviabolivia-ctrl.github.io/turismowarnes/turismo/plazacentralde-warnes.jpg"]'
+             data-i="0" onerror="imgFalla(this)" alt="Plaza central de Warnes" fetchpriority="high">
+      </div>
+    </div>
+
+    <!-- Texto pequeño debajo de la foto -->
     <div class="hero-texto">
       <span class="hero-ubicacion">◉ Santa Cruz · Bolivia</span>
       <h1>WARNES</h1>
@@ -669,61 +923,86 @@ window.toggleSidebar = function() {
     <div class="linea-neon"></div>
     <p>Provincia Warnes · Santa Cruz · Bolivia</p>
     <p>Ciudad industrial y turística · A 30 km de Santa Cruz de la Sierra</p>
-    <p style="margin-top: 20px; color: #33335a; font-size: 0.75rem;">© 2025 · Tierra de naturaleza, cultura y progreso</p>
+    <p style="margin-top: 20px; color: #2c5a41; font-size: 0.75rem;">© 2025 · Tierra de naturaleza, cultura y progreso</p>
   </footer>
 
 </main>
 
+<!-- Ventana de detalle: muestra solo la información de la tarjeta elegida -->
+<div class="modal" id="modal" aria-hidden="true">
+  <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+    <button class="modal-cerrar" id="modal-cerrar" aria-label="Cerrar">✕</button>
+    <div class="modal-img-wrap" id="modal-img-wrap"></div>
+    <div class="modal-cuerpo">
+      <span class="tarjeta-badge modal-badge" id="modal-badge"></span>
+      <h3 id="modal-titulo"></h3>
+      <p id="modal-desc"></p>
+      <div class="tarjeta-info" id="modal-info"></div>
+    </div>
+  </div>
+</div>
+
 <script>
 // ============================================
-// PARSER DE CSV
+// LECTOR DE CSV (soporta comillas, comas y saltos de línea dentro de una celda)
 // ============================================
 function parseCSV(texto) {
-  var lineas = texto.split(/\r?\n/).filter(function(l) { return l.trim() !== ''; });
-  if (lineas.length < 2) return [];
-
-  var encabezados = parsearLinea(lineas[0]);
-  var datos = [];
-
-  for (var i = 1; i < lineas.length; i++) {
-    var valores = parsearLinea(lineas[i]);
-    if (valores.length === 0) continue;
-    var obj = {};
-    encabezados.forEach(function(h, idx) {
-      obj[h.trim()] = (valores[idx] || '').trim();
-    });
-    datos.push(obj);
-  }
-  return datos;
-}
-
-function parsearLinea(linea) {
-  var resultado = [];
-  var actual = '';
-  var entreComillas = false;
-
-  for (var i = 0; i < linea.length; i++) {
-    var c = linea[i];
-    if (c === '"') {
-      if (entreComillas && linea[i + 1] === '"') {
-        actual += '"';
-        i++;
-      } else {
-        entreComillas = !entreComillas;
-      }
-    } else if (c === ',' && !entreComillas) {
-      resultado.push(actual);
-      actual = '';
+  var filas = [], fila = [], campo = '', comillas = false;
+  for (var i = 0; i < texto.length; i++) {
+    var c = texto[i];
+    if (comillas) {
+      if (c === '"') {
+        if (texto[i + 1] === '"') { campo += '"'; i++; } else { comillas = false; }
+      } else { campo += c; }
     } else {
-      actual += c;
+      if (c === '"') comillas = true;
+      else if (c === ',') { fila.push(campo); campo = ''; }
+      else if (c === '\n') { fila.push(campo); filas.push(fila); fila = []; campo = ''; }
+      else if (c !== '\r') campo += c;
     }
   }
-  resultado.push(actual);
-  return resultado;
+  if (campo !== '' || fila.length) { fila.push(campo); filas.push(fila); }
+  return filas;
 }
 
+// "Descripción " -> "descripcion"
+function claveEncabezado(h) {
+  return String(h || '').trim().toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, '_');
+}
+
+function filasAObjetos(filas) {
+  if (!filas.length) return [];
+  var enc = filas[0].map(claveEncabezado);
+  return filas.slice(1)
+    .filter(function(f) { return f.some(function(c) { return c.trim() !== ''; }); })
+    .map(function(f) {
+      var o = {};
+      enc.forEach(function(h, i) { if (h) o[h] = (f[i] || '').trim(); });
+      return o;
+    });
+}
+
+// Primer campo con valor entre varios nombres posibles de columna
+function g(o) {
+  for (var i = 1; i < arguments.length; i++) {
+    if (o[arguments[i]]) return o[arguments[i]];
+  }
+  return '';
+}
+
+function primerValor(o) {
+  for (var k in o) { if (k !== 'id' && o[k]) return o[k]; }
+  return '';
+}
+
+function limpiarNombre(t) { return String(t || '').replace(/[:：]\s*$/, '').trim(); }
+function esVerdadero(v) { return /^(true|verdadero|si|sí|1|x)$/i.test(String(v || '').trim()); }
+function aNumero(v) { var n = parseFloat(v); return isNaN(n) ? 9999 : n; }
+
 // ============================================
-// IMÁGENES DE RESPALDO
+// IMÁGENES DE RESPALDO (solo si no hay foto propia)
 // ============================================
 const IMAGENES_TURISMO = {
   'hotel': 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80',
@@ -765,6 +1044,68 @@ function esc(valor) {
   });
 }
 
+// ---- Emparejar cada fila con su foto del repositorio por el nombre ----
+var STOP = { de:1, del:1, la:1, las:1, el:1, los:1, y:1, en:1, al:1, con:1, dela:1, delas:1, delos:1 };
+
+function normalizar(s) {
+  return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+function tokens(s) {
+  return normalizar(s).split(/[^a-z0-9]+/).filter(function(t) { return t && !STOP[t]; });
+}
+function compacto(s) { return normalizar(s).replace(/[^a-z0-9]+/g, ''); }
+function tokCoincide(f, t) {
+  if (f === t) return true;
+  if (f.length < 4 || t.length < 4) return false;
+  return t.indexOf(f) === 0 || f.indexOf(t) === 0;
+}
+
+function autoImagen(carpeta, nombre) {
+  var lista = IMAGENES_REPO[carpeta] || [];
+  var tn = tokens(nombre), cn = compacto(nombre);
+  var mejor = null, mejorPuntaje = 0;
+  lista.forEach(function(archivo) {
+    var base = archivo.replace(/\.[^.]+$/, '');
+    var tf = tokens(base);
+    if (!tf.length) return;
+    var cf = compacto(base), puntaje = 0;
+    if (cf.length >= 5 && cn.indexOf(cf) !== -1) {
+      puntaje = 100 + cf.length;
+    } else if (tf.every(function(f) { return tn.some(function(t) { return tokCoincide(f, t); }); })) {
+      puntaje = tf.join('').length;
+    }
+    if (puntaje > mejorPuntaje) { mejorPuntaje = puntaje; mejor = archivo; }
+  });
+  return mejor ? BASE_IMG + carpeta + '/' + encodeURI(mejor) : '';
+}
+
+// Lo que escribas en la columna imagen_url: nombre de archivo, ruta o enlace completo
+function urlDesdeHoja(v, carpeta) {
+  v = (v || '').trim();
+  if (!v) return '';
+  if (/^https?:\/\//i.test(v)) {
+    var gh = v.match(/github\.com\/([^\/]+)\/([^\/]+)\/blob\/([^\/]+)\/(.+)$/);
+    if (gh) return 'https://raw.githubusercontent.com/' + gh[1] + '/' + gh[2] + '/' + gh[3] + '/' + gh[4];
+    if (/drive\.google\.com|docs\.google\.com/.test(v)) {
+      var d = v.match(/\/d\/([\w-]{15,})/) || v.match(/[?&]id=([\w-]{15,})/);
+      if (d) return 'https://drive.google.com/thumbnail?id=' + d[1] + '&sz=w1000';
+    }
+    return v;
+  }
+  return BASE_IMG + (v.indexOf('/') === -1 ? carpeta + '/' : '') + encodeURI(v);
+}
+
+// Lista de imágenes a probar en orden: hoja -> repositorio -> respaldo
+function candidatos(carpeta, valorHoja, nombre, respaldo) {
+  var l = [];
+  var a = urlDesdeHoja(valorHoja, carpeta);
+  if (a) l.push(a);
+  var b = autoImagen(carpeta, nombre);
+  if (b && l.indexOf(b) === -1) l.push(b);
+  l.push(respaldo);
+  return l;
+}
+
 // ============================================
 // ESTADO Y CONFIGURACIÓN
 // ============================================
@@ -781,86 +1122,139 @@ const infoCategorias = {
 const PREVIEW_TODOS = 6;
 
 // ============================================
-// TARJETAS
+// VISTAS: cómo se muestra cada tipo de dato (tarjeta y ventana de detalle)
 // ============================================
-function imgTag(src, fallback, alt) {
-  return '<img class="tarjeta-imagen" src="' + esc(src || fallback) + '" data-fb="' + esc(fallback) + '" ' +
-         'onerror="this.onerror=null;this.src=this.dataset.fb" alt="' + esc(alt) + '" loading="lazy">';
+function vistaTurismo(item) {
+  var fb = IMAGENES_TURISMO[(item.categoria || '').toLowerCase()] || IMAGENES_TURISMO['default'];
+  var info = [];
+  if (item.ubicacion) info.push(['◉', item.ubicacion]);
+  if (item.horario) info.push(['◷', item.horario]);
+  return { titulo: item.nombre, badge: 'Turismo', desc: item.descripcion || 'Sin descripción.',
+           info: info, imgs: candidatos('turismo', item.imagen_url, item.nombre, fb), contain: false };
 }
 
-function tarjetaTurismo(item) {
-  var cat = (item.categoria || '').toLowerCase();
-  var fb = IMAGENES_TURISMO[cat] || IMAGENES_TURISMO['default'];
-  return '<div class="tarjeta">' +
-    '<div class="tarjeta-imagen-wrapper">' +
-      '<span class="tarjeta-badge">Turismo</span>' + imgTag(item.imagen_url, fb, item.nombre) +
-    '</div>' +
-    '<div class="tarjeta-contenido">' +
-      '<h3>' + esc(item.nombre) + '</h3>' +
-      '<p>' + esc(item.descripcion || 'Sin descripción.') + '</p>' +
-      ((item.ubicacion || item.horario) ?
-        '<div class="tarjeta-info">' +
-          (item.ubicacion ? '<span><strong>◉</strong> ' + esc(item.ubicacion) + '</span>' : '') +
-          (item.horario ? '<span><strong>◷</strong> ' + esc(item.horario) + '</span>' : '') +
-        '</div>' : '') +
-    '</div>' +
-  '</div>';
-}
-
-function tarjetaSimbolo(item) {
-  var fb = IMAGENES_SIMBOLOS[(item.tipo || '').toLowerCase()] || IMAGENES_SIMBOLOS['aniversario'];
-  return '<div class="tarjeta">' +
-    '<div class="tarjeta-imagen-wrapper">' +
-      '<span class="tarjeta-badge">Símbolo</span>' + imgTag(item.imagen_url, fb, item.nombre) +
-    '</div>' +
-    '<div class="tarjeta-contenido">' +
-      '<h3>' + esc(item.nombre) + '</h3>' +
-      '<p>' + esc(item.descripcion || 'Símbolo oficial de la Provincia Warnes.') + '</p>' +
-      (item.dato_normativo && item.dato_normativo !== '—' ?
-        '<div class="tarjeta-info"><span><strong>◈</strong> ' + esc(item.dato_normativo) + '</span></div>' : '') +
-    '</div>' +
-  '</div>';
-}
-
-function tarjetaCultura(item, i) {
+function vistaCultura(item, i) {
   var fb = IMAGENES_CULTURA[i % IMAGENES_CULTURA.length];
-  return '<div class="tarjeta">' +
-    '<div class="tarjeta-imagen-wrapper">' +
-      '<span class="tarjeta-badge">' + esc(item.fecha || 'Evento') + '</span>' + imgTag(item.imagen_url, fb, item.actividad) +
-    '</div>' +
-    '<div class="tarjeta-contenido">' +
-      '<h3>' + esc(item.actividad) + '</h3>' +
-      '<p>' + esc(item.descripcion || 'Evento cultural de la provincia Warnes.') + '</p>' +
-      (item.lugar ? '<div class="tarjeta-info"><span><strong>◉</strong> ' + esc(item.lugar) + '</span></div>' : '') +
-    '</div>' +
-  '</div>';
+  var info = [];
+  if (item.fecha) info.push(['◷', item.fecha]);
+  if (item.lugar) info.push(['◉', item.lugar]);
+  return { titulo: item.actividad, badge: item.fecha || 'Evento',
+           desc: item.descripcion || 'Evento cultural de la provincia Warnes.',
+           info: info, imgs: candidatos('cultura', item.imagen_url, item.actividad, fb), contain: false };
 }
 
-function tarjetaIndustria(item, i) {
+function vistaSimbolo(item) {
+  var fb = IMAGENES_SIMBOLOS[(item.tipo || '').toLowerCase()] || IMAGENES_SIMBOLOS['aniversario'];
+  var info = [];
+  if (item.dato_normativo && item.dato_normativo !== '—') info.push(['◈', item.dato_normativo]);
+  return { titulo: item.nombre, badge: 'Símbolo', desc: item.descripcion || 'Símbolo oficial de la Provincia Warnes.',
+           info: info, imgs: candidatos('simbolo', item.imagen_url, item.nombre + ' ' + (item.tipo || ''), fb), contain: true };
+}
+
+function vistaIndustria(item, i) {
   var fb = IMAGENES_INDUSTRIA[i % IMAGENES_INDUSTRIA.length];
-  return '<div class="tarjeta">' +
-    '<div class="tarjeta-imagen-wrapper">' +
-      '<span class="tarjeta-badge">Industria</span>' + imgTag(item.imagen_url, fb, item.nombre) +
-    '</div>' +
-    '<div class="tarjeta-contenido">' +
-      '<h3>' + esc(item.nombre) + '</h3>' +
-      '<p>' + esc(item.descripcion || 'Empresa industrial de la provincia Warnes.') + '</p>' +
-      ((item.ubicacion || item.horario || item.telefono) ?
-        '<div class="tarjeta-info">' +
-          (item.ubicacion ? '<span><strong>◉</strong> ' + esc(item.ubicacion) + '</span>' : '') +
-          (item.horario ? '<span><strong>◷</strong> ' + esc(item.horario) + '</span>' : '') +
-          (item.telefono ? '<span><strong>☎</strong> ' + esc(item.telefono) + '</span>' : '') +
-        '</div>' : '') +
-    '</div>' +
-  '</div>';
+  var info = [];
+  if (item.ubicacion) info.push(['◉', item.ubicacion]);
+  if (item.horario) info.push(['◷', item.horario]);
+  if (item.telefono) info.push(['☎', item.telefono]);
+  return { titulo: item.nombre, badge: 'Industria', desc: item.descripcion || 'Empresa industrial de la provincia Warnes.',
+           info: info, imgs: candidatos('comercio', item.imagen_url, item.nombre, fb), contain: true };
 }
 
 const SECCIONES = [
-  { clave: 'turismo',  nombre: 'Turismo',   fn: tarjetaTurismo },
-  { clave: 'cultura',  nombre: 'Cultura',   fn: tarjetaCultura },
-  { clave: 'simbolos', nombre: 'Símbolos',  fn: tarjetaSimbolo },
-  { clave: 'comercio', nombre: 'Industria', fn: tarjetaIndustria }
+  { clave: 'turismo',  nombre: 'Turismo',   vista: vistaTurismo },
+  { clave: 'cultura',  nombre: 'Cultura',   vista: vistaCultura },
+  { clave: 'simbolos', nombre: 'Símbolos',  vista: vistaSimbolo },
+  { clave: 'comercio', nombre: 'Industria', vista: vistaIndustria }
 ];
+
+// ============================================
+// TARJETA
+// ============================================
+function imgTag(v, clase) {
+  return '<img class="' + clase + (v.contain ? ' contain' : '') + '" src="' + esc(v.imgs[0]) + '" ' +
+         'data-srcs="' + esc(JSON.stringify(v.imgs)) + '" data-i="0" onerror="imgFalla(this)" ' +
+         'alt="' + esc(v.titulo) + '" loading="lazy">';
+}
+
+function tarjeta(sec, item, i) {
+  var v = sec.vista(item, i);
+  var info = v.info.slice(0, 2).map(function(par) {
+    return '<span><strong>' + par[0] + '</strong> ' + esc(par[1]) + '</span>';
+  }).join('');
+  return '<div class="tarjeta" tabindex="0" role="button" data-sec="' + sec.clave + '" data-idx="' + i + '" ' +
+         'aria-label="Ver detalles de ' + esc(v.titulo) + '">' +
+    '<div class="tarjeta-imagen-wrapper' + (v.contain ? ' claro' : '') + '">' +
+      '<span class="tarjeta-badge">' + esc(v.badge) + '</span>' + imgTag(v, 'tarjeta-imagen') +
+    '</div>' +
+    '<div class="tarjeta-contenido">' +
+      '<h3>' + esc(v.titulo) + '</h3>' +
+      '<p class="desc">' + esc(v.desc) + '</p>' +
+      '<span class="tarjeta-mas">Ver detalles ›</span>' +
+      (info ? '<div class="tarjeta-info">' + info + '</div>' : '') +
+    '</div>' +
+  '</div>';
+}
+
+// ============================================
+// VENTANA DE DETALLE
+// ============================================
+var ultimoFoco = null;
+
+function abrirDetalle(clave, idx) {
+  var sec = SECCIONES.find(function(s) { return s.clave === clave; });
+  var item = sec && datosCache[clave][idx];
+  if (!item) return;
+  var v = sec.vista(item, idx);
+
+  var wrap = document.getElementById('modal-img-wrap');
+  wrap.className = 'modal-img-wrap' + (v.contain ? ' claro' : '');
+  wrap.innerHTML = '<img src="' + esc(v.imgs[0]) + '" data-srcs="' + esc(JSON.stringify(v.imgs)) +
+                   '" data-i="0" onerror="imgFalla(this)" alt="' + esc(v.titulo) + '">';
+
+  document.getElementById('modal-badge').textContent = v.badge;
+  document.getElementById('modal-titulo').textContent = v.titulo;
+  document.getElementById('modal-desc').textContent = v.desc;
+  document.getElementById('modal-info').innerHTML = v.info.map(function(par) {
+    return '<span><strong>' + par[0] + '</strong> ' + esc(par[1]) + '</span>';
+  }).join('');
+  document.getElementById('modal-info').style.display = v.info.length ? 'flex' : 'none';
+
+  ultimoFoco = document.activeElement;
+  var modal = document.getElementById('modal');
+  modal.classList.add('abierto');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('sin-scroll');
+  document.getElementById('modal-cerrar').focus();
+}
+
+function cerrarDetalle() {
+  var modal = document.getElementById('modal');
+  modal.classList.remove('abierto');
+  modal.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('sin-scroll');
+  if (ultimoFoco && ultimoFoco.focus) ultimoFoco.focus();
+}
+
+document.getElementById('modal-cerrar').addEventListener('click', cerrarDetalle);
+document.getElementById('modal').addEventListener('click', function(e) {
+  if (e.target === this) cerrarDetalle();
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') cerrarDetalle();
+});
+
+// Clic (o Enter) en cualquier tarjeta abre su detalle
+var contenedor = document.getElementById('grid-principal');
+contenedor.addEventListener('click', function(e) {
+  var t = e.target.closest('.tarjeta');
+  if (t) abrirDetalle(t.getAttribute('data-sec'), parseInt(t.getAttribute('data-idx'), 10));
+});
+contenedor.addEventListener('keydown', function(e) {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  var t = e.target.closest ? e.target.closest('.tarjeta') : null;
+  if (t) { e.preventDefault(); abrirDetalle(t.getAttribute('data-sec'), parseInt(t.getAttribute('data-idx'), 10)); }
+});
 
 // ============================================
 // CARGAR DESDE GOOGLE SHEETS
@@ -869,36 +1263,80 @@ async function cargarCSV(url) {
   var res = await fetch(url);
   if (!res.ok) throw new Error('Error HTTP ' + res.status);
   var texto = await res.text();
-  return parseCSV(texto);
+  if (texto.trim().charAt(0) === '<') throw new Error('La hoja no está publicada como CSV');
+  return filasAObjetos(parseCSV(texto));
 }
 
 async function cargarTodo() {
-  try {
-    var resultados = await Promise.all([
-      cargarCSV(URL_TURISMO).catch(function(e) { console.error('Turismo:', e); return []; }),
-      cargarCSV(URL_CULTURA).catch(function(e) { console.error('Cultura:', e); return []; }),
-      cargarCSV(URL_SIMBOLOS).catch(function(e) { console.error('Símbolos:', e); return []; }),
-      cargarCSV(URL_COMERCIO).catch(function(e) { console.error('Comercio:', e); return []; })
-    ]);
+  var crudo = await Promise.all([
+    cargarCSV(URL_TURISMO).catch(function(e)  { console.error('Turismo:', e);  return []; }),
+    cargarCSV(URL_CULTURA).catch(function(e)  { console.error('Cultura:', e);  return []; }),
+    cargarCSV(URL_SIMBOLOS).catch(function(e) { console.error('Símbolos:', e); return []; }),
+    cargarCSV(URL_COMERCIO).catch(function(e) { console.error('Comercio:', e); return []; })
+  ]);
 
-    datosCache.turismo = resultados[0];
-    datosCache.cultura = resultados[1];
-    datosCache.simbolos = resultados[2];
-    datosCache.comercio = resultados[3];
+  // TURISMO (los destacados primero)
+  datosCache.turismo = crudo[0].map(function(o, i) {
+    return {
+      nombre: limpiarNombre(g(o, 'nombre', 'titulo') || primerValor(o)),
+      categoria: g(o, 'categoria', 'tipo'),
+      descripcion: g(o, 'descripcion', 'detalle'),
+      ubicacion: g(o, 'ubicacion', 'direccion', 'lugar'),
+      horario: g(o, 'horario'),
+      imagen_url: g(o, 'imagen_url', 'imagen', 'foto'),
+      destacado: esVerdadero(o.destacado),
+      _orden: i
+    };
+  }).filter(function(x) { return x.nombre; })
+    .sort(function(a, b) { return (b.destacado - a.destacado) || (a._orden - b._orden); });
 
-    console.log('Datos cargados:', {
-      turismo: datosCache.turismo.length,
-      cultura: datosCache.cultura.length,
-      simbolos: datosCache.simbolos.length,
-      comercio: datosCache.comercio.length
-    });
+  // CULTURA (eventos del año)
+  datosCache.cultura = crudo[1].map(function(o, i) {
+    return {
+      actividad: limpiarNombre(g(o, 'actividad', 'evento', 'nombre', 'titulo') || primerValor(o)),
+      fecha: g(o, 'fecha', 'mes'),
+      lugar: g(o, 'lugar', 'ubicacion'),
+      descripcion: g(o, 'descripcion', 'detalle'),
+      imagen_url: g(o, 'imagen_url', 'imagen', 'foto'),
+      _orden: o.mes_orden ? aNumero(o.mes_orden) : i
+    };
+  }).filter(function(x) { return x.actividad; })
+    .sort(function(a, b) { return a._orden - b._orden; });
 
-    renderizar('todos');
-  } catch (err) {
-    console.error('Error general:', err);
-    document.getElementById('grid-principal').innerHTML =
-      '<div class="loader">Error al cargar datos. Revisa la consola (F12).</div>';
-  }
+  // SÍMBOLOS
+  datosCache.simbolos = crudo[2].map(function(o, i) {
+    return {
+      nombre: limpiarNombre(g(o, 'nombre', 'simbolo', 'titulo', 'actividad') || primerValor(o)),
+      tipo: g(o, 'tipo', 'categoria'),
+      descripcion: g(o, 'descripcion', 'detalle'),
+      dato_normativo: g(o, 'dato_normativo', 'norma', 'normativa'),
+      imagen_url: g(o, 'imagen_url', 'imagen', 'foto'),
+      _orden: o.orden ? aNumero(o.orden) : i
+    };
+  }).filter(function(x) { return x.nombre; })
+    .sort(function(a, b) { return a._orden - b._orden; });
+
+  // INDUSTRIA / COMERCIO
+  datosCache.comercio = crudo[3].map(function(o) {
+    return {
+      nombre: limpiarNombre(g(o, 'nombre', 'empresa', 'razon_social', 'titulo') || primerValor(o)),
+      descripcion: g(o, 'descripcion', 'rubro', 'actividad', 'detalle'),
+      ubicacion: g(o, 'ubicacion', 'direccion', 'lugar'),
+      horario: g(o, 'horario'),
+      telefono: g(o, 'telefono', 'celular', 'contacto'),
+      imagen_url: g(o, 'imagen_url', 'imagen', 'foto', 'logo')
+    };
+  }).filter(function(x) { return x.nombre; })
+    .sort(function(a, b) { return a.nombre.localeCompare(b.nombre, 'es'); });
+
+  console.log('Datos cargados:', {
+    turismo: datosCache.turismo.length,
+    cultura: datosCache.cultura.length,
+    simbolos: datosCache.simbolos.length,
+    comercio: datosCache.comercio.length
+  });
+
+  renderizar('todos');
 }
 
 // ============================================
@@ -913,6 +1351,7 @@ window.renderizar = function(categoria) {
   let html = '';
 
   if (categoria === 'todos') {
+    // Cada categoría en su propio bloque
     SECCIONES.forEach(function(sec) {
       const items = datosCache[sec.clave];
       if (!items.length) return;
@@ -922,13 +1361,18 @@ window.renderizar = function(categoria) {
           (items.length > PREVIEW_TODOS ?
             '<button class="ver-mas" onclick="cambiarCategoria(\'' + sec.clave + '\')">Ver todos (' + items.length + ')</button>' : '') +
         '</div>' +
-        '<div class="grid">' + items.slice(0, PREVIEW_TODOS).map(sec.fn).join('') + '</div>' +
+        '<div class="grid">' +
+          items.slice(0, PREVIEW_TODOS).map(function(it, i) { return tarjeta(sec, it, i); }).join('') +
+        '</div>' +
       '</div>';
     });
   } else {
+    // Solo la categoría elegida
     const sec = SECCIONES.find(function(s) { return s.clave === categoria; });
     if (sec && datosCache[sec.clave].length) {
-      html = '<div class="grid">' + datosCache[sec.clave].map(sec.fn).join('') + '</div>';
+      html = '<div class="grid">' +
+        datosCache[sec.clave].map(function(it, i) { return tarjeta(sec, it, i); }).join('') +
+      '</div>';
     }
   }
 
