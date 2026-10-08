@@ -110,7 +110,7 @@ background:#0a1a12 var(--bi,none) center/cover no-repeat;border:2px solid rgba(2
 .inf span{font-size:.82rem;color:#7fa08f;display:flex;gap:8px}.inf strong{color:#fff}
 .loader{text-align:center;padding:60px;color:var(--v);letter-spacing:3px}
 
-/* MODAL */
+/* MODAL DETALLE */
 .modal{position:fixed;inset:0;z-index:2000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(1,8,4,.88);backdrop-filter:blur(10px)}
 .modal.on{display:flex}
 .mp{position:relative;width:100%;max-width:980px;max-height:92vh;overflow:auto;display:grid;grid-template-columns:1.1fr 1fr;background:linear-gradient(160deg,#0a1a12,#030a07);border:1px solid rgba(25,255,122,.5);border-radius:22px;box-shadow:0 0 90px rgba(25,255,122,.28);animation:pop .4s cubic-bezier(.2,1.3,.4,1)}
@@ -125,25 +125,33 @@ background:#0a1a12 var(--bi,none) center/cover no-repeat;border:2px solid rgba(2
 .x{position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;border:1px solid var(--v);background:rgba(3,12,7,.85);color:var(--v);z-index:3}
 .x:hover{background:var(--v);color:var(--bg)}
 
-/* MODAL ESPECIAL: SORPRÉNDEME (varias categorías) */
+/* MODAL SORPRÉNDEME (lista + tarjetas mini) */
 .modal-sor{position:fixed;inset:0;z-index:2100;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(1,8,4,.92);backdrop-filter:blur(12px)}
 .modal-sor.on{display:flex}
-.sor-panel{position:relative;width:100%;max-width:1200px;max-height:92vh;overflow:auto;background:linear-gradient(160deg,#0a1a12,#030a07);border:1px solid rgba(25,255,122,.55);border-radius:24px;box-shadow:0 0 100px rgba(25,255,122,.35);padding:36px 28px 32px;animation:pop .45s cubic-bezier(.2,1.3,.4,1)}
-.sor-head{text-align:center;margin-bottom:26px}
-.sor-head h2{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:900;letter-spacing:2px;color:#fff;margin-bottom:8px}
+.sor-panel{position:relative;width:100%;max-width:760px;max-height:92vh;overflow:auto;background:linear-gradient(160deg,#0a1a12,#030a07);border:1px solid rgba(25,255,122,.55);border-radius:24px;box-shadow:0 0 100px rgba(25,255,122,.35);padding:32px 22px 24px;animation:pop .45s cubic-bezier(.2,1.3,.4,1)}
+.sor-head{text-align:center;margin-bottom:22px;padding-bottom:16px;border-bottom:1px solid rgba(25,255,122,.2)}
+.sor-head h2{font-size:clamp(1.4rem,4vw,2rem);font-weight:900;letter-spacing:2px;color:#fff;margin-bottom:6px}
 .sor-head h2 em{font-style:normal;color:var(--v);text-shadow:0 0 25px var(--v)}
-.sor-head p{color:#b3cbbd;font-size:.95rem;max-width:600px;margin:0 auto}
-.sor-btn-otra{display:inline-flex;align-items:center;gap:8px;margin-top:16px;padding:10px 22px;border-radius:50px;border:1px solid var(--v);background:rgba(25,255,122,.1);color:var(--v);font-weight:800;letter-spacing:1.5px;text-transform:uppercase;font-size:.75rem;transition:.3s}
-.sor-btn-otra:hover{background:var(--v);color:var(--bg);transform:translateY(-2px);box-shadow:0 0 20px rgba(25,255,122,.5)}
-.sor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
-.sor-cat{position:relative;display:flex;flex-direction:column;border-radius:18px;overflow:hidden;cursor:pointer;background:linear-gradient(160deg,rgba(10,26,18,.96),rgba(4,13,9,.96));border:1px solid rgba(25,255,122,.25);transition:transform .3s,border-color .3s,box-shadow .3s}
-.sor-cat:hover{transform:translateY(-6px);border-color:var(--v);box-shadow:0 20px 40px rgba(25,255,122,.3)}
-.sor-cat .im{height:150px}
-.sor-cat .cu{padding:16px}
-.sor-cat .cu h4{font-size:1rem;margin-bottom:6px;color:#fff}
-.sor-cat .cu small{color:var(--v);font-size:.72rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:8px}
-.sor-cat .cu p{color:#9bb5a7;font-size:.85rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.sor-cat .mas{color:var(--v);font-size:.75rem;font-weight:700;letter-spacing:1px;margin-top:8px}
+.sor-head p{color:#b3cbbd;font-size:.9rem}
+.sor-lista{display:flex;flex-direction:column;gap:12px}
+.sor-fila{display:flex;align-items:stretch;gap:14px;padding:12px;border-radius:16px;background:rgba(25,255,122,.05);border:1px solid rgba(25,255,122,.2);cursor:pointer;transition:.25s;text-align:left}
+.sor-fila:hover{background:rgba(25,255,122,.13);border-color:var(--v);transform:translateX(4px);box-shadow:0 8px 24px rgba(25,255,122,.2)}
+.sor-fila .sor-img{flex:none;width:96px;height:96px;border-radius:12px;overflow:hidden;background:#030a06;border:1px solid rgba(25,255,122,.3)}
+.sor-fila .sor-img img{width:100%;height:100%;object-fit:cover;display:block}
+.sor-fila .sor-img.claro{background:#f3f8f5}
+.sor-fila .sor-img.claro img{object-fit:contain;padding:6px}
+.sor-fila .sor-cuerpo{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:4px}
+.sor-fila .sor-cat-nombre{display:inline-flex;align-items:center;gap:6px;font-size:.7rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--v);margin-bottom:2px}
+.sor-fila .sor-cat-nombre b{display:inline-block;font-size:1rem;font-weight:400}
+.sor-fila h4{color:#fff;font-size:1.02rem;font-weight:700;margin:0;line-height:1.25;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical}
+.sor-fila p{color:#9bb5a7;font-size:.82rem;margin:0;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.sor-fila .sor-arrow{flex:none;align-self:center;color:var(--v);font-size:1.5rem;padding:0 6px;transition:.3s}
+.sor-fila:hover .sor-arrow{transform:translateX(4px)}
+.sor-acciones{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px;padding-top:18px;border-top:1px solid rgba(25,255,122,.2)}
+.sor-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:50px;border:1px solid var(--v);background:rgba(25,255,122,.1);color:var(--v);font-weight:800;letter-spacing:1.5px;text-transform:uppercase;font-size:.75rem;transition:.3s;text-decoration:none;cursor:pointer}
+.sor-btn:hover{background:var(--v);color:var(--bg);transform:translateY(-2px);box-shadow:0 0 20px rgba(25,255,122,.5)}
+.sor-btn.alt{border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.06);color:#fff}
+.sor-btn.alt:hover{background:#fff;color:var(--bg)}
 .sor-x{position:absolute;top:14px;right:14px;width:42px;height:42px;border-radius:50%;border:1px solid var(--v);background:rgba(3,12,7,.85);color:var(--v);z-index:3;font-size:1.1rem}
 .sor-x:hover{background:var(--v);color:var(--bg)}
 
@@ -212,16 +220,19 @@ footer a:hover{text-decoration:underline}
 footer nav{margin:12px 0}
 
 /* RESPONSIVE */
-@media(max-width:900px){.hero-foto{min-height:0}.baja{display:none}.seccion{padding:40px 16px 60px}.grid{grid-template-columns:1fr}.mp{grid-template-columns:1fr}.mi{min-height:220px;max-height:42vh}.filtro-btn{width:calc(50% - 8px);max-width:190px;height:90px}.cm-wrap{grid-template-columns:1fr}.cm-form{position:static}.mapa iframe{height:280px}.cm-form,.cm-list,.ic{padding:20px}.sor-grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}.sor-panel{padding:24px 16px 20px}}
+@media(max-width:900px){.hero-foto{min-height:0}.baja{display:none}.seccion{padding:40px 16px 60px}.grid{grid-template-columns:1fr}.mp{grid-template-columns:1fr}.mi{min-height:220px;max-height:42vh}.filtro-btn{width:calc(50% - 8px);max-width:190px;height:90px}.cm-wrap{grid-template-columns:1fr}.cm-form{position:static}.mapa iframe{height:280px}.cm-form,.cm-list,.ic{padding:20px}.sor-panel{padding:24px 14px 18px}.sor-fila .sor-img{width:80px;height:80px}}
 @media(max-width:520px){
   .dock{gap:6px;padding:6px 8px}
   .dock b{font-size:.85rem;letter-spacing:2px;padding:0 6px}
   .dk{font-size:1.05rem;padding:9px 11px;min-width:40px;min-height:40px}
-  .sor-grid{grid-template-columns:1fr}
+  .sor-fila .sor-img{width:70px;height:70px}
+  .sor-fila h4{font-size:.95rem}
+  .sor-fila p{font-size:.78rem;-webkit-line-clamp:1}
 }
 @media(max-width:380px){
   .dk{padding:8px 9px;min-width:36px;min-height:36px;font-size:1rem}
   .dock b{font-size:.75rem;padding:0 4px}
+  .sor-fila .sor-img{width:60px;height:60px}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -345,16 +356,19 @@ footer nav{margin:12px 0}
   </div>
 </div>
 
-<!-- MODAL ESPECIAL SORPRÉNDEME -->
+<!-- MODAL SORPRÉNDEME -->
 <div class="modal-sor" id="modal-sor" aria-hidden="true">
   <div class="sor-panel" role="dialog" aria-modal="true">
     <button class="sor-x" id="sor-x" aria-label="Cerrar">✕</button>
     <div class="sor-head">
       <h2>🎲 <em>Sorpréndeme</em> con Warnes</h2>
-      <p>Un lugar destacado de cada categoría. Toca cualquiera para ver los detalles.</p>
-      <button class="sor-btn-otra" onclick="sorprender()">🎲 Otra selección</button>
+      <p>Un lugar de cada categoría. Toca cualquiera para ver los detalles.</p>
     </div>
-    <div class="sor-grid" id="sor-grid"></div>
+    <div class="sor-lista" id="sor-lista"></div>
+    <div class="sor-acciones">
+      <button class="sor-btn" onclick="sorprender()">🎲 Otra selección</button>
+      <button class="sor-btn alt" onclick="cerrarSorpresa()">✕ Cerrar</button>
+    </div>
   </div>
 </div>
 
@@ -436,10 +450,8 @@ window.renderizar=function(cat){
   var i=INFO[cat]||INFO.todos;
   document.getElementById('tit').innerHTML=i[0]+' <em>'+i[1]+'</em>';
   document.getElementById('des').textContent=i[2];
-
   var buscador=document.querySelector('.buscador');
   if(buscador) buscador.style.display = (cat==='todos') ? 'block' : 'none';
-
   var h='';
   if(cat==='todos'){
     SEC.forEach(function(s){
@@ -522,7 +534,7 @@ document.getElementById('m-x').onclick=cerrarDetalle;
 document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)cerrarDetalle()});
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){cerrarDetalle();cerrarRuta();cerrarSorpresa()}});
 
-// ===== MODAL SORPRÉNDEME (una de cada categoría) =====
+// ===== MODAL SORPRÉNDEME =====
 function cerrarSorpresa(){
   var m=document.getElementById('modal-sor');
   if(m){m.classList.remove('on');m.setAttribute('aria-hidden','true');document.body.classList.remove('nos')}
@@ -530,15 +542,23 @@ function cerrarSorpresa(){
 document.getElementById('sor-x').onclick=cerrarSorpresa;
 document.getElementById('modal-sor').addEventListener('click',function(e){if(e.target===this)cerrarSorpresa()});
 
-// ⚡ SORPRÉNDEME: un lugar aleatorio de CADA categoría
+// ⚡ SORPRÉNDEME: lista con miniatura + descripción corta, un lugar por categoría
 function sorprender(){
-  var orden=['turismo','cultura','simbolos','comercio','restaurantes','hoteles','transporte'];
+  var orden=[
+    {k:'turismo',     icono:'🏞️', nombre:'Turismo'},
+    {k:'cultura',     icono:'🎭', nombre:'Cultura'},
+    {k:'simbolos',    icono:'🛡️', nombre:'Símbolos'},
+    {k:'comercio',    icono:'🏭', nombre:'Industria'},
+    {k:'restaurantes',icono:'🍽️', nombre:'Restaurantes'},
+    {k:'hoteles',     icono:'🏨', nombre:'Hoteles'},
+    {k:'transporte',  icono:'🚌', nombre:'Transporte'}
+  ];
   var seleccion=[];
-  orden.forEach(function(k){
-    if(D[k]&&D[k].length){
-      var azar=Math.floor(Math.random()*D[k].length);
-      var s=SEC.find(function(x){return x.k===k});
-      if(s) seleccion.push({k:k, idx:azar, s:s, it:D[k][azar]});
+  orden.forEach(function(cat){
+    if(D[cat.k]&&D[cat.k].length){
+      var azar=Math.floor(Math.random()*D[cat.k].length);
+      var s=SEC.find(function(x){return x.k===cat.k});
+      if(s) seleccion.push({k:cat.k, idx:azar, s:s, it:D[cat.k][azar], icono:cat.icono, nombre:cat.nombre});
     }
   });
   if(!seleccion.length){
@@ -546,20 +566,25 @@ function sorprender(){
     if(msg)msg.innerHTML='<div class="loader">Aún no hay lugares cargados. Recarga en unos segundos.</div>';
     return;
   }
-  // Construye las tarjetas
+  // Pinta cada categoría como fila-tarjeta: miniatura + textos
   var h='';
   seleccion.forEach(function(x){
     var v=x.s.v(x.it);
-    h+='<div class="sor-cat" data-s="'+x.k+'" data-i="'+x.idx+'" role="button" tabindex="0">'+
-       '<div class="im'+(v.c?' claro':'')+'">'+fi(v,'')+'</div>'+
-       '<div class="cu"><small>'+x.s.n+'</small><h4>'+esc(v.t)+'</h4><p>'+esc(v.d)+'</p><span class="mas">Ver detalles ›</span></div>'+
+    var desc=v.d&&v.d!=='Sin descripción.'?v.d:'';
+    h+='<div class="sor-fila" data-s="'+x.k+'" data-i="'+x.idx+'" role="button" tabindex="0">'+
+       '<div class="sor-img'+(v.c?' claro':'')+'"><img src="'+esc(v.im[0])+'" data-srcs="'+esc(JSON.stringify(v.im))+'" data-i="0" onerror="imgFalla(this)" alt="'+esc(v.t)+'" loading="lazy"></div>'+
+       '<div class="sor-cuerpo">'+
+         '<span class="sor-cat-nombre"><b>'+x.icono+'</b> '+x.nombre+'</span>'+
+         '<h4>'+esc(v.t)+'</h4>'+
+         (desc?'<p>'+esc(desc)+'</p>':'')+
+       '</div>'+
+       '<span class="sor-arrow">›</span>'+
        '</div>';
   });
-  document.getElementById('sor-grid').innerHTML=h;
+  document.getElementById('sor-lista').innerHTML=h;
   var m=document.getElementById('modal-sor');
   m.classList.add('on');m.setAttribute('aria-hidden','false');document.body.classList.add('nos');
-  // Click en cada tarjeta abre detalle
-  document.querySelectorAll('#sor-grid .sor-cat').forEach(function(c){
+  document.querySelectorAll('#sor-lista .sor-fila').forEach(function(c){
     c.onclick=function(){
       var k=c.getAttribute('data-s'),i=parseInt(c.getAttribute('data-i'),10);
       cerrarSorpresa();
