@@ -27,7 +27,7 @@ background:radial-gradient(circle at var(--mx,50%) var(--my,30%),rgba(var(--glow
 main,.dock{position:relative;z-index:1}
 button{font-family:inherit;cursor:pointer}
 
-/* DOCK — ordenado, responsivo, sin botón luna */
+/* DOCK */
 .dock{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);z-index:1500;display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 12px;border-radius:50px;background:rgba(3,14,9,.78);backdrop-filter:blur(16px);border:1px solid rgba(25,255,122,.35);box-shadow:0 0 30px rgba(25,255,122,.2);max-width:calc(96vw - 8px)}
 .dock b{font-weight:900;letter-spacing:3px;padding:0 12px;background:linear-gradient(90deg,var(--v),#fff);-webkit-background-clip:text;background-clip:text;color:transparent;flex:none;white-space:nowrap}
 .dk{border:1px solid transparent;background:transparent;color:var(--b);font-size:1.15rem;padding:10px 14px;border-radius:30px;transition:.25s;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-width:44px;min-height:44px;line-height:1}
@@ -125,6 +125,28 @@ background:#0a1a12 var(--bi,none) center/cover no-repeat;border:2px solid rgba(2
 .x{position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;border:1px solid var(--v);background:rgba(3,12,7,.85);color:var(--v);z-index:3}
 .x:hover{background:var(--v);color:var(--bg)}
 
+/* MODAL ESPECIAL: SORPRÉNDEME (varias categorías) */
+.modal-sor{position:fixed;inset:0;z-index:2100;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(1,8,4,.92);backdrop-filter:blur(12px)}
+.modal-sor.on{display:flex}
+.sor-panel{position:relative;width:100%;max-width:1200px;max-height:92vh;overflow:auto;background:linear-gradient(160deg,#0a1a12,#030a07);border:1px solid rgba(25,255,122,.55);border-radius:24px;box-shadow:0 0 100px rgba(25,255,122,.35);padding:36px 28px 32px;animation:pop .45s cubic-bezier(.2,1.3,.4,1)}
+.sor-head{text-align:center;margin-bottom:26px}
+.sor-head h2{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:900;letter-spacing:2px;color:#fff;margin-bottom:8px}
+.sor-head h2 em{font-style:normal;color:var(--v);text-shadow:0 0 25px var(--v)}
+.sor-head p{color:#b3cbbd;font-size:.95rem;max-width:600px;margin:0 auto}
+.sor-btn-otra{display:inline-flex;align-items:center;gap:8px;margin-top:16px;padding:10px 22px;border-radius:50px;border:1px solid var(--v);background:rgba(25,255,122,.1);color:var(--v);font-weight:800;letter-spacing:1.5px;text-transform:uppercase;font-size:.75rem;transition:.3s}
+.sor-btn-otra:hover{background:var(--v);color:var(--bg);transform:translateY(-2px);box-shadow:0 0 20px rgba(25,255,122,.5)}
+.sor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+.sor-cat{position:relative;display:flex;flex-direction:column;border-radius:18px;overflow:hidden;cursor:pointer;background:linear-gradient(160deg,rgba(10,26,18,.96),rgba(4,13,9,.96));border:1px solid rgba(25,255,122,.25);transition:transform .3s,border-color .3s,box-shadow .3s}
+.sor-cat:hover{transform:translateY(-6px);border-color:var(--v);box-shadow:0 20px 40px rgba(25,255,122,.3)}
+.sor-cat .im{height:150px}
+.sor-cat .cu{padding:16px}
+.sor-cat .cu h4{font-size:1rem;margin-bottom:6px;color:#fff}
+.sor-cat .cu small{color:var(--v);font-size:.72rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:8px}
+.sor-cat .cu p{color:#9bb5a7;font-size:.85rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sor-cat .mas{color:var(--v);font-size:.75rem;font-weight:700;letter-spacing:1px;margin-top:8px}
+.sor-x{position:absolute;top:14px;right:14px;width:42px;height:42px;border-radius:50%;border:1px solid var(--v);background:rgba(3,12,7,.85);color:var(--v);z-index:3;font-size:1.1rem}
+.sor-x:hover{background:var(--v);color:var(--bg)}
+
 /* RUTA */
 .drw{position:fixed;top:0;right:0;height:100%;width:min(400px,100%);z-index:1800;transform:translateX(105%);transition:transform .45s cubic-bezier(.2,.9,.3,1);background:rgba(3,14,9,.96);backdrop-filter:blur(18px);border-left:1px solid rgba(25,255,122,.45);padding:76px 22px 22px;display:flex;flex-direction:column;gap:14px;overflow:auto}
 .drw.on{transform:none}
@@ -190,11 +212,12 @@ footer a:hover{text-decoration:underline}
 footer nav{margin:12px 0}
 
 /* RESPONSIVE */
-@media(max-width:900px){.hero-foto{min-height:0}.baja{display:none}.seccion{padding:40px 16px 60px}.grid{grid-template-columns:1fr}.mp{grid-template-columns:1fr}.mi{min-height:220px;max-height:42vh}.filtro-btn{width:calc(50% - 8px);max-width:190px;height:90px}.cm-wrap{grid-template-columns:1fr}.cm-form{position:static}.mapa iframe{height:280px}.cm-form,.cm-list,.ic{padding:20px}}
+@media(max-width:900px){.hero-foto{min-height:0}.baja{display:none}.seccion{padding:40px 16px 60px}.grid{grid-template-columns:1fr}.mp{grid-template-columns:1fr}.mi{min-height:220px;max-height:42vh}.filtro-btn{width:calc(50% - 8px);max-width:190px;height:90px}.cm-wrap{grid-template-columns:1fr}.cm-form{position:static}.mapa iframe{height:280px}.cm-form,.cm-list,.ic{padding:20px}.sor-grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}.sor-panel{padding:24px 16px 20px}}
 @media(max-width:520px){
   .dock{gap:6px;padding:6px 8px}
   .dock b{font-size:.85rem;letter-spacing:2px;padding:0 6px}
   .dk{font-size:1.05rem;padding:9px 11px;min-width:40px;min-height:40px}
+  .sor-grid{grid-template-columns:1fr}
 }
 @media(max-width:380px){
   .dk{padding:8px 9px;min-width:36px;min-height:36px;font-size:1rem}
@@ -210,7 +233,7 @@ footer nav{margin:12px 0}
 
 <nav class="dock" aria-label="Navegación principal">
   <b>◆ WARNES</b>
-  <button class="dk" onclick="sorprender()" title="Sorpréndeme con un lugar de cualquier categoría" aria-label="Sorpréndeme">🎲</button>
+  <button class="dk" onclick="sorprender()" title="Sorpréndeme: un lugar de cada categoría" aria-label="Sorpréndeme">🎲</button>
   <button class="dk" onclick="irA('info')" title="Información útil y clima" aria-label="Información">ℹ️</button>
   <button class="dk" onclick="irA('comentarios')" title="Opiniones de visitantes" aria-label="Comentarios">💬</button>
   <button class="dk" onclick="abrirRuta()" title="Mi ruta y pasaporte" aria-label="Mi ruta">🧭 <small id="n-ruta">0</small></button>
@@ -322,6 +345,19 @@ footer nav{margin:12px 0}
   </div>
 </div>
 
+<!-- MODAL ESPECIAL SORPRÉNDEME -->
+<div class="modal-sor" id="modal-sor" aria-hidden="true">
+  <div class="sor-panel" role="dialog" aria-modal="true">
+    <button class="sor-x" id="sor-x" aria-label="Cerrar">✕</button>
+    <div class="sor-head">
+      <h2>🎲 <em>Sorpréndeme</em> con Warnes</h2>
+      <p>Un lugar destacado de cada categoría. Toca cualquiera para ver los detalles.</p>
+      <button class="sor-btn-otra" onclick="sorprender()">🎲 Otra selección</button>
+    </div>
+    <div class="sor-grid" id="sor-grid"></div>
+  </div>
+</div>
+
 <script>
 // ===== DATOS =====
 const BASE='https://docs.google.com/spreadsheets/d/e/2PACX-1vTJfCxTTkuO2WZYGzJzWcr1jlRULYM345JEisf1Bpv3SOlBsbffZnTa2-vmP0IrFa0ctDgOBQZuS0ln/pub?single=true&output=csv&gid=';
@@ -343,8 +379,6 @@ function pv(o){for(var k in o)if(k!=='id'&&o[k])return o[k];return''}
 function ln(t){return String(t||'').replace(/[:：]\s*$/,'').trim()}
 function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function num(v){var n=parseFloat(v);return isNaN(n)?9999:n}
-
-// Filtro por columna "visible"
 function esVisible(o){var v=g(o,'visible','mostrar','activo');if(!v)return true;return /^(si|sí|1|true|x|yes|s)$/i.test(String(v).trim())}
 
 // ===== EMPAREJAR FOTOS =====
@@ -403,7 +437,6 @@ window.renderizar=function(cat){
   document.getElementById('tit').innerHTML=i[0]+' <em>'+i[1]+'</em>';
   document.getElementById('des').textContent=i[2];
 
-  // Buscador solo en vista "todos"
   var buscador=document.querySelector('.buscador');
   if(buscador) buscador.style.display = (cat==='todos') ? 'block' : 'none';
 
@@ -432,14 +465,11 @@ window.cambiarCategoria=function(c){
     b.classList.toggle('activo',b.getAttribute('data-categoria')===c);
   });
   renderizar(c);
-
-  // Aislar vista de categoría: ocultar hero, stats, info, comentarios, footer
   var info=document.getElementById('info');
   var comentarios=document.getElementById('comentarios');
   var hero=document.querySelector('.hero');
   var stats=document.querySelector('.stats');
   var footer=document.querySelector('footer');
-
   if(c==='todos'){
     if(info) info.style.display='block';
     if(comentarios) comentarios.style.display='block';
@@ -453,7 +483,6 @@ window.cambiarCategoria=function(c){
     if(stats) stats.style.display='none';
     if(footer) footer.style.display='none';
   }
-
   window.scrollTo({top:0,behavior:'smooth'});
 };
 
@@ -471,7 +500,7 @@ function pintarBotones(){
     var u=imgBoton(b.getAttribute('data-categoria'));
     if(u)b.style.setProperty('--bi','url("'+u+'")')})}
 
-// ===== MODAL =====
+// ===== MODAL DETALLE =====
 var foco=null;
 function abrirDetalle(k,idx){
   var s=SEC.find(function(x){return x.k===k}),it=s&&D[k][idx];if(!it)return;var v=s.v(it),kk=llave(s,v),on=ruta.indexOf(kk)>-1;
@@ -491,7 +520,53 @@ function abrirDetalle(k,idx){
 function cerrarDetalle(){var m=document.getElementById('modal');m.classList.remove('on');m.setAttribute('aria-hidden','true');document.body.classList.remove('nos');if(foco&&foco.focus)foco.focus()}
 document.getElementById('m-x').onclick=cerrarDetalle;
 document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)cerrarDetalle()});
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){cerrarDetalle();cerrarRuta()}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){cerrarDetalle();cerrarRuta();cerrarSorpresa()}});
+
+// ===== MODAL SORPRÉNDEME (una de cada categoría) =====
+function cerrarSorpresa(){
+  var m=document.getElementById('modal-sor');
+  if(m){m.classList.remove('on');m.setAttribute('aria-hidden','true');document.body.classList.remove('nos')}
+}
+document.getElementById('sor-x').onclick=cerrarSorpresa;
+document.getElementById('modal-sor').addEventListener('click',function(e){if(e.target===this)cerrarSorpresa()});
+
+// ⚡ SORPRÉNDEME: un lugar aleatorio de CADA categoría
+function sorprender(){
+  var orden=['turismo','cultura','simbolos','comercio','restaurantes','hoteles','transporte'];
+  var seleccion=[];
+  orden.forEach(function(k){
+    if(D[k]&&D[k].length){
+      var azar=Math.floor(Math.random()*D[k].length);
+      var s=SEC.find(function(x){return x.k===k});
+      if(s) seleccion.push({k:k, idx:azar, s:s, it:D[k][azar]});
+    }
+  });
+  if(!seleccion.length){
+    var msg=document.getElementById('grid-principal');
+    if(msg)msg.innerHTML='<div class="loader">Aún no hay lugares cargados. Recarga en unos segundos.</div>';
+    return;
+  }
+  // Construye las tarjetas
+  var h='';
+  seleccion.forEach(function(x){
+    var v=x.s.v(x.it);
+    h+='<div class="sor-cat" data-s="'+x.k+'" data-i="'+x.idx+'" role="button" tabindex="0">'+
+       '<div class="im'+(v.c?' claro':'')+'">'+fi(v,'')+'</div>'+
+       '<div class="cu"><small>'+x.s.n+'</small><h4>'+esc(v.t)+'</h4><p>'+esc(v.d)+'</p><span class="mas">Ver detalles ›</span></div>'+
+       '</div>';
+  });
+  document.getElementById('sor-grid').innerHTML=h;
+  var m=document.getElementById('modal-sor');
+  m.classList.add('on');m.setAttribute('aria-hidden','false');document.body.classList.add('nos');
+  // Click en cada tarjeta abre detalle
+  document.querySelectorAll('#sor-grid .sor-cat').forEach(function(c){
+    c.onclick=function(){
+      var k=c.getAttribute('data-s'),i=parseInt(c.getAttribute('data-i'),10);
+      cerrarSorpresa();
+      abrirDetalle(k,i);
+    };
+  });
+}
 
 // ===== MI RUTA =====
 var ruta=[];try{ruta=JSON.parse(localStorage.getItem('ruta_warnes')||'[]')}catch(e){}
@@ -516,24 +591,6 @@ document.getElementById('lista').addEventListener('click',function(e){
 function abrirRuta(){pintarRuta();document.getElementById('drw').classList.add('on')}
 function cerrarRuta(){document.getElementById('drw').classList.remove('on')}
 
-// ⚡ Sorpréndeme desde TODAS las categorías
-function sorprender(){
-  var todas=['turismo','cultura','simbolos','comercio','restaurantes','hoteles','transporte'];
-  var p=[];
-  todas.forEach(function(k){
-    if(D[k]&&D[k].length){
-      D[k].forEach(function(_,i){p.push([k,i])});
-    }
-  });
-  if(!p.length){
-    var msg=document.getElementById('grid-principal');
-    if(msg)msg.innerHTML='<div class="loader">Aún no hay lugares cargados. Recarga en unos segundos.</div>';
-    return;
-  }
-  var x=p[Math.floor(Math.random()*p.length)];
-  abrirDetalle(x[0],x[1]);
-}
-
 // ===== INTERACCIÓN TARJETAS =====
 var cont=document.getElementById('grid-principal');
 cont.addEventListener('click',function(e){
@@ -544,7 +601,7 @@ cont.addEventListener('mousemove',function(e){var t=e.target.closest('.tj');if(!
   t.style.setProperty('--ry',((x-.5)*12)+'deg');t.style.setProperty('--rx',((.5-y)*12)+'deg');t.style.setProperty('--sx',x*100+'%');t.style.setProperty('--sy',y*100+'%')});
 cont.addEventListener('mouseout',function(e){var t=e.target.closest('.tj');if(t){t.style.setProperty('--rx','0deg');t.style.setProperty('--ry','0deg')}});
 
-// ===== CIELO AUTOMÁTICO (sin botón, sin usuario interviniendo) =====
+// ===== CIELO AUTOMÁTICO =====
 (function(){
   var h=new Date().getHours();
   var f=h>=5&&h<8?'alba':h>=8&&h<17?'dia':h>=17&&h<19?'ocaso':'noche';
@@ -678,7 +735,6 @@ function gv(n){return'https://docs.google.com/spreadsheets/d/'+SID+'/gviz/tq?tqx
 async function csv(us){for(var i=0;i<us.length;i++){try{var r=await fetch(us[i]);if(!r.ok)throw new Error('HTTP '+r.status);var t=await r.text();if(t.trim().charAt(0)==='<')throw new Error('Hoja no accesible');var o=aObj(parseCSV(t));if(o.length)return o}catch(e){console.warn('Hoja:',us[i],e.message)}}return[]}
 function contar(){document.querySelectorAll('[data-n]').forEach(function(el){var m=D[el.dataset.n].length,c=0,s=Math.max(1,Math.ceil(m/30));var iv=setInterval(function(){c=Math.min(m,c+s);el.textContent=c;if(c>=m)clearInterval(iv)},40)})}
 
-// Carga dinámica de imágenes desde GitHub
 async function cargarImagenes(){
   await Promise.all(['turismo','cultura','simbolo','comercio','hoteles','restaurante','transporte'].map(async function(c){
     var ck='img_warnes_v2_'+c,hit=null;try{hit=JSON.parse(localStorage.getItem(ck)||'null')}catch(e){}
