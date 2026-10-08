@@ -3,18 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>WARNES | Vive el oriente boliviano</title>
-<meta name="description" content="Guía turística de Warnes, Santa Cruz, Bolivia: lugares, cultura, restaurantes, hoteles, transporte e industria. Arma tu ruta y envíala a tu WhatsApp.">
+<title>WARNES | Sitio Oficial de Turismo · Municipio de Warnes</title>
+<meta name="description" content="Sitio oficial de turismo del Gobierno Autónomo Municipal de Warnes, Santa Cruz, Bolivia. Lugares, cultura, restaurantes, hoteles, transporte e industria. Arma tu ruta y envíala a tu WhatsApp.">
 <meta name="theme-color" content="#020a06">
-<meta property="og:title" content="Warnes · Vive el oriente boliviano">
-<meta property="og:description" content="Naturaleza, cultura e industria a 30 km de Santa Cruz. Arma tu ruta turística.">
+<meta property="og:title" content="Warnes · Sitio Oficial de Turismo">
+<meta property="og:description" content="Sitio oficial del Municipio de Warnes. Naturaleza, cultura e industria a 30 km de Santa Cruz.">
 <meta property="og:image" content="https://sabroliviabolivia-ctrl.github.io/turismowarnes/turismo/plazacentralde-warnes.jpg">
 <meta property="og:type" content="website">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"TouristDestination","name":"Warnes","description":"Provincia Warnes, Santa Cruz, Bolivia: naturaleza, cultura, gastronomía e industria.","address":{"@type":"PostalAddress","addressRegion":"Santa Cruz","addressCountry":"BO"},"geo":{"@type":"GeoCoordinates","latitude":-17.52,"longitude":-63.17}}</script>
+<meta property="og:site_name" content="Municipio de Warnes">
+<meta name="author" content="Gobierno Autónomo Municipal de Warnes">
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"GovernmentOrganization",
+  "name":"Gobierno Autónomo Municipal de Warnes",
+  "alternateName":"GAM Warnes",
+  "url":"https://warnes.gob.bo",
+  "email":"gamw@warnes.gob.bo",
+  "telephone":"+591 3 9232055",
+  "address":{
+    "@type":"PostalAddress",
+    "addressLocality":"Warnes",
+    "addressRegion":"Santa Cruz",
+    "addressCountry":"BO"
+  },
+  "sameAs":["https://facebook.com"]
+}
+</script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◆</text></svg>">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--v:#19ff7a;--b:#f4fff8;--bg:#020a06;--g:#8aa396;--c1:#0b1f4a;--glow:25,255,122}
+:root{--v:#19ff7a;--b:#f4fff8;--bg:#020a06;--g:#8aa396;--c1:#0b1f4a;--glow:25,255,122;--of:#ffd666}
 body[data-cielo=alba]{--c1:#8a3b66;--glow:255,150,120}
 body[data-cielo=dia]{--c1:#0a7ba0;--glow:120,230,255}
 body[data-cielo=ocaso]{--c1:#b04a1c;--glow:255,140,60}
@@ -26,6 +45,17 @@ background:radial-gradient(circle at var(--mx,50%) var(--my,30%),rgba(var(--glow
 #fx{position:fixed;inset:0;z-index:50;pointer-events:none}
 main,.dock{position:relative;z-index:1}
 button{font-family:inherit;cursor:pointer}
+
+/* BARRA INSTITUCIONAL SUPERIOR */
+.barra-oficial{position:fixed;top:0;left:0;right:0;z-index:1600;background:rgba(2,10,6,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(25,255,122,.3);padding:6px 16px;display:flex;align-items:center;justify-content:center;gap:10px;font-size:.78rem;color:#b3cbbd;text-align:center;flex-wrap:wrap}
+.barra-oficial .escudo{width:22px;height:22px;flex:none;background:linear-gradient(135deg,var(--v),#0a9d3f);border-radius:50%;display:grid;place-items:center;font-weight:900;color:#020a06;font-size:.7rem}
+.barra-oficial b{color:var(--v)}
+.barra-oficial a{color:var(--v);text-decoration:none;font-weight:700}
+.barra-oficial a:hover{text-decoration:underline}
+@media(max-width:520px){.barra-oficial{font-size:.7rem;padding:5px 8px}.barra-oficial .escudo{width:18px;height:18px;font-size:.6rem}}
+
+/* Ajuste del hero por la barra superior */
+.hero{margin-top:34px}
 
 /* DOCK */
 .dock{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);z-index:1500;display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 12px;border-radius:50px;background:rgba(3,14,9,.78);backdrop-filter:blur(16px);border:1px solid rgba(25,255,122,.35);box-shadow:0 0 30px rgba(25,255,122,.2);max-width:calc(96vw - 8px)}
@@ -125,7 +155,7 @@ background:#0a1a12 var(--bi,none) center/cover no-repeat;border:2px solid rgba(2
 .x{position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;border:1px solid var(--v);background:rgba(3,12,7,.85);color:var(--v);z-index:3}
 .x:hover{background:var(--v);color:var(--bg)}
 
-/* MODAL SORPRÉNDEME (lista + tarjetas mini) */
+/* MODAL SORPRÉNDEME */
 .modal-sor{position:fixed;inset:0;z-index:2100;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(1,8,4,.92);backdrop-filter:blur(12px)}
 .modal-sor.on{display:flex}
 .sor-panel{position:relative;width:100%;max-width:760px;max-height:92vh;overflow:auto;background:linear-gradient(160deg,#0a1a12,#030a07);border:1px solid rgba(25,255,122,.55);border-radius:24px;box-shadow:0 0 100px rgba(25,255,122,.35);padding:32px 22px 24px;animation:pop .45s cubic-bezier(.2,1.3,.4,1)}
@@ -166,8 +196,23 @@ background:#0a1a12 var(--bi,none) center/cover no-repeat;border:2px solid rgba(2
 .pa:hover{border-color:var(--v)}.pa em{font-style:normal;font-weight:800;color:var(--v);min-width:24px}
 .pa span{flex:1;font-size:.92rem}.pa button{background:none;border:0;color:var(--g);font-size:1rem}
 .vacio{color:var(--g);font-size:.9rem}
-footer{text-align:center;padding:50px 24px 100px;border-top:1px solid rgba(25,255,122,.2);background:#010805;color:#4f8a69;font-size:.85rem}
+
+/* FOOTER INSTITUCIONAL */
+footer{text-align:center;padding:60px 24px 120px;border-top:1px solid rgba(25,255,122,.2);background:#010805;color:#4f8a69;font-size:.85rem}
+footer .foot-institucional{max-width:900px;margin:0 auto 30px;padding:24px;border-radius:20px;background:rgba(25,255,122,.04);border:1px solid rgba(25,255,122,.2);text-align:left}
+footer .foot-institucional h4{color:var(--v);font-size:.95rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+footer .foot-institucional .foot-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+footer .foot-institucional .foot-item{display:flex;gap:10px;align-items:flex-start;font-size:.85rem;color:#b3cbbd}
+footer .foot-institucional .foot-item strong{color:#fff;display:block;margin-bottom:2px}
+footer .foot-institucional .foot-item a{color:var(--v);text-decoration:none;word-break:break-all}
+footer .foot-institucional .foot-item a:hover{text-decoration:underline}
+footer .foot-institucional .foot-emoji{font-size:1.2rem;flex:none;line-height:1}
 footer b{display:block;font-size:1.5rem;letter-spacing:4px;color:var(--v);margin-bottom:10px}
+footer a{color:var(--v);text-decoration:none;margin:0 10px;cursor:pointer}
+footer a:hover{text-decoration:underline}
+footer nav{margin:12px 0}
+footer .foot-legal{font-size:.75rem;color:#3b6b4f;margin-top:16px;line-height:1.8}
+footer .foot-legal a{margin:0 6px}
 
 /* BUSCADOR */
 .buscador{max-width:560px;margin:-14px auto 36px;position:relative}
@@ -182,12 +227,24 @@ footer b{display:block;font-size:1.5rem;letter-spacing:4px;color:var(--v);margin
 .ic p,.ic li{color:#b3cbbd;font-size:.92rem}
 .ic ul{list-style:none;display:flex;flex-direction:column;gap:7px}
 .ic .cta{display:inline-block;margin-top:14px;padding:9px 18px;font-size:.7rem}
+.ic a{color:var(--v);text-decoration:none;word-break:break-all}
+.ic a:hover{text-decoration:underline}
 .tmp{display:flex;align-items:center;gap:14px}.tmp big{font-size:2.6rem;line-height:1}.tmp strong{font-size:2rem;color:#fff}.tmp span{color:#9bb5a7;font-size:.82rem}
 .dias{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;text-align:center;font-size:.78rem;color:var(--g)}
 .dias div{padding:8px 4px;border-radius:12px;background:rgba(25,255,122,.06);border:1px solid rgba(25,255,122,.15);text-transform:capitalize}
 .dias b{display:block;color:#fff;font-size:1.2rem}
 .mapa{border-radius:20px;overflow:hidden;border:1px solid rgba(25,255,122,.3);box-shadow:0 0 40px rgba(25,255,122,.15)}
 .mapa iframe{display:block;width:100%;height:380px;border:0}
+
+/* CONTACTO MUNICIPIO */
+.contacto-muni{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:28px}
+.cm-card{padding:20px;border-radius:16px;background:linear-gradient(160deg,rgba(10,26,18,.96),rgba(4,13,9,.96));border:1px solid rgba(25,255,122,.3);display:flex;gap:14px;align-items:flex-start;transition:.3s}
+.cm-card:hover{border-color:var(--v);transform:translateY(-3px);box-shadow:0 10px 30px rgba(25,255,122,.2)}
+.cm-card .cm-ico{flex:none;font-size:1.6rem;line-height:1}
+.cm-card h4{color:var(--v);font-size:.85rem;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px}
+.cm-card p,.cm-card a{color:#b3cbbd;font-size:.88rem;text-decoration:none;word-break:break-all;line-height:1.5}
+.cm-card a:hover{color:var(--v)}
+.cm-card strong{color:#fff;font-size:1rem;display:block;margin-bottom:4px}
 
 /* COMENTARIOS */
 .cm-wrap{display:grid;grid-template-columns:1fr 1.3fr;gap:28px;align-items:start}
@@ -215,12 +272,18 @@ footer b{display:block;font-size:1.5rem;letter-spacing:4px;color:var(--v);margin
 /* ARRIBA + FOOTER */
 #arriba{position:fixed;right:16px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:1400;width:44px;height:44px;border-radius:50%;border:1px solid var(--v);background:rgba(3,14,9,.85);color:var(--v);font-size:1.2rem;opacity:0;pointer-events:none;transition:.3s}
 #arriba.on{opacity:1;pointer-events:auto}
-footer a{color:var(--v);text-decoration:none;margin:0 10px;cursor:pointer}
-footer a:hover{text-decoration:underline}
-footer nav{margin:12px 0}
+
+/* BANNER COOKIES */
+.banner-cookies{position:fixed;bottom:80px;left:16px;right:16px;z-index:1700;max-width:600px;margin:0 auto;padding:16px 20px;border-radius:16px;background:rgba(3,14,9,.96);backdrop-filter:blur(16px);border:1px solid rgba(25,255,122,.4);box-shadow:0 12px 40px rgba(0,0,0,.6);display:none;gap:12px;align-items:center;font-size:.85rem;color:#b3cbbd}
+.banner-cookies.on{display:flex;flex-wrap:wrap}
+.banner-cookies p{flex:1;min-width:200px;margin:0}
+.banner-cookies a{color:var(--v)}
+.banner-cookies button{padding:8px 18px;border-radius:50px;border:1px solid var(--v);background:rgba(25,255,122,.15);color:var(--v);font-weight:800;font-size:.75rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:.3s}
+.banner-cookies button:hover{background:var(--v);color:var(--bg)}
+@media(max-width:520px){.banner-cookies{bottom:76px;left:8px;right:8px;padding:12px 14px}}
 
 /* RESPONSIVE */
-@media(max-width:900px){.hero-foto{min-height:0}.baja{display:none}.seccion{padding:40px 16px 60px}.grid{grid-template-columns:1fr}.mp{grid-template-columns:1fr}.mi{min-height:220px;max-height:42vh}.filtro-btn{width:calc(50% - 8px);max-width:190px;height:90px}.cm-wrap{grid-template-columns:1fr}.cm-form{position:static}.mapa iframe{height:280px}.cm-form,.cm-list,.ic{padding:20px}.sor-panel{padding:24px 14px 18px}.sor-fila .sor-img{width:80px;height:80px}}
+@media(max-width:900px){.hero{margin-top:30px}.hero-foto{min-height:0}.baja{display:none}.seccion{padding:40px 16px 60px}.grid{grid-template-columns:1fr}.mp{grid-template-columns:1fr}.mi{min-height:220px;max-height:42vh}.filtro-btn{width:calc(50% - 8px);max-width:190px;height:90px}.cm-wrap{grid-template-columns:1fr}.cm-form{position:static}.mapa iframe{height:280px}.cm-form,.cm-list,.ic{padding:20px}.sor-panel{padding:24px 14px 18px}.sor-fila .sor-img{width:80px;height:80px}}
 @media(max-width:520px){
   .dock{gap:6px;padding:6px 8px}
   .dock b{font-size:.85rem;letter-spacing:2px;padding:0 6px}
@@ -241,6 +304,12 @@ footer nav{margin:12px 0}
 <body data-cielo="noche">
 <canvas id="fx"></canvas>
 <button id="arriba" aria-label="Volver arriba">↑</button>
+
+<!-- BARRA INSTITUCIONAL -->
+<div class="barra-oficial" role="banner">
+  <span class="escudo">W</span>
+  <span><b>Sitio Oficial</b> · Gobierno Autónomo Municipal de Warnes · <a href="https://warnes.gob.bo" target="_blank" rel="noopener">warnes.gob.bo</a></span>
+</div>
 
 <nav class="dock" aria-label="Navegación principal">
   <b>◆ WARNES</b>
@@ -294,11 +363,40 @@ footer nav{margin:12px 0}
 
 <section class="seccion" id="info">
   <div class="sh"><h2>Planifica tu <em>Visita</em></h2><p>Todo lo que necesitas saber antes de llegar a Warnes.</p></div>
+
+  <!-- CONTACTO DEL MUNICIPIO -->
+  <div class="contacto-muni">
+    <div class="cm-card">
+      <span class="cm-ico">🏛️</span>
+      <div><h4>Alcaldía</h4><strong>GAM Warnes</strong><p>Teléfono ejecutivo</p><a href="tel:+59160908079">+591 60908079</a></div>
+    </div>
+    <div class="cm-card">
+      <span class="cm-ico">📞</span>
+      <div><h4>Concejo Municipal</h4><strong>Central</strong><a href="tel:+59139232055">+591 3 9232055</a><br><a href="tel:+59139232456">+591 3 9232456</a></div>
+    </div>
+    <div class="cm-card">
+      <span class="cm-ico">🚨</span>
+      <div><h4>Emergencias</h4><strong>Alerta Warnes</strong><p>WhatsApp de emergencia</p><a href="https://wa.me/5917213967" target="_blank" rel="noopener">+591 7213967</a></div>
+    </div>
+    <div class="cm-card">
+      <span class="cm-ico">✉️</span>
+      <div><h4>Correo institucional</h4><strong>Consultas oficiales</strong><a href="mailto:gamw@warnes.gob.bo">gamw@warnes.gob.bo</a></div>
+    </div>
+    <div class="cm-card">
+      <span class="cm-ico">🌐</span>
+      <div><h4>Sitio web oficial</h4><strong>warnes.gob.bo</strong><a href="https://warnes.gob.bo" target="_blank" rel="noopener">Visitar sitio</a></div>
+    </div>
+    <div class="cm-card">
+      <span class="cm-ico">📘</span>
+      <div><h4>Facebook oficial</h4><strong>GAM Warnes</strong><a href="https://facebook.com" target="_blank" rel="noopener">Ir a la página</a></div>
+    </div>
+  </div>
+
   <div class="info-grid">
     <div class="ic" id="clima"><h3>🌤️ Clima en Warnes</h3><p>Cargando clima…</p></div>
     <div class="ic"><h3>🚗 Cómo llegar</h3><p>Warnes está a unos 30 km de la ciudad de Santa Cruz de la Sierra. Puedes llegar en vehículo propio, taxi, micro o minibús. Consulta la sección Transporte para ver las opciones.</p><a class="cta alt" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Warnes+Santa+Cruz+Bolivia">📍 Abrir en Google Maps</a></div>
     <div class="ic"><h3>🎒 Consejos</h3><ul><li>☀️ Usa protector solar y ropa liviana.</li><li>🦟 Lleva repelente, sobre todo cerca de ríos y lagunas.</li><li>💧 Mantente hidratado durante los recorridos.</li><li>💵 Lleva efectivo para comunidades y ferias.</li><li>🕒 Confirma horarios antes de visitar.</li></ul></div>
-    <div class="ic"><h3>🚨 Emergencias</h3><ul><li>👮 Policía: <strong>110</strong></li><li>🚒 Bomberos: <strong>119</strong></li><li>🚑 Ambulancia: <strong>118</strong></li></ul></div>
+    <div class="ic"><h3>🚨 Emergencias generales</h3><ul><li>👮 Policía: <strong>110</strong></li><li>🚒 Bomberos: <strong>119</strong></li><li>🚑 Ambulancia: <strong>118</strong></li></ul></div>
     <div class="ic" id="contacto"></div>
   </div>
   <div class="mapa"><iframe title="Mapa de Warnes" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Warnes,+Santa+Cruz,+Bolivia&z=12&output=embed"></iframe></div>
@@ -316,6 +414,7 @@ footer nav{margin:12px 0}
       <input id="c-web" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
       <button class="cta" id="c-env" onclick="enviarComentario()">Publicar comentario</button>
       <p class="nota" id="c-msg"></p>
+      <p class="nota" style="font-size:.75rem">Al publicar, aceptas nuestra <a href="privacidad.html" style="color:var(--v)">política de privacidad</a>.</p>
     </div>
     <div class="cm-list">
       <div class="cm-top"><h3 style="margin:0">💬 Comentarios</h3><b id="c-prom"></b></div>
@@ -325,9 +424,33 @@ footer nav{margin:12px 0}
   </div>
 </section>
 
-<footer><b>◆ WARNES</b>Provincia Warnes · Santa Cruz · Bolivia<br>Tierra de naturaleza, cultura y progreso
-<nav><a onclick="irA('inicio')">Inicio</a><a onclick="irA('catalogo')">Explorar</a><a onclick="irA('info')">Planifica tu visita</a><a onclick="irA('comentarios')">Opiniones</a><a onclick="compartirSitio()">Compartir página</a></nav>
-© <span id="anio"></span></footer>
+<footer>
+  <div class="foot-institucional">
+    <h4>◆ Gobierno Autónomo Municipal de Warnes</h4>
+    <div class="foot-grid">
+      <div class="foot-item"><span class="foot-emoji">🏛️</span><div><strong>Alcaldía</strong>+591 60908079</div></div>
+      <div class="foot-item"><span class="foot-emoji">📞</span><div><strong>Concejo Municipal</strong>+591 3 9232055 · +591 3 9232456</div></div>
+      <div class="foot-item"><span class="foot-emoji">🚨</span><div><strong>Alerta Warnes</strong>+591 7213967</div></div>
+      <div class="foot-item"><span class="foot-emoji">✉️</span><div><strong>Correo</strong><a href="mailto:gamw@warnes.gob.bo">gamw@warnes.gob.bo</a></div></div>
+      <div class="foot-item"><span class="foot-emoji">🌐</span><div><strong>Sitio web</strong><a href="https://warnes.gob.bo" target="_blank" rel="noopener">warnes.gob.bo</a></div></div>
+      <div class="foot-item"><span class="foot-emoji">📘</span><div><strong>Facebook</strong><a href="https://facebook.com" target="_blank" rel="noopener">GAM Warnes</a></div></div>
+    </div>
+  </div>
+  <b>◆ WARNES</b>
+  Provincia Warnes · Santa Cruz · Bolivia<br>
+  Tierra de naturaleza, cultura y progreso
+  <nav>
+    <a onclick="irA('inicio')">Inicio</a>
+    <a onclick="irA('catalogo')">Explorar</a>
+    <a onclick="irA('info')">Planifica tu visita</a>
+    <a onclick="irA('comentarios')">Opiniones</a>
+    <a onclick="compartirSitio()">Compartir página</a>
+  </nav>
+  <div class="foot-legal">
+    © <span id="anio"></span> Gobierno Autónomo Municipal de Warnes · Todos los derechos reservados<br>
+    <a href="privacidad.html">Política de Privacidad</a> · <a href="terminos.html">Términos de Uso</a> · <a href="mailto:gamw@warnes.gob.bo">Contacto</a>
+  </div>
+</footer>
 </main>
 
 <aside class="drw" id="drw" aria-label="Mi ruta">
@@ -356,7 +479,6 @@ footer nav{margin:12px 0}
   </div>
 </div>
 
-<!-- MODAL SORPRÉNDEME -->
 <div class="modal-sor" id="modal-sor" aria-hidden="true">
   <div class="sor-panel" role="dialog" aria-modal="true">
     <button class="sor-x" id="sor-x" aria-label="Cerrar">✕</button>
@@ -372,7 +494,45 @@ footer nav{margin:12px 0}
   </div>
 </div>
 
+<!-- BANNER COOKIES -->
+<div class="banner-cookies" id="banner-cookies" role="dialog" aria-label="Aviso de cookies">
+  <p>🍪 Este sitio usa almacenamiento local para guardar tu ruta turística. No compartimos datos con terceros. <a href="privacidad.html">Más información</a>.</p>
+  <button onclick="aceptarCookies()">Aceptar</button>
+</div>
+
 <script>
+// ===== BANNER COOKIES =====
+function aceptarCookies(){
+  try{localStorage.setItem('cookies_ok','1')}catch(e){}
+  document.getElementById('banner-cookies').classList.remove('on');
+}
+(function(){
+  try{
+    if(!localStorage.getItem('cookies_ok')){
+      setTimeout(function(){document.getElementById('banner-cookies').classList.add('on')},1500);
+    }
+  }catch(e){}
+})();
+
+// ===== ESTADÍSTICAS PROPIAS (envío silencioso a Google Sheets) =====
+function registrarVisitaWeb(categoria){
+  try{
+    var esMovil = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    var disp = esMovil ? 'movil' : (/iPad|Tablet/i.test(navigator.userAgent) ? 'tablet' : 'escritorio');
+    var idi = (navigator.language || 'es').slice(0,2).toLowerCase();
+    var ref = 'directo';
+    try{ if(document.referrer) ref = (new URL(document.referrer)).hostname; }catch(e){}
+    var url = URL_COMENTARIOS + (URL_COMENTARIOS.indexOf('?')>-1?'&':'?')
+            + 'accion=visita'
+            + '&cat=' + encodeURIComponent(categoria || 'todos')
+            + '&disp=' + encodeURIComponent(disp)
+            + '&idi=' + encodeURIComponent(idi)
+            + '&ref=' + encodeURIComponent(ref)
+            + '&_=' + Date.now();
+    fetch(url, {mode:'no-cors', method:'GET'}).catch(function(){});
+  } catch(e){ /* silencioso */ }
+}
+
 // ===== DATOS =====
 const BASE='https://docs.google.com/spreadsheets/d/e/2PACX-1vTJfCxTTkuO2WZYGzJzWcr1jlRULYM345JEisf1Bpv3SOlBsbffZnTa2-vmP0IrFa0ctDgOBQZuS0ln/pub?single=true&output=csv&gid=';
 const URL_TURISMO=BASE+'0',URL_SIMBOLOS=BASE+'23752783',URL_COMERCIO=BASE+'2046609834',URL_CULTURA=BASE+'530297980';
@@ -496,6 +656,7 @@ window.cambiarCategoria=function(c){
     if(footer) footer.style.display='none';
   }
   window.scrollTo({top:0,behavior:'smooth'});
+  registrarVisitaWeb(c);
 };
 
 // ===== BOTONES CON IMAGEN =====
@@ -542,7 +703,6 @@ function cerrarSorpresa(){
 document.getElementById('sor-x').onclick=cerrarSorpresa;
 document.getElementById('modal-sor').addEventListener('click',function(e){if(e.target===this)cerrarSorpresa()});
 
-// ⚡ SORPRÉNDEME: lista con miniatura + descripción corta, un lugar por categoría
 function sorprender(){
   var orden=[
     {k:'turismo',     icono:'🏞️', nombre:'Turismo'},
@@ -566,7 +726,6 @@ function sorprender(){
     if(msg)msg.innerHTML='<div class="loader">Aún no hay lugares cargados. Recarga en unos segundos.</div>';
     return;
   }
-  // Pinta cada categoría como fila-tarjeta: miniatura + textos
   var h='';
   seleccion.forEach(function(x){
     var v=x.s.v(x.it);
@@ -674,16 +833,16 @@ addEventListener('mousemove',function(e){document.body.style.setProperty('--mx',
 
 // ===== CONFIGURACIÓN =====
 const URL_COMENTARIOS='https://script.google.com/macros/s/AKfycbwj9L9OizYxd2muEYn2XkjzEw5uNG0xUyz-sY71mx5MhxQ-Jr2CkiJvP9gc5WNR7WdB/exec';
-const WSP_CONTACTO='';
+const WSP_CONTACTO='5917213967'; // Alerta Warnes
 const SITIO=location.href.split('#')[0];
 
 // ===== NAVEGACIÓN =====
 function irA(id){var e=document.getElementById(id);if(e)e.scrollIntoView({behavior:'smooth',block:'start'})}
-function compartirSitio(){var d={title:'Warnes · Turismo',text:'Descubre Warnes, Bolivia 🌴',url:SITIO};if(navigator.share)navigator.share(d).catch(function(){});else window.open('https://wa.me/?text='+encodeURIComponent(d.text+' '+d.url),'_blank')}
+function compartirSitio(){var d={title:'Warnes · Sitio Oficial de Turismo',text:'Descubre Warnes, Bolivia 🌴',url:SITIO};if(navigator.share)navigator.share(d).catch(function(){});else window.open('https://wa.me/?text='+encodeURIComponent(d.text+' '+d.url),'_blank')}
 var ar=document.getElementById('arriba');addEventListener('scroll',function(){ar.classList.toggle('on',scrollY>700)},{passive:true});ar.onclick=function(){scrollTo({top:0,behavior:'smooth'})};
 document.getElementById('anio').textContent=new Date().getFullYear();
 var tq=null;document.getElementById('q').addEventListener('input',function(){var v=this.value;clearTimeout(tq);tq=setTimeout(function(){consulta=nz(v.trim());renderizar(catActual)},180)});
-(function(){var c=document.getElementById('contacto');if(WSP_CONTACTO)c.innerHTML='<h3>📞 Contacto turístico</h3><p>¿Dudas sobre tu visita? Escríbenos.</p><a class="cta" target="_blank" rel="noopener" href="https://wa.me/'+WSP_CONTACTO.replace(/\D/g,'')+'">💬 Escribir por WhatsApp</a>';else c.remove()})();
+(function(){var c=document.getElementById('contacto');if(WSP_CONTACTO)c.innerHTML='<h3>📞 Alerta Warnes</h3><p>¿Emergencias durante tu visita? Escríbenos.</p><a class="cta" target="_blank" rel="noopener" href="https://wa.me/'+WSP_CONTACTO+'">💬 WhatsApp de emergencia</a>';else c.remove()})();
 
 // ===== WHATSAPP =====
 var EMO={'◉':'📍','◷':'🕒','☎':'📞','$':'💰','➜':'🚏','⟳':'🔁','◈':'📜'};
@@ -793,6 +952,7 @@ async function cargarTodo(){
   D.transporte=listaGen(c[6].filter(esVisible));
 
   pintarBotones();llenarLugares();renderizar('todos');pintarRuta();contar();
+  registrarVisitaWeb('todos');
 }
 
 try{document.getElementById('wsp-num').value=localStorage.getItem('wsp_warnes')||'';document.getElementById('c-nom').value=localStorage.getItem('com_nombre')||''}catch(e){}
