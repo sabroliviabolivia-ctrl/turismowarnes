@@ -26,12 +26,15 @@ background:radial-gradient(circle at var(--mx,50%) var(--my,30%),rgba(var(--glow
 #fx{position:fixed;inset:0;z-index:50;pointer-events:none}
 main,.dock{position:relative;z-index:1}
 button{font-family:inherit;cursor:pointer}
-/* DOCK */
-.dock{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);z-index:1500;display:flex;align-items:center;gap:6px;padding:7px 10px;border-radius:50px;background:rgba(3,14,9,.72);backdrop-filter:blur(16px);border:1px solid rgba(25,255,122,.35);box-shadow:0 0 30px rgba(25,255,122,.2);max-width:96vw}
-.dock b{font-weight:900;letter-spacing:3px;padding:0 12px;background:linear-gradient(90deg,var(--v),#fff);-webkit-background-clip:text;background-clip:text;color:transparent}
-.dk{border:1px solid transparent;background:transparent;color:var(--b);font-size:1.05rem;padding:8px 13px;border-radius:30px;transition:.3s;white-space:nowrap}
-.dk:hover{background:rgba(25,255,122,.14);border-color:var(--v);box-shadow:0 0 18px rgba(25,255,122,.4)}
-.dk small{font-size:.75rem;font-weight:700;color:var(--v)}
+
+/* DOCK — ordenado, responsivo, sin botón luna */
+.dock{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);z-index:1500;display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 12px;border-radius:50px;background:rgba(3,14,9,.78);backdrop-filter:blur(16px);border:1px solid rgba(25,255,122,.35);box-shadow:0 0 30px rgba(25,255,122,.2);max-width:calc(96vw - 8px)}
+.dock b{font-weight:900;letter-spacing:3px;padding:0 12px;background:linear-gradient(90deg,var(--v),#fff);-webkit-background-clip:text;background-clip:text;color:transparent;flex:none;white-space:nowrap}
+.dk{border:1px solid transparent;background:transparent;color:var(--b);font-size:1.15rem;padding:10px 14px;border-radius:30px;transition:.25s;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-width:44px;min-height:44px;line-height:1}
+.dk:hover{background:rgba(25,255,122,.14);border-color:var(--v);box-shadow:0 0 18px rgba(25,255,122,.4);transform:translateY(-2px)}
+.dk:active{transform:translateY(0)}
+.dk small{font-size:.8rem;font-weight:800;color:var(--v);margin-left:-2px}
+
 /* HERO */
 .hero{position:relative;overflow:hidden}
 .hero-foto{position:relative;display:flex;align-items:center;justify-content:center;height:100vh;height:100svh;min-height:420px;overflow:hidden}
@@ -56,16 +59,19 @@ button{font-family:inherit;cursor:pointer}
 .cta:hover{background:var(--v);color:var(--bg);transform:translateY(-4px) scale(1.04)}
 .cta.alt{border-color:#fff;color:#fff;box-shadow:0 0 28px rgba(255,255,255,.25);background:rgba(255,255,255,.07)}
 .cta.alt:hover{background:#fff;color:var(--bg)}
+
 /* STATS */
 .stats{display:flex;justify-content:center;gap:clamp(18px,4vw,60px);flex-wrap:wrap;padding:10px 20px 30px}
 .stat{text-align:center}.stat strong{display:block;font-size:clamp(2rem,5vw,3.4rem);font-weight:900;color:var(--v);text-shadow:0 0 25px var(--v)}.stat span{color:var(--g);letter-spacing:2px;font-size:.78rem;text-transform:uppercase}
+
 /* SECCIÓN */
 .seccion{padding:50px 40px 80px;max-width:1500px;margin:0 auto;scroll-margin-top:10px}
 .sh{text-align:center;margin-bottom:34px}
 .sh h2{font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:3px}
 .sh h2 em{font-style:normal;color:var(--v);text-shadow:0 0 25px var(--v)}
 .sh p{color:var(--g);max-width:650px;margin:10px auto 0}
-/* FILTROS CON IMAGEN */
+
+/* FILTROS */
 .filtros{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-bottom:44px}
 .filtro-btn{position:relative;width:160px;height:100px;padding:0;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;
 background:#0a1a12 var(--bi,none) center/cover no-repeat;border:2px solid rgba(244,255,248,.3);border-radius:18px;color:#fff;transition:.35s}
@@ -80,6 +86,7 @@ background:#0a1a12 var(--bi,none) center/cover no-repeat;border:2px solid rgba(2
 .vm{padding:8px 20px;background:rgba(244,255,248,.08);border:1px solid rgba(244,255,248,.4);color:#fff;border-radius:30px;font-size:.85rem;font-weight:600;transition:.3s}
 .vm:hover{background:rgba(244,255,248,.2)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:28px;perspective:1200px}
+
 /* TARJETA 3D */
 .tj{position:relative;display:flex;flex-direction:column;border-radius:20px;overflow:hidden;cursor:pointer;background:linear-gradient(160deg,rgba(10,26,18,.96),rgba(4,13,9,.96));border:1px solid rgba(25,255,122,.18);transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .25s ease-out,box-shadow .4s,border-color .4s;animation:sube .6s backwards;animation-delay:calc(var(--d)*70ms)}
 @keyframes sube{from{opacity:0;transform:translateY(40px)}}
@@ -102,6 +109,7 @@ background:#0a1a12 var(--bi,none) center/cover no-repeat;border:2px solid rgba(2
 .inf{display:flex;flex-direction:column;gap:7px;padding-top:13px;border-top:1px solid rgba(25,255,122,.15)}
 .inf span{font-size:.82rem;color:#7fa08f;display:flex;gap:8px}.inf strong{color:#fff}
 .loader{text-align:center;padding:60px;color:var(--v);letter-spacing:3px}
+
 /* MODAL */
 .modal{position:fixed;inset:0;z-index:2000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(1,8,4,.88);backdrop-filter:blur(10px)}
 .modal.on{display:flex}
@@ -116,6 +124,7 @@ background:#0a1a12 var(--bi,none) center/cover no-repeat;border:2px solid rgba(2
 .acc .cta{padding:10px 20px;font-size:.72rem;cursor:pointer}
 .x{position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;border:1px solid var(--v);background:rgba(3,12,7,.85);color:var(--v);z-index:3}
 .x:hover{background:var(--v);color:var(--bg)}
+
 /* RUTA */
 .drw{position:fixed;top:0;right:0;height:100%;width:min(400px,100%);z-index:1800;transform:translateX(105%);transition:transform .45s cubic-bezier(.2,.9,.3,1);background:rgba(3,14,9,.96);backdrop-filter:blur(18px);border-left:1px solid rgba(25,255,122,.45);padding:76px 22px 22px;display:flex;flex-direction:column;gap:14px;overflow:auto}
 .drw.on{transform:none}
@@ -129,12 +138,13 @@ background:#0a1a12 var(--bi,none) center/cover no-repeat;border:2px solid rgba(2
 .vacio{color:var(--g);font-size:.9rem}
 footer{text-align:center;padding:50px 24px 100px;border-top:1px solid rgba(25,255,122,.2);background:#010805;color:#4f8a69;font-size:.85rem}
 footer b{display:block;font-size:1.5rem;letter-spacing:4px;color:var(--v);margin-bottom:10px}
-@media(max-width:900px){.hero-foto{min-height:0}.baja{display:none}.seccion{padding:40px 16px 60px}.grid{grid-template-columns:1fr}.mp{grid-template-columns:1fr}.mi{min-height:220px;max-height:42vh}.dock b{display:none}.dk{padding:8px 10px}.filtro-btn{width:calc(50% - 8px);max-width:190px;height:90px}}
+
 /* BUSCADOR */
 .buscador{max-width:560px;margin:-14px auto 36px;position:relative}
 .buscador input{width:100%;padding:14px 20px 14px 48px;border-radius:50px;border:1px solid rgba(25,255,122,.35);background:rgba(7,20,13,.8);color:#fff;font:inherit;outline:none;transition:.3s}
 .buscador input:focus{border-color:var(--v);box-shadow:0 0 22px rgba(25,255,122,.35)}
 .buscador::before{content:'🔎';position:absolute;left:18px;top:50%;transform:translateY(-50%);opacity:.8;pointer-events:none}
+
 /* INFO ÚTIL */
 .info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:22px;margin-bottom:28px}
 .ic,.cm-form,.cm-list{padding:26px;border-radius:20px;background:linear-gradient(160deg,rgba(10,26,18,.96),rgba(4,13,9,.96));border:1px solid rgba(25,255,122,.22)}
@@ -148,6 +158,7 @@ footer b{display:block;font-size:1.5rem;letter-spacing:4px;color:var(--v);margin
 .dias b{display:block;color:#fff;font-size:1.2rem}
 .mapa{border-radius:20px;overflow:hidden;border:1px solid rgba(25,255,122,.3);box-shadow:0 0 40px rgba(25,255,122,.15)}
 .mapa iframe{display:block;width:100%;height:380px;border:0}
+
 /* COMENTARIOS */
 .cm-wrap{display:grid;grid-template-columns:1fr 1.3fr;gap:28px;align-items:start}
 .cm-form{display:flex;flex-direction:column;gap:12px;position:sticky;top:20px}
@@ -163,19 +174,32 @@ footer b{display:block;font-size:1.5rem;letter-spacing:4px;color:var(--v);margin
 .cm:last-child{border:0}
 .av{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:var(--bg);background:linear-gradient(135deg,var(--v),#fff)}
 .cm b{color:#fff}.cm small{color:var(--g)}.cm .st{color:#ffd666;letter-spacing:2px}.cm p{color:#b3cbbd;margin-top:4px;word-break:break-word;white-space:pre-line}.cm em{font-style:normal;color:var(--v);font-size:.8rem}
+
 /* RUTA extras */
 .ruta-acc{display:flex;flex-direction:column;gap:10px}
 .lbl{font-size:.82rem;color:var(--g)}
 .drw input{width:100%;padding:12px 16px;border-radius:14px;border:1px solid rgba(25,255,122,.3);background:rgba(3,12,7,.8);color:#fff;font:inherit;outline:none}
 .err{color:#ff8a8a;font-size:.82rem;min-height:1em}
 .ruta-acc .cta{text-align:center}
+
 /* ARRIBA + FOOTER */
 #arriba{position:fixed;right:16px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:1400;width:44px;height:44px;border-radius:50%;border:1px solid var(--v);background:rgba(3,14,9,.85);color:var(--v);font-size:1.2rem;opacity:0;pointer-events:none;transition:.3s}
 #arriba.on{opacity:1;pointer-events:auto}
 footer a{color:var(--v);text-decoration:none;margin:0 10px;cursor:pointer}
 footer a:hover{text-decoration:underline}
 footer nav{margin:12px 0}
-@media(max-width:900px){.cm-wrap{grid-template-columns:1fr}.cm-form{position:static}.mapa iframe{height:280px}.cm-form,.cm-list,.ic{padding:20px}}
+
+/* RESPONSIVE */
+@media(max-width:900px){.hero-foto{min-height:0}.baja{display:none}.seccion{padding:40px 16px 60px}.grid{grid-template-columns:1fr}.mp{grid-template-columns:1fr}.mi{min-height:220px;max-height:42vh}.filtro-btn{width:calc(50% - 8px);max-width:190px;height:90px}.cm-wrap{grid-template-columns:1fr}.cm-form{position:static}.mapa iframe{height:280px}.cm-form,.cm-list,.ic{padding:20px}}
+@media(max-width:520px){
+  .dock{gap:6px;padding:6px 8px}
+  .dock b{font-size:.85rem;letter-spacing:2px;padding:0 6px}
+  .dk{font-size:1.05rem;padding:9px 11px;min-width:40px;min-height:40px}
+}
+@media(max-width:380px){
+  .dk{padding:8px 9px;min-width:36px;min-height:36px;font-size:1rem}
+  .dock b{font-size:.75rem;padding:0 4px}
+}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 <style>:root{--lis:url(https://raw.githubusercontent.com/sabroliviabolivia-ctrl/turismowarnes/main/liston.png)}</style>
@@ -184,13 +208,12 @@ footer nav{margin:12px 0}
 <canvas id="fx"></canvas>
 <button id="arriba" aria-label="Volver arriba">↑</button>
 
-<nav class="dock">
+<nav class="dock" aria-label="Navegación principal">
   <b>◆ WARNES</b>
-  <button class="dk" onclick="sorprender()" title="Sorpréndeme">🎲</button>
-  <button class="dk" onclick="irA('info')" title="Información útil y clima">ℹ️</button>
-  <button class="dk" onclick="irA('comentarios')" title="Opiniones de visitantes">💬</button>
-  <button class="dk" onclick="ciclarCielo()" id="btn-cielo" title="Cambiar hora del día">🌙</button>
-  <button class="dk" onclick="abrirRuta()" title="Mi ruta y pasaporte">🧭 <small id="n-ruta">0</small></button>
+  <button class="dk" onclick="sorprender()" title="Sorpréndeme con un lugar de cualquier categoría" aria-label="Sorpréndeme">🎲</button>
+  <button class="dk" onclick="irA('info')" title="Información útil y clima" aria-label="Información">ℹ️</button>
+  <button class="dk" onclick="irA('comentarios')" title="Opiniones de visitantes" aria-label="Comentarios">💬</button>
+  <button class="dk" onclick="abrirRuta()" title="Mi ruta y pasaporte" aria-label="Mi ruta">🧭 <small id="n-ruta">0</small></button>
 </nav>
 
 <main>
@@ -222,7 +245,7 @@ footer nav{margin:12px 0}
 <section class="seccion" id="catalogo">
   <div class="sh"><h2 id="tit">Explora <em>Warnes</em></h2><p id="des"></p></div>
   <div class="filtros">
-    <button class="filtro-btn activo" data-categoria="todos" onclick="cambiarCategoria('todos')"><span>🌐 Todos</span></button>
+    <button class="filtro-btn activo" data-categoria="todos" onclick="cambiarCategoria('todos')"><span>↩️ Volver al inicio</span></button>
     <button class="filtro-btn" data-categoria="turismo" onclick="cambiarCategoria('turismo')"><span>🏞️ Turismo</span></button>
     <button class="filtro-btn" data-categoria="cultura" onclick="cambiarCategoria('cultura')"><span>🎭 Cultura</span></button>
     <button class="filtro-btn" data-categoria="simbolos" onclick="cambiarCategoria('simbolos')"><span>🛡️ Símbolos</span></button>
@@ -321,7 +344,7 @@ function ln(t){return String(t||'').replace(/[:：]\s*$/,'').trim()}
 function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function num(v){var n=parseFloat(v);return isNaN(n)?9999:n}
 
-// NUEVO: filtro por columna "visible"
+// Filtro por columna "visible"
 function esVisible(o){var v=g(o,'visible','mostrar','activo');if(!v)return true;return /^(si|sí|1|true|x|yes|s)$/i.test(String(v).trim())}
 
 // ===== EMPAREJAR FOTOS =====
@@ -374,21 +397,64 @@ return'<div class="tj" tabindex="0" role="button" style="--d:'+Math.min(d==null?
 
 function textoBusqueda(s,it){var v=s.v(it);return v.t+' '+v.d+' '+v.b+' '+v.f.map(function(p){return p[1]}).join(' ')}
 function filtrar(s){var r=[];D[s.k].forEach(function(it,i){if(!consulta||nz(textoBusqueda(s,it)).indexOf(consulta)>-1)r.push([it,i])});return r}
+
 window.renderizar=function(cat){
   var i=INFO[cat]||INFO.todos;
   document.getElementById('tit').innerHTML=i[0]+' <em>'+i[1]+'</em>';
   document.getElementById('des').textContent=i[2];
+
+  // Buscador solo en vista "todos"
+  var buscador=document.querySelector('.buscador');
+  if(buscador) buscador.style.display = (cat==='todos') ? 'block' : 'none';
+
   var h='';
-  if(cat==='todos'){SEC.forEach(function(s){var it=filtrar(s);if(!it.length)return;var lim=consulta?it.length:6;
-    h+='<div class="sub"><div class="sub-h"><h3>'+s.n+'</h3>'+(!consulta&&it.length>6?'<button class="vm" onclick="cambiarCategoria(\''+s.k+'\')">Ver todos ('+it.length+')</button>':'')+'</div><div class="grid">'+it.slice(0,lim).map(function(x,j){return tarjeta(s,x[0],x[1],j)}).join('')+'</div></div>'})}
-  else{var s=SEC.find(function(x){return x.k===cat}),it=s?filtrar(s):[];if(it.length)h='<div class="grid">'+it.map(function(x,j){return tarjeta(s,x[0],x[1],j)}).join('')+'</div>'}
+  if(cat==='todos'){
+    SEC.forEach(function(s){
+      var it=filtrar(s);
+      if(!it.length)return;
+      var lim=consulta?it.length:6;
+      h+='<div class="sub"><div class="sub-h"><h3>'+s.n+'</h3>'+(!consulta&&it.length>6?'<button class="vm" onclick="cambiarCategoria(\''+s.k+'\')">Ver todos ('+it.length+')</button>':'')+'</div><div class="grid">'+it.slice(0,lim).map(function(x,j){return tarjeta(s,x[0],x[1],j)}).join('')+'</div></div>';
+    });
+  } else {
+    var s=SEC.find(function(x){return x.k===cat});
+    var it=s?filtrar(s):[];
+    if(it.length){
+      h='<div class="grid">'+it.map(function(x,j){return tarjeta(s,x[0],x[1],j)}).join('')+'</div>';
+    }
+  }
   document.getElementById('grid-principal').innerHTML=h||'<div class="loader">'+(consulta?'Sin resultados para tu búsqueda':'No hay datos disponibles en esta categoría')+'</div>';
   catActual=cat;
 };
 var catActual='todos',consulta='';
+
 window.cambiarCategoria=function(c){
-  document.querySelectorAll('.filtro-btn').forEach(function(b){b.classList.toggle('activo',b.getAttribute('data-categoria')===c)});
-  renderizar(c);var e=document.getElementById('catalogo');if(e)e.scrollIntoView({behavior:'smooth',block:'start'});
+  document.querySelectorAll('.filtro-btn').forEach(function(b){
+    b.classList.toggle('activo',b.getAttribute('data-categoria')===c);
+  });
+  renderizar(c);
+
+  // Aislar vista de categoría: ocultar hero, stats, info, comentarios, footer
+  var info=document.getElementById('info');
+  var comentarios=document.getElementById('comentarios');
+  var hero=document.querySelector('.hero');
+  var stats=document.querySelector('.stats');
+  var footer=document.querySelector('footer');
+
+  if(c==='todos'){
+    if(info) info.style.display='block';
+    if(comentarios) comentarios.style.display='block';
+    if(hero) hero.style.display='block';
+    if(stats) stats.style.display='flex';
+    if(footer) footer.style.display='block';
+  } else {
+    if(info) info.style.display='none';
+    if(comentarios) comentarios.style.display='none';
+    if(hero) hero.style.display='none';
+    if(stats) stats.style.display='none';
+    if(footer) footer.style.display='none';
+  }
+
+  window.scrollTo({top:0,behavior:'smooth'});
 };
 
 // ===== BOTONES CON IMAGEN =====
@@ -449,7 +515,24 @@ document.getElementById('lista').addEventListener('click',function(e){
   var p=e.target.closest('.pa');if(p){cerrarRuta();abrirDetalle(p.getAttribute('data-s'),parseInt(p.getAttribute('data-i'),10))}});
 function abrirRuta(){pintarRuta();document.getElementById('drw').classList.add('on')}
 function cerrarRuta(){document.getElementById('drw').classList.remove('on')}
-function sorprender(){var p=[];['turismo','cultura','restaurantes','hoteles'].forEach(function(k){D[k].forEach(function(_,i){p.push([k,i])})});if(!p.length)return;var x=p[Math.floor(Math.random()*p.length)];abrirDetalle(x[0],x[1])}
+
+// ⚡ Sorpréndeme desde TODAS las categorías
+function sorprender(){
+  var todas=['turismo','cultura','simbolos','comercio','restaurantes','hoteles','transporte'];
+  var p=[];
+  todas.forEach(function(k){
+    if(D[k]&&D[k].length){
+      D[k].forEach(function(_,i){p.push([k,i])});
+    }
+  });
+  if(!p.length){
+    var msg=document.getElementById('grid-principal');
+    if(msg)msg.innerHTML='<div class="loader">Aún no hay lugares cargados. Recarga en unos segundos.</div>';
+    return;
+  }
+  var x=p[Math.floor(Math.random()*p.length)];
+  abrirDetalle(x[0],x[1]);
+}
 
 // ===== INTERACCIÓN TARJETAS =====
 var cont=document.getElementById('grid-principal');
@@ -461,11 +544,15 @@ cont.addEventListener('mousemove',function(e){var t=e.target.closest('.tj');if(!
   t.style.setProperty('--ry',((x-.5)*12)+'deg');t.style.setProperty('--rx',((.5-y)*12)+'deg');t.style.setProperty('--sx',x*100+'%');t.style.setProperty('--sy',y*100+'%')});
 cont.addEventListener('mouseout',function(e){var t=e.target.closest('.tj');if(t){t.style.setProperty('--rx','0deg');t.style.setProperty('--ry','0deg')}});
 
-// ===== CIELO VIVO =====
-var FASES=['alba','dia','ocaso','noche'],ICO={alba:'🌅',dia:'☀️',ocaso:'🌇',noche:'🌙'},SAL={alba:'Buen día',dia:'Buenas tardes',ocaso:'Buen atardecer',noche:'Buenas noches'};
-function ponerCielo(f){document.body.dataset.cielo=f;document.getElementById('btn-cielo').textContent=ICO[f];document.getElementById('saludo').textContent='◉ '+SAL[f]+' desde Warnes · Bolivia'}
-function ciclarCielo(){ponerCielo(FASES[(FASES.indexOf(document.body.dataset.cielo)+1)%4])}
-(function(){var h=new Date().getHours();ponerCielo(h>=5&&h<8?'alba':h>=8&&h<17?'dia':h>=17&&h<19?'ocaso':'noche')})();
+// ===== CIELO AUTOMÁTICO (sin botón, sin usuario interviniendo) =====
+(function(){
+  var h=new Date().getHours();
+  var f=h>=5&&h<8?'alba':h>=8&&h<17?'dia':h>=17&&h<19?'ocaso':'noche';
+  document.body.dataset.cielo=f;
+  var SAL={alba:'Buen día',dia:'Buenas tardes',ocaso:'Buen atardecer',noche:'Buenas noches'};
+  var s=document.getElementById('saludo');
+  if(s)s.textContent='◉ '+SAL[f]+' desde Warnes · Bolivia';
+})();
 
 // ===== PARTÍCULAS =====
 var cv=document.getElementById('fx'),cx=cv.getContext('2d'),P=[],W,H,BW;
