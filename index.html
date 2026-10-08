@@ -178,10 +178,7 @@ footer nav{margin:12px 0}
 @media(max-width:900px){.cm-wrap{grid-template-columns:1fr}.cm-form{position:static}.mapa iframe{height:280px}.cm-form,.cm-list,.ic{padding:20px}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
-
-<!-- Listón: se carga desde tu GitHub (ya no hace falta el bloque base64) -->
 <style>:root{--lis:url(https://raw.githubusercontent.com/sabroliviabolivia-ctrl/turismowarnes/main/liston.png)}</style>
-
 </head>
 <body data-cielo="noche">
 <canvas id="fx"></canvas>
@@ -308,18 +305,14 @@ const BASE='https://docs.google.com/spreadsheets/d/e/2PACX-1vTJfCxTTkuO2WZYGzJzW
 const URL_TURISMO=BASE+'0',URL_SIMBOLOS=BASE+'23752783',URL_COMERCIO=BASE+'2046609834',URL_CULTURA=BASE+'530297980';
 const URL_RESTAURANTE=BASE+'1529568127',URL_HOTELES=BASE+'401570127',URL_TRANSPORTE=BASE+'1762496340';
 const BASE_IMG='https://sabroliviabolivia-ctrl.github.io/turismowarnes/';
-const IMAGENES_REPO={
-turismo:["casa-delas-pailas.png","comunidad-tradicionales.jpeg","el-copetin-.jpg","hotelrio-selva.jpg","monte-grandiosa.jpg","parque-ecologico.jpg","playland-park.jpg","plazacentralde-warnes.jpg","riosylagunas.jpg","terramia.jpg"],
-cultura:["actividad_cultural.jpg","decoracion.jpg","dia_mundialdel_turismo.jpg","diadel_folklore.jpg","festival_cultural.jpg","festival_dela_tamborita.jpg","festival_gastronomico.jpg","jocheo_de_toros.jpg","ofrenda_floral.jpg","serenata_virgen_del_rosario.jpg"],
-simbolo:["aniversariodecreacion.jpg","banderaprovincial.jpg","escudoprovincial.jpg","nuestra_rosario.jpg"],
-comercio:["a_a_a_internacional.png","ajebolivia.png","cameo.jpg","carlos_caballero.jpg","casa_ideal.jpg","ceramica_estructural.jpg","ceramica_norte.jpg","cerveceria_sabores_bolivianos.png","cimbol.jpg","coboce_cemento.jpg","copelme.png","dxn.jpg","eduardo.jpg","fabrica_de_baterias.jpg","fabrica_medicamentos_abd.jpg","fino.jpg","gravetal.jpg","industrias_venado.png","ipilcruz.jpg","la_suprema.png","luoyang.jpg","ovoprot.png","papelera_vinto.jpg","parque_eolico.jpg","planta_termoelectrica.jpg","soboce.jpg","sobolma.png","syntex.jpg","tres60.png"],
-hoteles:[],restaurante:[],transporte:[]};
+
+const IMAGENES_REPO={turismo:[],cultura:[],simbolo:[],comercio:[],hoteles:[],restaurante:[],transporte:[]};
 const FB='https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=80';
 
 window.imgFalla=function(el){try{var l=JSON.parse(el.getAttribute('data-srcs')),i=(parseInt(el.getAttribute('data-i'),10)||0)+1;if(i<l.length){el.setAttribute('data-i',i);el.src=l[i];return}}catch(e){}el.onerror=null};
 
 // ===== CSV =====
-function parseCSV(t){var f=[],r=[],c='',q=false;for(var i=0;i<t.length;i++){var h=t[i];if(q){if(h==='"'){if(t[i+1]==='"'){c+='"';i++}else q=false}else c+=h}else{if(h==='"')q=true;else if(h===',') {r.push(c);c=''}else if(h==='\n'){r.push(c);f.push(r);r=[];c=''}else if(h!=='\r')c+=h}}if(c!==''||r.length){r.push(c);f.push(r)}return f}
+function parseCSV(t){var f=[],r=[],c='',q=false;for(var i=0;i<t.length;i++){var h=t[i];if(q){if(h==='"'){if(t[i+1]==='"'){c+='"';i++}else q=false}else c+=h}else{if(h==='"')q=true;else if(h===','){r.push(c);c=''}else if(h==='\n'){r.push(c);f.push(r);r=[];c=''}else if(h!=='\r')c+=h}}if(c!==''||r.length){r.push(c);f.push(r)}return f}
 function clave(h){return String(h||'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'_')}
 function aObj(f){if(!f.length)return[];var e=f[0].map(clave);return f.slice(1).filter(function(r){return r.some(function(c){return c.trim()})}).map(function(r){var o={};e.forEach(function(h,i){if(h)o[h]=(r[i]||'').trim()});return o})}
 function g(o){for(var i=1;i<arguments.length;i++)if(o[arguments[i]])return o[arguments[i]];return''}
@@ -328,7 +321,10 @@ function ln(t){return String(t||'').replace(/[:：]\s*$/,'').trim()}
 function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function num(v){var n=parseFloat(v);return isNaN(n)?9999:n}
 
-// ===== EMPAREJAR FOTOS POR NOMBRE =====
+// NUEVO: filtro por columna "visible"
+function esVisible(o){var v=g(o,'visible','mostrar','activo');if(!v)return true;return /^(si|sí|1|true|x|yes|s)$/i.test(String(v).trim())}
+
+// ===== EMPAREJAR FOTOS =====
 var STOP={de:1,del:1,la:1,las:1,el:1,los:1,y:1,en:1,al:1,con:1,dela:1,delas:1,delos:1};
 function nz(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
 function tk(s){return nz(s).split(/[^a-z0-9]+/).filter(function(t){return t&&!STOP[t]})}
@@ -350,7 +346,6 @@ restaurantes:['Sabores &','Restaurantes','Gastronomía warneña: donde comer lo 
 hoteles:['Hoteles &','Alojamiento','Lugares donde descansar y hospedarte durante tu visita a Warnes.'],
 transporte:['Cómo','Llegar y Moverte','Servicios de transporte para llegar a Warnes y recorrer la provincia.']};
 
-// campos extra genéricos para restaurantes / hoteles / transporte
 function camposGen(o){
   var def=[['◉',['ubicacion','direccion','lugar','zona']],['◷',['horario','horarios','atencion']],['☎',['telefono','celular','contacto','whatsapp']],
            ['$',['precio','precios','tarifa','costo','precio_desde']],['➜',['ruta','destino','origen']],['⟳',['frecuencia','salidas']]],f=[];
@@ -360,10 +355,10 @@ function descGen(o,x){return g(o,'descripcion','detalle','servicios','especialid
 function insignia(o,x){var t=g(o,'tipo','categoria');return t&&t.length<22?t:x}
 
 const SEC=[
-{k:'turismo',n:'🏞️ Turismo',v:function(o){var f=[];o.ubicacion&&f.push(['◉',o.ubicacion]);o.horario&&f.push(['◷',o.horario]);return{t:o.nombre,b:'Turismo',d:o.descripcion||'Sin descripción.',f:f,im:cand('turismo',o.imagen_url,o.nombre),c:0,m:1}}},
-{k:'cultura',n:'🎭 Cultura',v:function(o){var f=[];o.fecha&&f.push(['◷',o.fecha]);o.lugar&&f.push(['◉',o.lugar]);return{t:o.actividad,b:o.fecha||'Evento',d:o.descripcion||'Evento cultural de la provincia Warnes.',f:f,im:cand('cultura',o.imagen_url,o.actividad),c:0,m:1}}},
-{k:'simbolos',n:'🛡️ Símbolos',v:function(o){var f=[];o.dato_normativo&&o.dato_normativo!=='—'&&f.push(['◈',o.dato_normativo]);return{t:o.nombre,b:'Símbolo',d:o.descripcion||'Símbolo oficial de la Provincia Warnes.',f:f,im:cand('simbolo',o.imagen_url,o.nombre+' '+(o.tipo||'')),c:1,m:0}}},
-{k:'comercio',n:'🏭 Industria',v:function(o){var f=[];o.ubicacion&&f.push(['◉',o.ubicacion]);o.horario&&f.push(['◷',o.horario]);o.telefono&&f.push(['☎',o.telefono]);return{t:o.nombre,b:'Industria',d:o.descripcion||'Empresa industrial de la provincia Warnes.',f:f,im:cand('comercio',o.imagen_url,o.nombre),c:1,m:1}}},
+{k:'turismo',n:'🏞️ Turismo',v:function(o){var f=[];if(o.ubicacion)f.push(['◉',o.ubicacion]);if(o.horario)f.push(['◷',o.horario]);return{t:o.nombre,b:'Turismo',d:o.descripcion||'Sin descripción.',f:f,im:cand('turismo',o.imagen_url,o.nombre),c:0,m:1}}},
+{k:'cultura',n:'🎭 Cultura',v:function(o){var f=[];if(o.fecha)f.push(['◷',o.fecha]);if(o.lugar)f.push(['◉',o.lugar]);return{t:o.actividad,b:o.fecha||'Evento',d:o.descripcion||'Evento cultural de la provincia Warnes.',f:f,im:cand('cultura',o.imagen_url,o.actividad),c:0,m:1}}},
+{k:'simbolos',n:'🛡️ Símbolos',v:function(o){var f=[];if(o.dato_normativo&&o.dato_normativo!=='—')f.push(['◈',o.dato_normativo]);return{t:o.nombre,b:'Símbolo',d:o.descripcion||'Símbolo oficial de la Provincia Warnes.',f:f,im:cand('simbolo',o.imagen_url,o.nombre+' '+(o.tipo||'')),c:1,m:0}}},
+{k:'comercio',n:'🏭 Industria',v:function(o){var f=[];if(o.ubicacion)f.push(['◉',o.ubicacion]);if(o.horario)f.push(['◷',o.horario]);if(o.telefono)f.push(['☎',o.telefono]);return{t:o.nombre,b:'Industria',d:o.descripcion||'Empresa industrial de la provincia Warnes.',f:f,im:cand('comercio',o.imagen_url,o.nombre),c:1,m:1}}},
 {k:'restaurantes',n:'🍽️ Restaurantes',v:function(o){return{t:o.nombre,b:insignia(o,'Restaurante'),d:descGen(o,'Restaurante de la provincia Warnes.'),f:camposGen(o),im:cand('restaurante',g(o,'imagen_url','imagen','foto'),o.nombre),c:0,m:1}}},
 {k:'hoteles',n:'🏨 Hoteles',v:function(o){return{t:o.nombre,b:insignia(o,'Hotel'),d:descGen(o,'Alojamiento en la provincia Warnes.'),f:camposGen(o),im:cand('hoteles',g(o,'imagen_url','imagen','foto'),o.nombre),c:0,m:1}}},
 {k:'transporte',n:'🚌 Transporte',v:function(o){return{t:o.nombre,b:insignia(o,'Transporte'),d:descGen(o,'Servicio de transporte en la provincia Warnes.'),f:camposGen(o),im:cand('transporte',g(o,'imagen_url','imagen','foto'),o.nombre),c:0,m:1}}}];
@@ -396,7 +391,7 @@ window.cambiarCategoria=function(c){
   renderizar(c);var e=document.getElementById('catalogo');if(e)e.scrollIntoView({behavior:'smooth',block:'start'});
 };
 
-// ===== BOTONES CON IMAGEN DE SU CATEGORÍA =====
+// ===== BOTONES CON IMAGEN =====
 var CARPETA={turismo:'turismo',cultura:'cultura',simbolos:'simbolo',comercio:'comercio',restaurantes:'restaurante',hoteles:'hoteles',transporte:'transporte'};
 function imgBoton(c){
   if(c==='todos')return BASE_IMG+'turismo/plazacentralde-warnes.jpg';
@@ -432,7 +427,7 @@ document.getElementById('m-x').onclick=cerrarDetalle;
 document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)cerrarDetalle()});
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){cerrarDetalle();cerrarRuta()}});
 
-// ===== MI RUTA + PASAPORTE =====
+// ===== MI RUTA =====
 var ruta=[];try{ruta=JSON.parse(localStorage.getItem('ruta_warnes')||'[]')}catch(e){}
 function alternar(k){var i=ruta.indexOf(k);if(i>-1)ruta.splice(i,1);else ruta.push(k);try{localStorage.setItem('ruta_warnes',JSON.stringify(ruta))}catch(e){}pintarRuta();
   document.querySelectorAll('.fav').forEach(function(b){var on=ruta.indexOf(b.getAttribute('data-k'))>-1;b.classList.toggle('on',on);b.textContent=on?'✓':'♥'})}
@@ -456,7 +451,7 @@ function abrirRuta(){pintarRuta();document.getElementById('drw').classList.add('
 function cerrarRuta(){document.getElementById('drw').classList.remove('on')}
 function sorprender(){var p=[];['turismo','cultura','restaurantes','hoteles'].forEach(function(k){D[k].forEach(function(_,i){p.push([k,i])})});if(!p.length)return;var x=p[Math.floor(Math.random()*p.length)];abrirDetalle(x[0],x[1])}
 
-// ===== INTERACCIÓN DE TARJETAS =====
+// ===== INTERACCIÓN TARJETAS =====
 var cont=document.getElementById('grid-principal');
 cont.addEventListener('click',function(e){
   var f=e.target.closest('.fav');if(f){e.stopPropagation();alternar(f.getAttribute('data-k'));return}
@@ -508,12 +503,12 @@ addEventListener('mousemove',function(e){document.body.style.setProperty('--mx',
   im.addEventListener('load',m);addEventListener('resize',m);addEventListener('orientationchange',m);m();
 })();
 
-// ===== CONFIGURACIÓN (edita aquí) =====
-const URL_COMENTARIOS='https://script.google.com/macros/s/AKfycbwj9L9OizYxd2muEYn2XkjzEw5uNG0xUyz-sY71mx5MhxQ-Jr2CkiJvP9gc5WNR7WdB/exec';   // Pega aquí la URL /exec de tu Google Apps Script (ver instrucciones)
-const WSP_CONTACTO='';      // WhatsApp de contacto turístico con código de país, ej: '59170000000' (opcional)
+// ===== CONFIGURACIÓN =====
+const URL_COMENTARIOS='https://script.google.com/macros/s/AKfycbwj9L9OizYxd2muEYn2XkjzEw5uNG0xUyz-sY71mx5MhxQ-Jr2CkiJvP9gc5WNR7WdB/exec';
+const WSP_CONTACTO='';
 const SITIO=location.href.split('#')[0];
 
-// ===== NAVEGACIÓN / EXTRAS =====
+// ===== NAVEGACIÓN =====
 function irA(id){var e=document.getElementById(id);if(e)e.scrollIntoView({behavior:'smooth',block:'start'})}
 function compartirSitio(){var d={title:'Warnes · Turismo',text:'Descubre Warnes, Bolivia 🌴',url:SITIO};if(navigator.share)navigator.share(d).catch(function(){});else window.open('https://wa.me/?text='+encodeURIComponent(d.text+' '+d.url),'_blank')}
 var ar=document.getElementById('arriba');addEventListener('scroll',function(){ar.classList.toggle('on',scrollY>700)},{passive:true});ar.onclick=function(){scrollTo({top:0,behavior:'smooth'})};
@@ -521,7 +516,7 @@ document.getElementById('anio').textContent=new Date().getFullYear();
 var tq=null;document.getElementById('q').addEventListener('input',function(){var v=this.value;clearTimeout(tq);tq=setTimeout(function(){consulta=nz(v.trim());renderizar(catActual)},180)});
 (function(){var c=document.getElementById('contacto');if(WSP_CONTACTO)c.innerHTML='<h3>📞 Contacto turístico</h3><p>¿Dudas sobre tu visita? Escríbenos.</p><a class="cta" target="_blank" rel="noopener" href="https://wa.me/'+WSP_CONTACTO.replace(/\D/g,'')+'">💬 Escribir por WhatsApp</a>';else c.remove()})();
 
-// ===== WHATSAPP: ENVIAR MI RUTA =====
+// ===== WHATSAPP =====
 var EMO={'◉':'📍','◷':'🕒','☎':'📞','$':'💰','➜':'🚏','⟳':'🔁','◈':'📜'};
 function mapaUrl(t){return'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(t+' Warnes Bolivia')}
 function bloqueItem(v,n,conDesc){
@@ -581,7 +576,7 @@ async function enviarComentario(){
 function comentarSobre(n){document.getElementById('c-lug').value=n;irA('comentarios');setTimeout(function(){document.getElementById('c-txt').focus({preventScroll:true})},700)}
 function llenarLugares(){var o={};SEC.forEach(function(x){D[x.k].forEach(function(it){var t=x.v(it).t;if(t)o[t]=1})});document.getElementById('lugares').innerHTML=Object.keys(o).sort().map(function(n){return'<option value="'+esc(n)+'">'}).join('')}
 
-// ===== CLIMA (Open-Meteo, sin clave) =====
+// ===== CLIMA =====
 function wmo(c){if(c===0)return['☀️','Despejado'];if(c<=2)return['⛅','Parcialmente nublado'];if(c===3)return['☁️','Nublado'];if(c<=48)return['🌫️','Neblina'];if(c<=57)return['🌦️','Llovizna'];if(c<=67)return['🌧️','Lluvia'];if(c<=77)return['🌨️','Nieve'];if(c<=82)return['🌦️','Chubascos'];if(c<=86)return['🌨️','Nieve'];return['⛈️','Tormenta']}
 async function clima(){var el=document.getElementById('clima');
   try{var r=await fetch('https://api.open-meteo.com/v1/forecast?latitude=-17.52&longitude=-63.17&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=America%2FLa_Paz&forecast_days=4');
@@ -595,28 +590,43 @@ var SID='1Cal6UmdBajiTrhAzz_-mnr7Mc68zEBA7Har5Plkvj7Q';
 function gv(n){return'https://docs.google.com/spreadsheets/d/'+SID+'/gviz/tq?tqx=out:csv&sheet='+n}
 async function csv(us){for(var i=0;i<us.length;i++){try{var r=await fetch(us[i]);if(!r.ok)throw new Error('HTTP '+r.status);var t=await r.text();if(t.trim().charAt(0)==='<')throw new Error('Hoja no accesible');var o=aObj(parseCSV(t));if(o.length)return o}catch(e){console.warn('Hoja:',us[i],e.message)}}return[]}
 function contar(){document.querySelectorAll('[data-n]').forEach(function(el){var m=D[el.dataset.n].length,c=0,s=Math.max(1,Math.ceil(m/30));var iv=setInterval(function(){c=Math.min(m,c+s);el.textContent=c;if(c>=m)clearInterval(iv)},40)})}
+
+// Carga dinámica de imágenes desde GitHub
 async function cargarImagenes(){
   await Promise.all(['turismo','cultura','simbolo','comercio','hoteles','restaurante','transporte'].map(async function(c){
-    var ck='img_warnes_'+c,hit=null;try{hit=JSON.parse(localStorage.getItem(ck)||'null')}catch(e){}
-    if(hit&&Date.now()-hit.t<300000){IMAGENES_REPO[c]=hit.l;return}
-    try{var r=await fetch('https://api.github.com/repos/sabroliviabolivia-ctrl/turismowarnes/contents/'+c);if(!r.ok)throw 0;var j=await r.json();
+    var ck='img_warnes_v2_'+c,hit=null;try{hit=JSON.parse(localStorage.getItem(ck)||'null')}catch(e){}
+    if(hit&&Date.now()-hit.t<600000){IMAGENES_REPO[c]=hit.l;return}
+    try{
+      var r=await fetch('https://api.github.com/repos/sabroliviabolivia-ctrl/turismowarnes/contents/'+c,{cache:'no-store'});
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      var j=await r.json();
+      if(!Array.isArray(j))throw new Error('Respuesta inválida');
       var l=j.filter(function(x){return x.type==='file'&&/\.(jpe?g|png|webp|gif|avif)$/i.test(x.name)}).map(function(x){return x.name});
-      if(l.length){IMAGENES_REPO[c]=l;try{localStorage.setItem(ck,JSON.stringify({t:Date.now(),l:l}))}catch(e){}}}catch(e){}
+      if(l.length){IMAGENES_REPO[c]=l;try{localStorage.setItem(ck,JSON.stringify({t:Date.now(),l:l}))}catch(e){}}
+    }catch(e){console.warn('GitHub imágenes '+c+':',e.message)}
   }));
 }
 function listaGen(rows){return rows.map(function(o){o.nombre=nombreGen(o);return o}).filter(function(x){return x.nombre}).sort(function(a,b){return a.nombre.localeCompare(b.nombre,'es')})}
+
 async function cargarTodo(){
   await cargarImagenes();pintarBotones();
   var c=await Promise.all([[gv('turismo'),URL_TURISMO],[gv('cultura'),URL_CULTURA],[gv('simbolo'),URL_SIMBOLOS],[gv('comercio'),URL_COMERCIO],[gv('restaurante'),URL_RESTAURANTE],[gv('hoteles'),URL_HOTELES],[gv('transporte'),URL_TRANSPORTE]].map(csv));
-  D.turismo=c[0].map(function(o,i){return{nombre:ln(g(o,'nombre','titulo')||pv(o)),descripcion:g(o,'descripcion','detalle'),ubicacion:g(o,'ubicacion','direccion','lugar'),horario:g(o,'horario'),imagen_url:g(o,'imagen_url','imagen','foto'),dest:/^(true|verdadero|si|sí|1|x)$/i.test(o.destacado||''),_o:i}}).filter(function(x){return x.nombre}).sort(function(a,b){return(b.dest-a.dest)||(a._o-b._o)});
-  D.cultura=c[1].map(function(o,i){return{actividad:ln(g(o,'actividad','evento','nombre','titulo')||pv(o)),fecha:g(o,'fecha','mes'),lugar:g(o,'lugar','ubicacion'),descripcion:g(o,'descripcion','detalle'),imagen_url:g(o,'imagen_url','imagen','foto'),_o:o.mes_orden?num(o.mes_orden):i}}).filter(function(x){return x.actividad}).sort(function(a,b){return a._o-b._o});
-  D.simbolos=c[2].map(function(o,i){return{nombre:ln(g(o,'nombre','simbolo','titulo','actividad')||pv(o)),tipo:g(o,'tipo','categoria'),descripcion:g(o,'descripcion','detalle'),dato_normativo:g(o,'dato_normativo','norma','normativa'),imagen_url:g(o,'imagen_url','imagen','foto'),_o:o.orden?num(o.orden):i}}).filter(function(x){return x.nombre}).sort(function(a,b){return a._o-b._o});
-  D.comercio=c[3].map(function(o){return{nombre:ln(g(o,'nombre','empresa','razon_social','titulo')||pv(o)),descripcion:g(o,'descripcion','rubro','actividad','detalle'),ubicacion:g(o,'ubicacion','direccion','lugar'),horario:g(o,'horario'),telefono:g(o,'telefono','celular','contacto'),imagen_url:g(o,'imagen_url','imagen','foto','logo')}}).filter(function(x){return x.nombre}).sort(function(a,b){return a.nombre.localeCompare(b.nombre,'es')});
-  D.restaurantes=listaGen(c[4]);
-  D.hoteles=listaGen(c[5]);
-  D.transporte=listaGen(c[6]);
+
+  D.turismo=c[0].map(function(o,i){return{nombre:ln(g(o,'nombre','titulo')||pv(o)),descripcion:g(o,'descripcion','detalle'),ubicacion:g(o,'ubicacion','direccion','lugar'),horario:g(o,'horario'),imagen_url:g(o,'imagen_url','imagen','foto'),dest:/^(true|verdadero|si|sí|1|x)$/i.test(o.destacado||''),_o:i,_vis:esVisible(o)}}).filter(function(x){return x.nombre&&x._vis}).sort(function(a,b){return(b.dest-a.dest)||(a._o-b._o)});
+
+  D.cultura=c[1].map(function(o,i){return{actividad:ln(g(o,'actividad','evento','nombre','titulo')||pv(o)),fecha:g(o,'fecha','mes'),lugar:g(o,'lugar','ubicacion'),descripcion:g(o,'descripcion','detalle'),imagen_url:g(o,'imagen_url','imagen','foto'),_o:o.mes_orden?num(o.mes_orden):i,_vis:esVisible(o)}}).filter(function(x){return x.actividad&&x._vis}).sort(function(a,b){return a._o-b._o});
+
+  D.simbolos=c[2].map(function(o,i){return{nombre:ln(g(o,'nombre','simbolo','titulo','actividad')||pv(o)),tipo:g(o,'tipo','categoria'),descripcion:g(o,'descripcion','detalle'),dato_normativo:g(o,'dato_normativo','norma','normativa'),imagen_url:g(o,'imagen_url','imagen','foto'),_o:o.orden?num(o.orden):i,_vis:esVisible(o)}}).filter(function(x){return x.nombre&&x._vis}).sort(function(a,b){return a._o-b._o});
+
+  D.comercio=c[3].map(function(o){return{nombre:ln(g(o,'nombre','empresa','razon_social','titulo')||pv(o)),descripcion:g(o,'descripcion','rubro','actividad','detalle'),ubicacion:g(o,'ubicacion','direccion','lugar'),horario:g(o,'horario'),telefono:g(o,'telefono','celular','contacto'),imagen_url:g(o,'imagen_url','imagen','foto','logo'),_vis:esVisible(o)}}).filter(function(x){return x.nombre&&x._vis}).sort(function(a,b){return a.nombre.localeCompare(b.nombre,'es')});
+
+  D.restaurantes=listaGen(c[4].filter(esVisible));
+  D.hoteles=listaGen(c[5].filter(esVisible));
+  D.transporte=listaGen(c[6].filter(esVisible));
+
   pintarBotones();llenarLugares();renderizar('todos');pintarRuta();contar();
 }
+
 try{document.getElementById('wsp-num').value=localStorage.getItem('wsp_warnes')||'';document.getElementById('c-nom').value=localStorage.getItem('com_nombre')||''}catch(e){}
 clima();cargarComentarios();
 cargarTodo();
