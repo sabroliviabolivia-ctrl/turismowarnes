@@ -502,6 +502,8 @@ footer .foot-legal a{margin:0 6px}
     <div class="sor-lista" id="sor-lista"></div>
     <div class="sor-acciones">
       <button class="sor-btn" onclick="sorprender()">🎲 Otra selección</button>
+      <button class="sor-btn" onclick="sorCompartirWsp()">📲 WhatsApp</button>
+      <button class="sor-btn" onclick="sorCompartirMail()">✉️ Correo</button>
       <button class="sor-btn alt" onclick="cerrarSorpresa()">✕ Cerrar</button>
     </div>
   </div>
@@ -716,6 +718,26 @@ function cerrarSorpresa(){
 document.getElementById('sor-x').onclick=cerrarSorpresa;
 document.getElementById('modal-sor').addEventListener('click',function(e){if(e.target===this)cerrarSorpresa()});
 
+var SOR_ACTUAL=[];
+function sorTexto(modo,conDesc){
+  var f=new Date().toLocaleDateString('es-BO',{day:'numeric',month:'long',year:'numeric'}),wa=modo==='wsp',B=wa?'*':'';
+  var t=(wa?'🎲 ':'')+B+'Mi selección sorpresa en Warnes, Bolivia'+B+'\n📅 '+f+'\n\n';
+  t+=SOR_ACTUAL.map(function(v,i){
+    var l=[B+(i+1)+'. '+v.t+B+' · '+v._cat];
+    if(conDesc&&v.d&&v.d!=='Sin descripción.'){var d=v.d.replace(/\s+/g,' ');l.push(d.length>150?d.slice(0,147)+'…':d)}
+    v.f.forEach(function(p){l.push((EMO[p[0]]||'•')+' '+p[1])});
+    if(v.m)l.push('🗺️ '+mapaUrl(v.t));
+    return l.join('\n')}).join('\n\n');
+  return t+'\n\n🔗 Descubre más en: '+SITIO}
+function sorCompartirWsp(){
+  if(!SOR_ACTUAL.length)return;
+  var t=sorTexto('wsp',true);if(encodeURIComponent(t).length>1900)t=sorTexto('wsp',false);
+  window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank')}
+function sorCompartirMail(){
+  if(!SOR_ACTUAL.length)return;
+  var t=sorTexto('mail',true);if(encodeURIComponent(t).length>1800)t=sorTexto('mail',false);
+  location.href='mailto:?subject='+encodeURIComponent('Mi selección sorpresa en Warnes, Bolivia')+'&body='+encodeURIComponent(t)}
+
 function sorprender(){
   var orden=[
     {k:'turismo',     icono:'🏞️', nombre:'Turismo'},
@@ -753,6 +775,7 @@ function sorprender(){
        '<span class="sor-arrow">›</span>'+
        '</div>';
   });
+  SOR_ACTUAL=seleccion.map(function(x){var v=x.s.v(x.it);v._cat=x.icono+' '+x.nombre;return v});
   document.getElementById('sor-lista').innerHTML=h;
   var m=document.getElementById('modal-sor');
   m.classList.add('on');m.setAttribute('aria-hidden','false');document.body.classList.add('nos');
