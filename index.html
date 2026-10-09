@@ -343,8 +343,8 @@ footer .foot-legal a{margin:0 6px}
 <main>
 <header class="hero" id="inicio">
   <div class="hero-foto"><div class="hero-fondo"></div><div class="hero-marco"><img alt="Plaza central de Warnes" fetchpriority="high"
-    src="https://scdkbbqkeegmixkfhptl.supabase.co/storage/v1/object/public/imagenes/turismo/plazacentralde-warnes-hd.jpg"
-    data-srcs='["https://scdkbbqkeegmixkfhptl.supabase.co/storage/v1/object/public/imagenes/turismo/plazacentralde-warnes-hd.jpg","https://scdkbbqkeegmixkfhptl.supabase.co/storage/v1/object/public/imagenes/turismo/plazacentralde-warnes.jpg"]' data-i="0" onerror="imgFalla(this)"><i class="lis t"></i></div><i class="lis l"></i><i class="lis r"></i><a class="baja" href="#bienvenida">Explorar ↓</a></div>
+    src="https://scdkbbqkeegmixkfhptl.supabase.co/storage/v1/object/public/imagenes/turismo/plazacentralde-warnes.jpg"
+    data-srcs='["https://scdkbbqkeegmixkfhptl.supabase.co/storage/v1/object/public/imagenes/turismo/plazacentralde-warnes.jpg"]' data-i="0" onerror="imgFalla(this)"><i class="lis t"></i></div><i class="lis l"></i><i class="lis r"></i><a class="baja" href="#bienvenida">Explorar ↓</a></div>
   <div class="hero-in" id="bienvenida">
     <span class="kick" id="saludo">◉ Santa Cruz · Bolivia</span>
     <h1 aria-label="Warnes"><span style="--i:1">W</span><span style="--i:2">A</span><span style="--i:3">R</span><span style="--i:4">N</span><span style="--i:5">E</span><span style="--i:6">S</span></h1>
@@ -562,7 +562,7 @@ const URL_TURISMO=BASE+'0',URL_SIMBOLOS=BASE+'23752783',URL_COMERCIO=BASE+'20466
 const URL_RESTAURANTE=BASE+'1529568127',URL_HOTELES=BASE+'401570127',URL_TRANSPORTE=BASE+'1762496340';
 const BASE_IMG='https://scdkbbqkeegmixkfhptl.supabase.co/storage/v1/object/public/imagenes/';
 
-const IMAGENES_REPO={turismo:[],cultura:[],simbolo:[],comercio:[],hoteles:[],restaurante:[],transporte:[]};
+const IMAGENES_REPO={turismo:[],cultura:[],simbolos:[],comercio:[],hoteles:[],restaurante:[],transporte:[]};
 const FB='https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=80';
 
 window.imgFalla=function(el){try{var l=JSON.parse(el.getAttribute('data-srcs')),i=(parseInt(el.getAttribute('data-i'),10)||0)+1;if(i<l.length){el.setAttribute('data-i',i);el.src=l[i];return}}catch(e){}el.onerror=null};
@@ -611,7 +611,7 @@ function insignia(o,x){var t=g(o,'tipo','categoria');return t&&t.length<22?t:x}
 const SEC=[
 {k:'turismo',n:'🏞️ Turismo',v:function(o){var f=[];if(o.ubicacion)f.push(['◉',o.ubicacion]);if(o.horario)f.push(['◷',o.horario]);return{t:o.nombre,b:'Turismo',d:o.descripcion||'Sin descripción.',f:f,im:cand('turismo',o.imagen_url,o.nombre),c:0,m:1}}},
 {k:'cultura',n:'🎭 Cultura',v:function(o){var f=[];if(o.fecha)f.push(['◷',o.fecha]);if(o.lugar)f.push(['◉',o.lugar]);return{t:o.actividad,b:o.fecha||'Evento',d:o.descripcion||'Evento cultural de la provincia Warnes.',f:f,im:cand('cultura',o.imagen_url,o.actividad),c:0,m:1}}},
-{k:'simbolos',n:'🛡️ Símbolos',v:function(o){var f=[];if(o.dato_normativo&&o.dato_normativo!=='—')f.push(['◈',o.dato_normativo]);return{t:o.nombre,b:'Símbolo',d:o.descripcion||'Símbolo oficial de la Provincia Warnes.',f:f,im:cand('simbolo',o.imagen_url,o.nombre+' '+(o.tipo||'')),c:1,m:0}}},
+{k:'simbolos',n:'🛡️ Símbolos',v:function(o){var f=[];if(o.dato_normativo&&o.dato_normativo!=='—')f.push(['◈',o.dato_normativo]);return{t:o.nombre,b:'Símbolo',d:o.descripcion||'Símbolo oficial de la Provincia Warnes.',f:f,im:cand('simbolos',o.imagen_url,o.nombre+' '+(o.tipo||'')),c:1,m:0}}},
 {k:'comercio',n:'🏭 Industria',v:function(o){var f=[];if(o.ubicacion)f.push(['◉',o.ubicacion]);if(o.horario)f.push(['◷',o.horario]);if(o.telefono)f.push(['☎',o.telefono]);return{t:o.nombre,b:'Industria',d:o.descripcion||'Empresa industrial de la provincia Warnes.',f:f,im:cand('comercio',o.imagen_url,o.nombre),c:1,m:1}}},
 {k:'restaurantes',n:'🍽️ Restaurantes',v:function(o){return{t:o.nombre,b:insignia(o,'Restaurante'),d:descGen(o,'Restaurante de la provincia Warnes.'),f:camposGen(o),im:cand('restaurante',g(o,'imagen_url','imagen','foto'),o.nombre),c:0,m:1}}},
 {k:'hoteles',n:'🏨 Hoteles',v:function(o){return{t:o.nombre,b:insignia(o,'Hotel'),d:descGen(o,'Alojamiento en la provincia Warnes.'),f:camposGen(o),im:cand('hoteles',g(o,'imagen_url','imagen','foto'),o.nombre),c:0,m:1}}},
@@ -683,7 +683,7 @@ window.cambiarCategoria=function(c){
 };
 
 // ===== BOTONES CON IMAGEN =====
-var CARPETA={turismo:'turismo',cultura:'cultura',simbolos:'simbolo',comercio:'comercio',restaurantes:'restaurante',hoteles:'hoteles',transporte:'transporte'};
+var CARPETA={turismo:'turismo',cultura:'cultura',simbolos:'simbolos',comercio:'comercio',restaurantes:'restaurante',hoteles:'hoteles',transporte:'transporte'};
 function imgBoton(c){
   if(c==='todos')return BASE_IMG+'turismo/plazacentralde-warnes.jpg';
   var car=CARPETA[c],l=IMAGENES_REPO[car]||[],a=l.filter(function(x){return/\.jpe?g$/i.test(x)})[0]||l[0];
@@ -1045,18 +1045,20 @@ async function csv(us){for(var i=0;i<us.length;i++){try{var r=await fetch(us[i])
 function contar(){document.querySelectorAll('[data-n]').forEach(function(el){var m=D[el.dataset.n].length,c=0,s=Math.max(1,Math.ceil(m/30));var iv=setInterval(function(){c=Math.min(m,c+s);el.textContent=c;if(c>=m)clearInterval(iv)},40)})}
 
 async function cargarImagenes(){
-  await Promise.all(['turismo','cultura','simbolo','comercio','hoteles','restaurante','transporte'].map(async function(c){
-    var ck='img_warnes_v2_'+c,hit=null;try{hit=JSON.parse(localStorage.getItem(ck)||'null')}catch(e){}
-    if(hit&&Date.now()-hit.t<600000){IMAGENES_REPO[c]=hit.l;return}
-    try{
-      var r=await fetch('https://api.github.com/repos/sabroliviabolivia-ctrl/turismowarnes/contents/'+c,{cache:'no-store'});
-      if(!r.ok)throw new Error('HTTP '+r.status);
-      var j=await r.json();
-      if(!Array.isArray(j))throw new Error('Respuesta inválida');
-      var l=j.filter(function(x){return x.type==='file'&&/\.(jpe?g|png|webp|gif|avif)$/i.test(x.name)}).map(function(x){return x.name});
-      if(l.length){IMAGENES_REPO[c]=l;try{localStorage.setItem(ck,JSON.stringify({t:Date.now(),l:l}))}catch(e){}}
-    }catch(e){console.warn('GitHub imágenes '+c+':',e.message)}
-  }));
+  // ===== LISTA MANUAL DE IMÁGENES DESDE SUPABASE =====
+  var imagenes = {
+    turismo: ['casa-delas-pailas.png','comunidad-tradicionales.jpeg','el-copetin-.jpg','festival_gastronomico.png','hotelrio-selva.jpg','monte-grandiosa.jpg','parque-ecologico.jpg','playland-park.jpg','plazacentralde-warnes.jpg','riosylagunas.jpg','terramia.jpg'],
+    cultura: ['actividad_cultural.jpg','decoracion.jpg','dia_mundialdel_turismo.jpg','diadel_folklore.jpg','festival_cultural.jpg','festival_dela_tamborita.jpg','festival_gastronomico.jpg','jocheo_de_toros.jpg','ofrenda_floral.jpg','serenata_virgen_del_rosario.jpg'],
+    simbolos: ['aniversariodecreacion.jpg','banderaprovincial.jpg','escudoprovincial.jpg','nuestra_rosario.jpg'],
+    comercio: ['a_a_a_internacional.png','ajebolivia.png','cameo.jpg','carlos_caballero.jpg','casa_ideal.jpg','ceramica_estructural.jpg','ceramica_norte.jpg','cerveceria_sabores_bolivianos.png','cimbol.jpg','coboce_cemento.jpg','copelme.png','dxn.jpg','eduardo.jpg','fabrica_de_baterias.jpg','fabrica_medicamentos_abd.jpg','fino.jpg','gravetal.jpg','industrias_venado.png','ipilcruz.jpg','la_suprema.png','luoyang.jpg','ovoprot.png','papelera_vinto.jpg','parque_eolico.jpg','planta_termoelectrica.jpg','soboce.jpg','sobolma.png','syntex.jpg','tres60.png'],
+    hoteles: ['ALOJAMIENTO_CALIFORNIA.png','hotel_rio_selva_resort_santa_cruz - copia.png','los_jazmines_hotel_resort.png','sun_hotel.png','Terramia_resort &_Spa.png'],
+    restaurante: ['Copetin_Warnes.png','Giuseppe_Pizza.png','Hamacas_Salteneria_Sucursal_Warnes.png','HELADERIA_KIVON.png','house_pizza.png','La_Casona_Warnes.png',"Mamma's_Pizza_Warnes.png",'Pizzeria_Ristorant_Nino.png','Restaurant_Aurorita.png','Restaurante_El_Warnenisimo.png','Sabor_Criollo.png'],
+    transporte: ['asociacion_de transporte_.png','parada_de_trufis_warnes_santa_cruz.png']
+  };
+  
+  Object.keys(imagenes).forEach(function(c){
+    IMAGENES_REPO[c] = imagenes[c];
+  });
 }
 function listaGen(rows){return rows.map(function(o){o.nombre=nombreGen(o);return o}).filter(function(x){return x.nombre}).sort(function(a,b){return a.nombre.localeCompare(b.nombre,'es')})}
 
