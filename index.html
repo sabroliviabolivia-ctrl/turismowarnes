@@ -81,7 +81,7 @@ button{font-family:inherit;cursor:pointer}
 /* HERO */
 .hero{position:relative;overflow:hidden}
 .hero-foto{position:relative;display:flex;align-items:center;justify-content:center;height:100vh;height:100svh;min-height:420px;overflow:hidden}
-.hero-fondo{position:absolute;inset:0;background:url('https://scdkbbqkeegmixkfhptl.supabase.co/storage/v1/object/public/imagenes/turismo/plazacentralde-warnes.jpg') center/cover no-repeat;filter:blur(30px) brightness(.4) saturate(1.3);transform:scale(1.25)}
+.hero-fondo{position:absolute;inset:0;background:url('/plazacentralde-warnes.jpg') center/cover no-repeat;filter:blur(30px) brightness(.4) saturate(1.3);transform:scale(1.25)}
 .hero-marco{position:relative;flex:none;width:var(--mw,92%);height:var(--mh,52vw);line-height:0}
 .hero-marco img{display:block;width:100%;height:100%;object-fit:contain}
 .lis{position:absolute;z-index:4;pointer-events:none;height:var(--T);background:var(--lis) center/100% 100% no-repeat;filter:drop-shadow(0 6px 10px rgba(0,0,0,.6))}
@@ -320,7 +320,7 @@ footer .foot-legal a{margin:0 6px}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
-<style>:root{--lis:url(https://scdkbbqkeegmixkfhptl.supabase.co/storage/v1/object/public/imagenes/liston.png)}</style>
+<style>:root{--lis:url(/liston.png)}</style>
 </head>
 <body data-cielo="noche">
 <canvas id="fx"></canvas>
@@ -343,8 +343,8 @@ footer .foot-legal a{margin:0 6px}
 <main>
 <header class="hero" id="inicio">
   <div class="hero-foto"><div class="hero-fondo"></div><div class="hero-marco"><img alt="Plaza central de Warnes" fetchpriority="high"
-    src="https://scdkbbqkeegmixkfhptl.supabase.co/storage/v1/object/public/imagenes/turismo/plazacentralde-warnes.jpg"
-    data-srcs='["https://scdkbbqkeegmixkfhptl.supabase.co/storage/v1/object/public/imagenes/turismo/plazacentralde-warnes.jpg"]' data-i="0" onerror="imgFalla(this)"><i class="lis t"></i></div><i class="lis l"></i><i class="lis r"></i><a class="baja" href="#bienvenida">Explorar ↓</a></div>
+    src="/plazacentralde-warnes.jpg"
+    data-srcs='["/plazacentralde-warnes.jpg","/turismo/plazacentralde-warnes.jpg"]' data-i="0" onerror="imgFalla(this)"><i class="lis t"></i></div><i class="lis l"></i><i class="lis r"></i><a class="baja" href="#bienvenida">Explorar ↓</a></div>
   <div class="hero-in" id="bienvenida">
     <span class="kick" id="saludo">◉ Santa Cruz · Bolivia</span>
     <h1 aria-label="Warnes"><span style="--i:1">W</span><span style="--i:2">A</span><span style="--i:3">R</span><span style="--i:4">N</span><span style="--i:5">E</span><span style="--i:6">S</span></h1>
@@ -560,7 +560,11 @@ function registrarVisitaWeb(categoria){
 const BASE='https://docs.google.com/spreadsheets/d/e/2PACX-1vTJfCxTTkuO2WZYGzJzWcr1jlRULYM345JEisf1Bpv3SOlBsbffZnTa2-vmP0IrFa0ctDgOBQZuS0ln/pub?single=true&output=csv&gid=';
 const URL_TURISMO=BASE+'0',URL_SIMBOLOS=BASE+'23752783',URL_COMERCIO=BASE+'2046609834',URL_CULTURA=BASE+'530297980';
 const URL_RESTAURANTE=BASE+'1529568127',URL_HOTELES=BASE+'401570127',URL_TRANSPORTE=BASE+'1762496340';
-const BASE_IMG='https://scdkbbqkeegmixkfhptl.supabase.co/storage/v1/object/public/imagenes/';
+
+// Las imágenes están en el mismo repositorio (GitHub → Cloudflare Pages).
+// Carpetas: turismo, cultura, símbolo, comercio, restaurante, hoteles, transporte
+const BASE_IMG='/';
+function cr(c){return c==='simbolos'?'símbolo':c}
 
 const IMAGENES_REPO={turismo:[],cultura:[],simbolos:[],comercio:[],hoteles:[],restaurante:[],transporte:[]};
 const FB='https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=80';
@@ -584,9 +588,20 @@ function nz(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0
 function tk(s){return nz(s).split(/[^a-z0-9]+/).filter(function(t){return t&&!STOP[t]})}
 function cp(s){return nz(s).replace(/[^a-z0-9]+/g,'')}
 function tc(f,t){if(f===t)return true;if(f.length<4||t.length<4)return false;return t.indexOf(f)===0||f.indexOf(t)===0}
-function autoImg(car,nom){var tn=tk(nom),cn=cp(nom),m=null,mp=0;(IMAGENES_REPO[car]||[]).forEach(function(a){var b=a.replace(/\.[^.]+$/,''),tf=tk(b);if(!tf.length)return;var cf=cp(b),p=0;if(cf.length>=5&&cn.indexOf(cf)!==-1)p=100+cf.length;else if(tf.every(function(f){return tn.some(function(t){return tc(f,t)})}))p=tf.join('').length;if(p>mp){mp=p;m=a}});return m?BASE_IMG+car+'/'+encodeURI(m):''}
-function urlHoja(v,car){v=(v||'').trim();if(!v)return'';if(/^https?:\/\//i.test(v)){var gh=v.match(/github\.com\/([^\/]+)\/([^\/]+)\/blob\/([^\/]+)\/(.+)$/);if(gh)return'https://raw.githubusercontent.com/'+gh[1]+'/'+gh[2]+'/'+gh[3]+'/'+gh[4];if(/drive\.google\.com|docs\.google\.com/.test(v)){var d=v.match(/\/d\/([\w-]{15,})/)||v.match(/[?&]id=([\w-]{15,})/);if(d)return'https://drive.google.com/thumbnail?id='+d[1]+'&sz=w1000'}return v}return BASE_IMG+(v.indexOf('/')===-1?car+'/':'')+encodeURI(v)}
-function cand(car,vh,nom){var l=[],a=urlHoja(vh,car),b=autoImg(car,nom);if(a)l.push(a);if(b&&l.indexOf(b)<0)l.push(b);l.push(FB);return l}
+function autoImg(car,nom){var tn=tk(nom),cn=cp(nom),m=null,mp=0;(IMAGENES_REPO[car]||[]).forEach(function(a){var b=a.replace(/\.[^.]+$/,''),tf=tk(b);if(!tf.length)return;var cf=cp(b),p=0;if(cf.length>=5&&cn.indexOf(cf)!==-1)p=100+cf.length;else if(tf.every(function(f){return tn.some(function(t){return tc(f,t)})}))p=tf.join('').length;if(p>mp){mp=p;m=a}});return m?BASE_IMG+cr(car)+'/'+encodeURI(m):''}
+function urlHoja(v,car){v=(v||'').trim();if(!v)return'';if(/^https?:\/\//i.test(v)){var gh=v.match(/github\.com\/([^\/]+)\/([^\/]+)\/blob\/([^\/]+)\/(.+)$/);if(gh)return'https://raw.githubusercontent.com/'+gh[1]+'/'+gh[2]+'/'+gh[3]+'/'+gh[4];if(/drive\.google\.com|docs\.google\.com/.test(v)){var d=v.match(/\/d\/([\w-]{15,})/)||v.match(/[?&]id=([\w-]{15,})/);if(d)return'https://drive.google.com/thumbnail?id='+d[1]+'&sz=w1000'}return v}return BASE_IMG+(v.indexOf('/')===-1?cr(car)+'/':'')+encodeURI(v)}
+// Candidatos de imagen: hoja → emparejada por nombre → misma ruta con tildes en forma NFD → imagen de respaldo
+function cand(car,vh,nom){
+  var l=[],a=urlHoja(vh,car),b=autoImg(car,nom);
+  if(a)l.push(a);
+  if(b&&l.indexOf(b)<0)l.push(b);
+  [a,b].forEach(function(u){
+    if(u&&u.charAt(0)==='/'){
+      try{var n=encodeURI(decodeURI(u).normalize('NFD'));if(l.indexOf(n)<0)l.push(n)}catch(e){}
+    }
+  });
+  l.push(FB);
+  return l}
 
 // ===== ESTADO =====
 const D={turismo:[],cultura:[],simbolos:[],comercio:[],restaurantes:[],hoteles:[],transporte:[]};
@@ -685,9 +700,9 @@ window.cambiarCategoria=function(c){
 // ===== BOTONES CON IMAGEN =====
 var CARPETA={turismo:'turismo',cultura:'cultura',simbolos:'simbolos',comercio:'comercio',restaurantes:'restaurante',hoteles:'hoteles',transporte:'transporte'};
 function imgBoton(c){
-  if(c==='todos')return BASE_IMG+'turismo/plazacentralde-warnes.jpg';
+  if(c==='todos')return '/plazacentralde-warnes.jpg';
   var car=CARPETA[c],l=IMAGENES_REPO[car]||[],a=l.filter(function(x){return/\.jpe?g$/i.test(x)})[0]||l[0];
-  if(a)return BASE_IMG+car+'/'+encodeURI(a);
+  if(a)return BASE_IMG+cr(car)+'/'+encodeURI(a);
   var s=SEC.find(function(x){return x.k===c});
   if(s&&D[c]&&D[c].length)return s.v(D[c][0]).im[0];
   return''}
@@ -1045,17 +1060,18 @@ async function csv(us){for(var i=0;i<us.length;i++){try{var r=await fetch(us[i])
 function contar(){document.querySelectorAll('[data-n]').forEach(function(el){var m=D[el.dataset.n].length,c=0,s=Math.max(1,Math.ceil(m/30));var iv=setInterval(function(){c=Math.min(m,c+s);el.textContent=c;if(c>=m)clearInterval(iv)},40)})}
 
 async function cargarImagenes(){
-  // ===== LISTA MANUAL DE IMÁGENES DESDE SUPABASE =====
+  // ===== LISTA DE IMÁGENES DEL REPOSITORIO (GitHub) =====
+  // Los nombres deben ser IDÉNTICOS a los archivos de cada carpeta (tildes y mayúsculas incluidas).
   var imagenes = {
-    turismo: ['casa-delas-pailas.png','comunidad-tradicionales.jpeg','el-copetin-.jpg','festival_gastronomico.png','hotelrio-selva.jpg','monte-grandiosa.jpg','parque-ecologico.jpg','playland-park.jpg','plazacentralde-warnes.jpg','riosylagunas.jpg','terramia.jpg'],
-    cultura: ['actividad_cultural.jpg','decoracion.jpg','dia_mundialdel_turismo.jpg','diadel_folklore.jpg','festival_cultural.jpg','festival_dela_tamborita.jpg','festival_gastronomico.jpg','jocheo_de_toros.jpg','ofrenda_floral.jpg','serenata_virgen_del_rosario.jpg'],
-    simbolos: ['aniversariodecreacion.jpg','banderaprovincial.jpg','escudoprovincial.jpg','nuestra_rosario.jpg'],
+    turismo: ['casa-delas-pailas.png','comunidad-tradicionales.jpeg','el-copetin-.jpg','hotelrio-selva.jpg','monte-grandiosa.jpg','parque-ecológico.jpg','parque-de-juegos.jpg','plazacentralde-warnes.jpg','riosylagunas.jpg','terramia.jpg'],
+    cultura: ['actividad_cultural.jpg','decoración.jpg','dia_mundialdel_turismo.jpg','diadel_folklore.jpg','festival_cultural.jpg','festival_dela_tamborita.jpg','festival_gastronomico.jpg','jocheo_de_toros.jpg','ofrenda_floral.jpg','serenata_virgen_del_rosario.jpg'],
+    simbolos: ['aniversariodecreación.jpg','banderaprovincial.jpg','escudoprovincial.jpg','nuestra_rosario.jpg'],
     comercio: ['a_a_a_internacional.png','ajebolivia.png','cameo.jpg','carlos_caballero.jpg','casa_ideal.jpg','ceramica_estructural.jpg','ceramica_norte.jpg','cerveceria_sabores_bolivianos.png','cimbol.jpg','coboce_cemento.jpg','copelme.png','dxn.jpg','eduardo.jpg','fabrica_de_baterias.jpg','fabrica_medicamentos_abd.jpg','fino.jpg','gravetal.jpg','industrias_venado.png','ipilcruz.jpg','la_suprema.png','luoyang.jpg','ovoprot.png','papelera_vinto.jpg','parque_eolico.jpg','planta_termoelectrica.jpg','soboce.jpg','sobolma.png','syntex.jpg','tres60.png'],
-    hoteles: ['ALOJAMIENTO_CALIFORNIA.png','hotel_rio_selva_resort_santa_cruz - copia.png','los_jazmines_hotel_resort.png','sun_hotel.png','Terramia_resort &_Spa.png'],
-    restaurante: ['Copetin_Warnes.png','Giuseppe_Pizza.png','Hamacas_Salteneria_Sucursal_Warnes.png','HELADERIA_KIVON.png','house_pizza.png','La_Casona_Warnes.png',"Mamma's_Pizza_Warnes.png",'Pizzeria_Ristorant_Nino.png','Restaurant_Aurorita.png','Restaurante_El_Warnenisimo.png','Sabor_Criollo.png'],
-    transporte: ['asociacion_de transporte_.png','parada_de_trufis_warnes_santa_cruz.png']
+    hoteles: ['ALOJAMIENTO_CALIFORNIA.png','Terramia_resort &_Spa.png','hotel_rio_selva_resort_santa_cruz.png','los_jazmines_hotel_resort.png','hotel_sol.png'],
+    restaurante: ['Copetín_Warnes.png','Giuseppe_Pizza.png','HELADERIA_KIVON.png','Hamacas_Salteñería_Sucursal_Warnes.png','La_Casona_Warnes.png','Pizza de mamá Warnes.png','Pizzería_Ristorant_Nino.png','Restaurante_Aurorita.png','Restaurante_El_Warneñísimo.png','Sabor_Criollo.png','casa_pizza.png'],
+    transporte: ['Cooperativa_de_Transporte_warnes.png','asociación_de_taxis_y_minibuses_warnes.png','parada_de_trufis_warnes_santa_cruz.png']
   };
-  
+
   Object.keys(imagenes).forEach(function(c){
     IMAGENES_REPO[c] = imagenes[c];
   });
