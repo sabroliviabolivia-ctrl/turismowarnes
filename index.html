@@ -356,7 +356,6 @@ footer .foot-legal a{margin:0 6px}
 <div class="stats">
   <div class="stat"><strong data-n="turismo">0</strong><span>Lugares</span></div>
   <div class="stat"><strong data-n="cultura">0</strong><span>Eventos</span></div>
-  <div class="stat"><strong data-n="simbolos">0</strong><span>Símbolos</span></div>
   <div class="stat"><strong data-n="comercio">0</strong><span>Empresas</span></div>
   <div class="stat"><strong data-n="restaurantes">0</strong><span>Restaurantes</span></div>
   <div class="stat"><strong data-n="hoteles">0</strong><span>Hoteles</span></div>
@@ -586,13 +585,21 @@ function cp(s){return nz(s).replace(/[^a-z0-9]+/g,'')}
 function tc(f,t){if(f===t)return true;if(f.length<4||t.length<4)return false;return t.indexOf(f)===0||f.indexOf(t)===0}
 function autoImg(car,nom){var tn=tk(nom),cn=cp(nom),mp=0,r=[];(IMAGENES_REPO[car]||[]).forEach(function(a){var b=a.replace(/\.[^.]+$/,''),tf=tk(b);if(!tf.length)return;var cf=cp(b),p=0;if(cf.length>=5&&cn.indexOf(cf)!==-1)p=100+cf.length;else if(tf.every(function(f){return tn.some(function(t){return tc(f,t)})}))p=tf.join('').length;if(!p)return;if(p>mp){mp=p;r=[a]}else if(p===mp)r.push(a)});return r.map(function(m){return BASE_IMG+cr(car)+'/'+encodeURI(m)})}
 function urlHoja(v,car){v=(v||'').trim();if(!v)return'';if(/supabase\.co/i.test(v))return'';if(/^https?:\/\//i.test(v)){var gh=v.match(/github\.com\/([^\/]+)\/([^\/]+)\/blob\/([^\/]+)\/(.+)$/);if(gh)return'https://raw.githubusercontent.com/'+gh[1]+'/'+gh[2]+'/'+gh[3]+'/'+gh[4];if(/drive\.google\.com|docs\.google\.com/.test(v)){var d=v.match(/\/d\/([\w-]{15,})/)||v.match(/[?&]id=([\w-]{15,})/);if(d)return'https://drive.google.com/thumbnail?id='+d[1]+'&sz=w1000'}return v}return BASE_IMG+(v.indexOf('/')===-1?cr(car)+'/':'')+encodeURI(v)}
-// Candidatos de imagen: hoja → coincidencias por nombre → misma ruta con tildes en forma NFD → imagen de respaldo
+// Candidatos de imagen: hoja → sitio → misma ruta con tilde NFD → GitHub directo → otras extensiones → respaldo
+var RAW='https://raw.githubusercontent.com/sabroliviabolivia-ctrl/turismowarnes/main';
 function cand(car,vh,nom){
-  var l=[],a=urlHoja(vh,car),bs=autoImg(car,nom);
+  var l=[],a=urlHoja(vh,car),bs=autoImg(car,nom),rel=[];
   function add(u){if(u&&l.indexOf(u)<0)l.push(u)}
-  add(a);bs.forEach(add);
+  function addRel(u){if(u&&rel.indexOf(u)<0)rel.push(u)}
+  if(a&&a.charAt(0)!=='/')add(a);
   [a].concat(bs).forEach(function(u){
-    if(u&&u.charAt(0)==='/'){try{add(encodeURI(decodeURI(u).normalize('NFD')))}catch(e){}}
+    if(u&&u.charAt(0)==='/'){addRel(u);try{addRel(encodeURI(decodeURI(u).normalize('NFD')))}catch(e){}}
+  });
+  rel.forEach(add);
+  rel.forEach(function(u){add(RAW+u)});
+  bs.forEach(function(u){
+    var base=u.replace(/\.[^.\/]+$/,'');
+    ['.jpg','.jpeg','.png','.webp','.JPG','.PNG'].forEach(function(e){add(base+e)});
   });
   l.push(FB);
   return l}
@@ -620,7 +627,6 @@ function insignia(o,x){var t=g(o,'tipo','categoria');return t&&t.length<22?t:x}
 const SEC=[
 {k:'turismo',n:'🏞️ Turismo',v:function(o){var f=[];if(o.ubicacion)f.push(['◉',o.ubicacion]);if(o.horario)f.push(['◷',o.horario]);return{t:o.nombre,b:'Turismo',d:o.descripcion||'Sin descripción.',f:f,im:cand('turismo',o.imagen_url,o.nombre),c:0,m:1}}},
 {k:'cultura',n:'🎭 Cultura',v:function(o){var f=[];if(o.fecha)f.push(['◷',o.fecha]);if(o.lugar)f.push(['◉',o.lugar]);return{t:o.actividad,b:o.fecha||'Evento',d:o.descripcion||'Evento cultural de la provincia Warnes.',f:f,im:cand('cultura',o.imagen_url,o.actividad),c:0,m:1}}},
-{k:'simbolos',n:'🛡️ Símbolos',v:function(o){var f=[];if(o.dato_normativo&&o.dato_normativo!=='—')f.push(['◈',o.dato_normativo]);return{t:o.nombre,b:'Símbolo',d:o.descripcion||'Símbolo oficial de la Provincia Warnes.',f:f,im:cand('simbolos',o.imagen_url,o.nombre+' '+(o.tipo||'')),c:1,m:0}}},
 {k:'comercio',n:'🏭 Industria',v:function(o){var f=[];if(o.ubicacion)f.push(['◉',o.ubicacion]);if(o.horario)f.push(['◷',o.horario]);if(o.telefono)f.push(['☎',o.telefono]);return{t:o.nombre,b:'Industria',d:o.descripcion||'Empresa industrial de la provincia Warnes.',f:f,im:cand('comercio',o.imagen_url,o.nombre),c:1,m:1}}},
 {k:'restaurantes',n:'🍽️ Restaurantes',v:function(o){return{t:o.nombre,b:insignia(o,'Restaurante'),d:descGen(o,'Restaurante de la provincia Warnes.'),f:camposGen(o),im:cand('restaurante',g(o,'imagen_url','imagen','foto'),o.nombre),c:0,m:1}}},
 {k:'hoteles',n:'🏨 Hoteles',v:function(o){return{t:o.nombre,b:insignia(o,'Hotel'),d:descGen(o,'Alojamiento en la provincia Warnes.'),f:camposGen(o),im:cand('hoteles',g(o,'imagen_url','imagen','foto'),o.nombre),c:0,m:1}}},
@@ -759,7 +765,6 @@ function sorprender(){
   var orden=[
     {k:'turismo',     icono:'🏞️', nombre:'Turismo'},
     {k:'cultura',     icono:'🎭', nombre:'Cultura'},
-    {k:'simbolos',    icono:'🛡️', nombre:'Símbolos'},
     {k:'comercio',    icono:'🏭', nombre:'Industria'},
     {k:'restaurantes',icono:'🍽️', nombre:'Restaurantes'},
     {k:'hoteles',     icono:'🏨', nombre:'Hoteles'},
