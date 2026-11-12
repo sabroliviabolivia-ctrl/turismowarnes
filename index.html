@@ -84,11 +84,6 @@ button{font-family:inherit;cursor:pointer}
 .hero-fondo{position:absolute;inset:0;background:url('/plazacentralde-warnes.jpg') center/cover no-repeat;filter:blur(30px) brightness(.4) saturate(1.3);transform:scale(1.25)}
 .hero-marco{position:relative;flex:none;width:var(--mw,92%);height:var(--mh,52vw);line-height:0}
 .hero-marco img{display:block;width:100%;height:100%;object-fit:contain}
-.lis{position:absolute;z-index:4;pointer-events:none;height:var(--T);background:var(--lis) center/100% 100% no-repeat;filter:drop-shadow(0 6px 10px rgba(0,0,0,.6))}
-.lis.t{top:calc(var(--T)*-.5);left:calc(var(--T)*-.5);width:calc(100% + var(--T))}
-.lis.l,.lis.r{height:var(--TS,var(--T))}
-.lis.l{top:0;left:calc(var(--cx) - var(--T)*.5 + var(--TS,var(--T)));width:var(--hh);transform-origin:0 0;transform:rotate(90deg)}
-.lis.r{top:var(--hh);left:calc(100% - var(--cx) + var(--T)*.5 - var(--TS,var(--T)));width:var(--hh);transform-origin:0 0;transform:rotate(-90deg)}
 .baja{position:absolute;bottom:88px;left:50%;transform:translateX(-50%);z-index:3;padding:10px 26px;border-radius:50px;border:1px solid var(--v);background:rgba(3,14,9,.7);backdrop-filter:blur(10px);color:var(--v);font-weight:800;letter-spacing:2px;text-transform:uppercase;font-size:.75rem;text-decoration:none;box-shadow:0 0 22px rgba(25,255,122,.4);animation:rebota 1.8s ease-in-out infinite}
 @keyframes rebota{50%{transform:translateX(-50%) translateY(6px)}}
 .hero-in{position:relative;z-index:3;max-width:900px;margin:0 auto;padding:44px 24px 50px;text-align:center}
@@ -317,7 +312,6 @@ footer .foot-legal a{margin:0 6px}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
-<style>:root{--lis:url(/liston.png)}</style>
 </head>
 <body data-cielo="noche">
 <canvas id="fx"></canvas>
@@ -341,7 +335,7 @@ footer .foot-legal a{margin:0 6px}
 <header class="hero" id="inicio">
   <div class="hero-foto"><div class="hero-fondo"></div><div class="hero-marco"><img alt="Plaza central de Warnes" fetchpriority="high"
     src="/plazacentralde-warnes.jpg"
-    data-srcs='["/plazacentralde-warnes.jpg","/turismo/plazacentralde-warnes.jpg"]' data-i="0" onerror="imgFalla(this)"><i class="lis t"></i></div><i class="lis l"></i><i class="lis r"></i><a class="baja" href="#bienvenida">Explorar ↓</a></div>
+    data-srcs='["/plazacentralde-warnes.jpg","/turismo/plazacentralde-warnes.jpg"]' data-i="0" onerror="imgFalla(this)"></div><a class="baja" href="#bienvenida">Explorar ↓</a></div>
   <div class="hero-in" id="bienvenida">
     <span class="kick" id="saludo">◉ Santa Cruz · Bolivia</span>
     <h1 aria-label="Warnes"><span style="--i:1">W</span><span style="--i:2">A</span><span style="--i:3">R</span><span style="--i:4">N</span><span style="--i:5">E</span><span style="--i:6">S</span></h1>
@@ -601,6 +595,7 @@ function cand(car,vh,nom){
     var base=u.replace(/\.[^.\/]+$/,'');
     ['.jpg','.jpeg','.png','.webp','.JPG','.PNG'].forEach(function(e){add(base+e)});
   });
+  bs.forEach(function(u){add('/'+u.split('/').pop())});
   l.push(FB);
   return l}
 
